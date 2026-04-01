@@ -4,17 +4,23 @@ namespace space_booking_platform;
 
 public abstract class Database
 {
-    public static string GetDbPath()
+    private static string GetDbPath()
     {
         string projectRoot = Directory.GetParent(AppContext.BaseDirectory)!.Parent!.Parent!.Parent!.FullName;
         return Path.Combine(projectRoot, "SpaceBookings.sqlite");
     }
 
-    public static void Tables()
+    public static SQLiteConnection ConnectToDb()
     {
         string dbPath = GetDbPath();
         SQLiteConnection myConn = new SQLiteConnection($"Data Source={dbPath};Version=3;");
         myConn.Open();
+        return myConn;
+    }
+
+    public static void Tables()
+    {
+        SQLiteConnection myConn = ConnectToDb();
         
         string sql = "CREATE TABLE IF NOT EXISTS users(" +
                      "UUID INTEGER PRIMARY KEY," +
