@@ -1,3 +1,9 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿namespace space_booking_platform;
 
-Console.WriteLine("Hello, World!");
+class Program
+{
+    static void Main(string[] args)
+    {
+        Console.WriteLine("Hello, World!");
+    }
+}
