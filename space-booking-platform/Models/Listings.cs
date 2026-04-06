@@ -31,12 +31,6 @@ public class Listings
     private DateTime _createdAt;
 
     private ListingStatus _listingStatus;
-    
-    public int ListingId
-    {
-        get => _listingId;
-        set => _listingId = value;
-    }
 
     public ListingCategory Category
     {
