@@ -1,8 +1,8 @@
 namespace space_booking_platform.Models;
 
-public enum ListingType
+public enum ListingCategory
 {
     Transportation,
-    Acommodation, 
+    Accommodation, 
     Activity
 }
