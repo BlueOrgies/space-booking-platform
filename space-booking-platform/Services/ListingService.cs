@@ -1,5 +1,6 @@
 using System.Data.SQLite;
 using space_booking_platform.Models;
+using Spectre.Console;
 
 namespace space_booking_platform.Services;
 
@@ -32,5 +33,16 @@ public class ListingService
         command.ExecuteNonQuery();
 
         myConn.Close();
+    }
+    
+    public static void EditListingInDb(string edit, string newData, int listingId)
+    {
+        SQLiteConnection myConn = Database.ConnectToDb();
+
+        string sql = $"UPDATE listings SET '{edit}' = '{newData}' WHERE listingID = '{listingId}'";
+        SQLiteCommand command = new SQLiteCommand(sql, myConn);
+        command.ExecuteNonQuery();
+        myConn.Close();
+        AnsiConsole.MarkupLine("[bold]\nListing updated.[/]");
     }
 }
