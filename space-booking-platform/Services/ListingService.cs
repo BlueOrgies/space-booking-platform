@@ -57,12 +57,12 @@ public class ListingService
             .RoundedBorder()
             .BorderColor(Color.Grey);
   
-        table.AddColumn("Category");
-        table.AddColumn("Title");
-        table.AddColumn("Origin");
-        table.AddColumn("Destination");
-        //table.AddColumn("Date");
-        table.AddColumn("Status");
+        table.AddColumn("[bold]Category[/]", col => col.LeftAligned());
+        table.AddColumn("[bold]Title[/]", col => col.LeftAligned());
+        table.AddColumn("[bold]Origin[/]", col => col.LeftAligned());
+        table.AddColumn("[bold]Destination[/]", col => col.LeftAligned());
+        //table.AddColumn("[bold]Date[/]", col => col.LeftAligned());
+        table.AddColumn("[bold]Status[/]", col => col.LeftAligned());
         
         using SQLiteCommand readThis = new SQLiteCommand(sql, myConn);
         using (SQLiteDataReader dataReader = readThis.ExecuteReader())
