@@ -109,4 +109,55 @@ public class ListingService
 
         return sql;
     }
+
+    public static void ShowMyListings()
+    {
+        //TODO: Change sql to show only logged in users listing 
+        string sql = "SELECT * FROM listings";
+        
+        SQLiteConnection myConn = Database.ConnectToDb();
+
+        using SQLiteCommand readThis = new SQLiteCommand(sql, myConn);
+        using (SQLiteDataReader dataReader = readThis.ExecuteReader())
+        {
+            while (dataReader.Read())
+            {
+                string? category = dataReader["type"].ToString();
+                string? title = dataReader["title"].ToString();
+                string? description = dataReader["description"].ToString();
+                string? transportMethod = dataReader["transportMethod"].ToString();
+                string? origin = dataReader["origin"].ToString();
+                string? destination = dataReader["destination"].ToString();
+                //string? date = dataReader["date"].ToString();
+                string? duration = dataReader["duration"].ToString();
+                string? durationType = dataReader["durationType"].ToString();
+                string? capacity = dataReader["capacity"].ToString();
+                string? capacityUnit = dataReader["capacityUnit"].ToString();
+                string? price = dataReader["price"].ToString();
+                string? priceUnit = dataReader["priceUnit"].ToString();
+                string? status = dataReader["listingStatus"].ToString();
+
+                var grid = new Grid();
+                grid.AddColumn();
+                grid.AddColumn();
+                
+                grid.AddRow("", "");
+                grid.AddRow("Category:", $"{category}");
+                grid.AddRow("Title:", $"{title}");
+                grid.AddRow("Description:", $"{description}");
+                grid.AddRow("Transport method:", $"{transportMethod}");
+                grid.AddRow("Origin:", $"{origin}");
+                grid.AddRow("Destination:", $"{destination}");
+                //grid.AddRow("Date:", $"{date}");
+                grid.AddRow("Duration:", $"{duration} {durationType}");
+                grid.AddRow("Capacity:", $"{capacity} {capacityUnit}");
+                grid.AddRow("Price:", $"{price} {priceUnit}");
+                grid.AddRow("Status:", $"{status}");
+
+                AnsiConsole.Write(grid);
+
+            }
+        }
+        myConn.Close();
+    }
 }
