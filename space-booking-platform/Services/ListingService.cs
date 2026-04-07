@@ -1,4 +1,5 @@
 using System.Data.SQLite;
+using System.Globalization;
 using space_booking_platform.Models;
 using Spectre.Console;
 
@@ -19,7 +20,7 @@ public class ListingService
             $"'{listing.TransportMethod}'," +
             $"'{listing.Origin}'," +
             $"'{listing.Destination}'," +
-            $"'{listing.Date}'," +
+            $"'{listing.Date.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)}'," +
             $"'{listing.Duration}'," +
             $"'{listing.DurationType}'," +
             $"'{listing.Capacity}'," +
@@ -61,7 +62,7 @@ public class ListingService
         table.AddColumn("[bold]Title[/]", col => col.LeftAligned());
         table.AddColumn("[bold]Origin[/]", col => col.LeftAligned());
         table.AddColumn("[bold]Destination[/]", col => col.LeftAligned());
-        //table.AddColumn("[bold]Date[/]", col => col.LeftAligned());
+        table.AddColumn("[bold]Date[/]", col => col.LeftAligned());
         table.AddColumn("[bold]Status[/]", col => col.LeftAligned());
 
         using SQLiteCommand readThis = new SQLiteCommand(sql, myConn);
@@ -73,10 +74,10 @@ public class ListingService
                 string? title = dataReader["title"].ToString();
                 string? origin = dataReader["origin"].ToString();
                 string? destination = dataReader["destination"].ToString();
-                //string? date = dataReader["date"].ToString(); //TODO: not valid DateTime format 
+                string? date = dataReader["date"].ToString(); 
                 string? status = dataReader["listingStatus"].ToString();
 
-                table.AddRow(category, title, origin, destination, status);
+                table.AddRow(category, title, origin, destination, date, status);
 
                 exists = true;
             }
@@ -129,7 +130,7 @@ public class ListingService
                 string? transportMethod = dataReader["transportMethod"].ToString();
                 string? origin = dataReader["origin"].ToString();
                 string? destination = dataReader["destination"].ToString();
-                //string? date = dataReader["date"].ToString();
+                string? date = dataReader["date"].ToString();
                 string? duration = dataReader["duration"].ToString();
                 string? durationType = dataReader["durationType"].ToString();
                 string? capacity = dataReader["capacity"].ToString();
@@ -149,7 +150,7 @@ public class ListingService
                 grid.AddRow("Transport method:", $"{transportMethod}");
                 grid.AddRow("Origin:", $"{origin}");
                 grid.AddRow("Destination:", $"{destination}");
-                //grid.AddRow("Date:", $"{date}");
+                grid.AddRow("Date:", $"{date}");
                 grid.AddRow("Duration:", $"{duration} {durationType}");
                 grid.AddRow("Capacity:", $"{capacity} {capacityUnit}");
                 grid.AddRow("Price:", $"{price} {priceUnit}");
