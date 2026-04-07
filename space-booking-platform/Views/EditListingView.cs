@@ -7,13 +7,14 @@ namespace space_booking_platform.Views;
 public class EditListingView
 {
     //TODO: Create a method to choose listings from a list and return listingId
+    //TODO: Add so you can change status 
     public static void EditListing(int listingId)
     {
         var prompt = new SelectionPrompt<string>()
             .Title("[bold]What would you like to edit?:[/]")
             .WrapAround()
             .AddChoices("Title", "Description", "Transportation Method", "Origin", "Destination",
-                "Date", "Duration", "Capacity", "Price");
+                "Date", "Duration", "Capacity", "Price", "Status");
         string edit = AnsiConsole.Prompt(prompt);
 
         switch (edit)
@@ -65,6 +66,13 @@ public class EditListingView
                 int price = AnsiConsole.Ask<int>($"Edit duration ({priceUnit}): ");
                 ListingService.EditListingInDb("capacity", price.ToString(), listingId);
                 ListingService.EditListingInDb("capacityUnit", priceUnit, listingId);
+                break;
+            case "Status":
+                prompt = new SelectionPrompt<string>()
+                    .Title("[bold]Price unit:[/]")
+                    .AddChoices(Enum.GetNames<ListingStatus>());
+                var status = AnsiConsole.Prompt(prompt);
+                ListingService.EditListingInDb("Status", status, listingId);
                 break;
         }
     }
