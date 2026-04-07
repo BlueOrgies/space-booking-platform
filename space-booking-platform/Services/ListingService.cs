@@ -44,5 +44,9 @@ public class ListingService
         command.ExecuteNonQuery();
         myConn.Close();
         AnsiConsole.MarkupLine("[bold]\nListing updated.[/]");
+        
+        myConn.Close();
     }
+    
+    
 }
