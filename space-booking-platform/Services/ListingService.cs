@@ -5,7 +5,7 @@ namespace space_booking_platform.Services;
 
 public class ListingService
 {
-    public void AddListingToTable(Listings listing)
+    public static void AddListingToTable(Listings listing)
     {
         SQLiteConnection myConn = Database.ConnectToDb();
 
