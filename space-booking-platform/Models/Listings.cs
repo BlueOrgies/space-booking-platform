@@ -125,7 +125,7 @@ public class Listings
     public Listings(ListingCategory category, string title, string description, 
         string transportMethod, string origin, string destination, DateTime date, int duration,
         string durationType, int capacity, ListingCapacityUnit capacityUnit, decimal price, 
-        ListingPriceUnit priceUnit, ListingStatus listingStatus)
+        ListingPriceUnit priceUnit)
     {
         _category = category;
         _title = title;
@@ -141,6 +141,6 @@ public class Listings
         _price = price;
         _priceUnit = priceUnit;
         _createdAt = DateTime.Now;
-        _listingStatus = listingStatus;
+        _listingStatus = ListingStatus.Active;
     }
 }
