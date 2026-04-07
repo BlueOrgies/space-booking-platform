@@ -4,12 +4,13 @@ using Spectre.Console;
 
 namespace space_booking_platform.Views;
 
-public class EditListingView
+public class EditListingView(AppState state)
 {
     //TODO: Create a method to choose listings from a list and return listingId
-    //TODO: Add so you can change status 
-    public static void EditListing(int listingId)
+    public string? Display(int listingId)
     {
+        AnsiConsole.Clear();
+        
         var prompt = new SelectionPrompt<string>()
             .Title("[bold]What would you like to edit?:[/]")
             .WrapAround()
@@ -75,5 +76,22 @@ public class EditListingView
                 ListingService.EditListingInDb("Status", status, listingId);
                 break;
         }
+        
+        var choice = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title("Where would you like to go?")
+                .HighlightStyle(new Style(Color.Yellow))
+                .AddChoices("Edit more from this listing", "Go back to my listings", "Go back to profile",
+                    "Go back to main menu", "Quit"));
+
+        return choice switch
+        {
+            "Edit more from this listing" => "EditListingView",
+            "Go back to my listings" => "MyListingsView",
+            "Go back to profile" => "OrganizerView",
+            "Go back to main menu" => "HomeView",
+            _ => null // Quit
+        };
+        //TODO: Add generic method for this?
     }
 }
