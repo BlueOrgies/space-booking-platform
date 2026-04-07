@@ -17,12 +17,13 @@ public class MyListingsView(AppState state)
             new SelectionPrompt<string>()
                 .Title("\nWhere would you like to go?")
                 .HighlightStyle(new Style(Color.Yellow))
-                .AddChoices("Go back to profile",
+                .AddChoices("Edit listing", "Go back to profile",
                     "Go back to main menu", "Quit"));
         if (state.isOrganizer)
         {
             return choice switch
             {
+                "Edit listing" => "EditListing",
                 "Go back to profile" => "OrganizerView",
                 "Go back to main menu" => "HomeView",
                 _ => null // Quit
@@ -30,6 +31,7 @@ public class MyListingsView(AppState state)
         }
         return choice switch
         {
+            "Edit listing" => "EditListing",
             "Go back to profile" => "ProfileView",
             "Go back to main menu" => "HomeView",
             _ => null // Quit
