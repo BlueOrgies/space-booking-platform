@@ -32,9 +32,9 @@ public class OrganizerView(AppState state)
 
         return choice switch
         {
-            "View my listings" => "MyListingsView",
-            "View my bookings" => "MyBookingsView",
-            "View my reviews" => "MyReviewsView",
+            "View my listings" => "MyListings",
+            "View my bookings" => "MyBookings",
+            "View my reviews" => "MyReviews",
             "Go back to main menu" => "HomeView",
             _ => null // Quit
         };
