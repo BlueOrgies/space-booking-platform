@@ -4,13 +4,17 @@ using Spectre.Console;
 
 namespace space_booking_platform.Views;
 
-public class CreateListingView
+public class CreateListingView(AppState state)
 {
-    public static void CreateListing()
+    public string? Display()
     {
+        if (!state.isOrganizer)
+        {
+            AnsiConsole.MarkupLine("[bold underline]You are not an organizer and cannot create a listing[/]");
+        }
         AnsiConsole.MarkupLine("[bold green]=== Create a listing ===[/]\n");
         
-        var prompt = new SelectionPrompt<string>() //The prompts look the same but this has an extra space between title and choices 
+        var prompt = new SelectionPrompt<string>() //Todo: Fix space between title and choices?
             .Title("[bold]Category:[/]")
             .AddChoices(Enum.GetNames<ListingCategory>());
         string category = AnsiConsole.Prompt(prompt);
@@ -53,5 +57,21 @@ public class CreateListingView
            duration, durationType, capacity, capacityUnitEnum, price, priceUnitEnum);
         
         ListingService.AddListingToTable(listing);
+        
+        var choice = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title("Where would you like to go?")
+                .HighlightStyle(new Style(Color.Yellow))
+                .AddChoices("Create another listing", "Go to my listings", "Go to profile",
+                    "Go to main menu", "Quit"));
+
+        return choice switch
+        {
+            "Create another listing" => "CreateListingView",
+            "Go back to my listings" => "MyListingsView",
+            "Go back to profile" => "OrganizerView",
+            "Go back to main menu" => "HomeView",
+            _ => null // Quit
+        };
     }
 }
