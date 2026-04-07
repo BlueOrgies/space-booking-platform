@@ -34,7 +34,7 @@ public class ListingService
 
         myConn.Close();
     }
-    
+
     public static void EditListingInDb(string edit, string newData, int listingId)
     {
         SQLiteConnection myConn = Database.ConnectToDb();
@@ -44,10 +44,10 @@ public class ListingService
         command.ExecuteNonQuery();
         myConn.Close();
         AnsiConsole.MarkupLine("[bold]\nListing updated.[/]");
-        
+
         myConn.Close();
     }
-    
+
     public static void ShowOverview(string sql)
     {
         bool exists = false;
@@ -56,14 +56,14 @@ public class ListingService
         var table = new Table()
             .RoundedBorder()
             .BorderColor(Color.Grey);
-  
+
         table.AddColumn("[bold]Category[/]", col => col.LeftAligned());
         table.AddColumn("[bold]Title[/]", col => col.LeftAligned());
         table.AddColumn("[bold]Origin[/]", col => col.LeftAligned());
         table.AddColumn("[bold]Destination[/]", col => col.LeftAligned());
         //table.AddColumn("[bold]Date[/]", col => col.LeftAligned());
         table.AddColumn("[bold]Status[/]", col => col.LeftAligned());
-        
+
         using SQLiteCommand readThis = new SQLiteCommand(sql, myConn);
         using (SQLiteDataReader dataReader = readThis.ExecuteReader())
         {
@@ -75,14 +75,15 @@ public class ListingService
                 string? destination = dataReader["destination"].ToString();
                 //string? date = dataReader["date"].ToString(); //TODO: not valid DateTime format 
                 string? status = dataReader["listingStatus"].ToString();
-  
+
                 table.AddRow(category, title, origin, destination, status);
 
                 exists = true;
             }
         }
+
         AnsiConsole.Write(table);
-        
+
         if (!exists)
         {
             AnsiConsole.MarkupLine("There is nothing to show.");
@@ -90,7 +91,7 @@ public class ListingService
 
         myConn.Close();
     }
-    
+
     //TODO: Edit this to show by UUID when this is implemented
     public static string ShowListings(int listingId)
     {
@@ -99,7 +100,7 @@ public class ListingService
 
         return sql;
     }
-    
+
     //TODO: Edit this to show by UUID 
     public static string ShowBookings(int bookingId)
     {
@@ -114,7 +115,7 @@ public class ListingService
     {
         //TODO: Change sql to show only logged in users listing 
         string sql = "SELECT * FROM listings";
-        
+
         SQLiteConnection myConn = Database.ConnectToDb();
 
         using SQLiteCommand readThis = new SQLiteCommand(sql, myConn);
@@ -140,7 +141,7 @@ public class ListingService
                 var grid = new Grid();
                 grid.AddColumn();
                 grid.AddColumn();
-                
+
                 grid.AddRow("", "");
                 grid.AddRow("Category:", $"{category}");
                 grid.AddRow("Title:", $"{title}");
@@ -158,6 +159,36 @@ public class ListingService
 
             }
         }
+
         myConn.Close();
     }
+
+    public static int ChooseListing()
+    {
+        //TODO: Change sql to only include listings from current user 
+        var listings = new Dictionary<string, int>();
+
+        string sql = "SELECT * FROM listings ";
+        SQLiteConnection myConn = Database.ConnectToDb();
+
+        using SQLiteCommand readThis = new SQLiteCommand(sql, myConn);
+        using SQLiteDataReader dataReader = readThis.ExecuteReader();
+        while (dataReader.Read())
+        {
+            string title = dataReader["title"].ToString();
+            int listingId = Convert.ToInt32(dataReader["listingID"]);
+            listings.Add(title, listingId);
+        }
+        myConn.Close();
+        
+        var choice = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title("Which listing would you like to edit?")
+                .HighlightStyle(new Style(Color.Yellow))
+                .AddChoices(listings.Keys));
+
+        return listings.GetValueOrDefault(choice, -1);
+    }
 }
+
+        
