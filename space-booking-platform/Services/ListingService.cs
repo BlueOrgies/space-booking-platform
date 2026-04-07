@@ -48,5 +48,65 @@ public class ListingService
         myConn.Close();
     }
     
+    public static void ShowOverview(string sql)
+    {
+        bool exists = false;
+        SQLiteConnection myConn = Database.ConnectToDb();
+
+        var table = new Table()
+            .RoundedBorder()
+            .BorderColor(Color.Grey);
+  
+        table.AddColumn("Category");
+        table.AddColumn("Title");
+        table.AddColumn("Origin");
+        table.AddColumn("Destination");
+        //table.AddColumn("Date");
+        table.AddColumn("Status");
+        
+        using SQLiteCommand readThis = new SQLiteCommand(sql, myConn);
+        using (SQLiteDataReader dataReader = readThis.ExecuteReader())
+        {
+            while (dataReader.Read())
+            {
+                string? category = dataReader["type"].ToString();
+                string? title = dataReader["title"].ToString();
+                string? origin = dataReader["origin"].ToString();
+                string? destination = dataReader["destination"].ToString();
+                //string? date = dataReader["date"].ToString(); //TODO: not valid DateTime format 
+                string? status = dataReader["listingStatus"].ToString();
+  
+                table.AddRow(category, title, origin, destination, status);
+
+                exists = true;
+            }
+        }
+        AnsiConsole.Write(table);
+        
+        if (!exists)
+        {
+            AnsiConsole.MarkupLine("There is nothing to show.");
+        }
+
+        myConn.Close();
+    }
     
+    //TODO: Edit this to show by UUID when this is implemented
+    public static string ShowListings(int listingId)
+    {
+        string sql = "SELECT * FROM listings " +
+                     $"WHERE listingID = '{listingId}' ";
+
+        return sql;
+    }
+    
+    //TODO: Edit this to show by UUID 
+    public static string ShowBookings(int bookingId)
+    {
+        string sql = "SELECT * FROM bookings " +
+                     "JOIN listings ON listings.listingID = bookings.listingID " +
+                     $"WHERE bookingID = '{bookingId}' ";
+
+        return sql;
+    }
 }
