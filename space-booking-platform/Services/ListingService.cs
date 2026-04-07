@@ -20,7 +20,7 @@ public class ListingService
             $"'{listing.TransportMethod}'," +
             $"'{listing.Origin}'," +
             $"'{listing.Destination}'," +
-            $"'{listing.Date.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)}'," +
+            $"'{listing.Date.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)}'," +
             $"'{listing.Duration}'," +
             $"'{listing.DurationType}'," +
             $"'{listing.Capacity}'," +
@@ -94,10 +94,9 @@ public class ListingService
     }
 
     //TODO: Edit this to show by UUID when this is implemented
-    public static string ShowListings(int listingId)
+    public static string ShowListings()
     {
-        string sql = "SELECT * FROM listings " +
-                     $"WHERE listingID = '{listingId}' ";
+        string sql = "SELECT * FROM listings ";
 
         return sql;
     }
