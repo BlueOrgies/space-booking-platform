@@ -6,14 +6,11 @@ namespace space_booking_platform.Views;
 
 public class EditListingView(AppState state)
 {
-    //TODO: Create a method to choose listings from a list and return listingId
     public string? Display()
     {
-        AnsiConsole.Clear();
-
-        int listingId = AnsiConsole.Ask<int>("Listing ID: ");
+        int listingId = ListingService.ChooseListing();
         
-        //TODO: Add if state.CurrentUser == user who made listing 
+        AnsiConsole.Clear();
         
         var prompt = new SelectionPrompt<string>()
             .Title("[bold]What would you like to edit?:[/]")
