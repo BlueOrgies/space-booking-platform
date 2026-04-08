@@ -67,7 +67,7 @@ public class RegisterView(AppState state)
             Thread.Sleep(1000);
             return "Home";
         }
-        catch (InvalidOperationException ex)
+        catch (Exception ex) when (ex is InvalidOperationException || ex is ArgumentException)
         {
             AnsiConsole.WriteLine();
             AnsiConsole.MarkupLine($"[red]{ex.Message}[/]");
