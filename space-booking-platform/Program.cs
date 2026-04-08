@@ -4,6 +4,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        Console.WriteLine("Hello, World!");
+        ViewHandler vh = new ViewHandler();
+        vh.Run("Home");
     }
 }
