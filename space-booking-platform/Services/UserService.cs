@@ -54,6 +54,24 @@ public class UserService
         reader.Read();
         return MapUser(reader);
     }
+
+    public User? Login(string username, string password)
+    {
+        string hashedPassword = HashPassword(password);
+
+        using SQLiteConnection conn = Database.ConnectToDb();
+        using SQLiteCommand cmd = new SQLiteCommand(
+            "SELECT * FROM users WHERE username = @username AND password = @password", conn);
+
+        cmd.Parameters.AddWithValue("@username", username);
+        cmd.Parameters.AddWithValue("@password", hashedPassword);
+
+        using SQLiteDataReader reader = cmd.ExecuteReader();
+        if (!reader.Read())
+            return null;
+
+        return MapUser(reader);
+    }
     private static User MapUser(SQLiteDataReader reader) => new User
     {
         UserId = Convert.ToInt32(reader["UUID"]),
