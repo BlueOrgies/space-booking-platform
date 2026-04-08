@@ -72,6 +72,22 @@ public class UserService
 
         return MapUser(reader);
     }
+
+    public User? GetById(int id)
+    {
+        using SQLiteConnection conn = Database.ConnectToDb();
+        using SQLiteCommand cmd = new SQLiteCommand(
+            "SELECT * FROM users WHERE UUID = @id", conn);
+
+        cmd.Parameters.AddWithValue("@id", id);
+
+        using SQLiteDataReader reader = cmd.ExecuteReader();
+        if (!reader.Read())
+            return null;
+
+        return MapUser(reader);
+    }
+
     private static User MapUser(SQLiteDataReader reader) => new User
     {
         UserId = Convert.ToInt32(reader["UUID"]),
