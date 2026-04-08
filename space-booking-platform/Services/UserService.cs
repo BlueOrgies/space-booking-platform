@@ -13,7 +13,7 @@ public class UserService
         return Convert.ToHexString(hash).ToLowerInvariant();
     }
 
-    public User Register(string username, string password)
+    public User Register(string username, string password, int weight, int height, bool isOrganizer)
     {
         if (string.IsNullOrWhiteSpace(username))
             throw new ArgumentException("Username cannot be empty.");
@@ -40,9 +40,9 @@ public class UserService
         {
             insertCmd.Parameters.AddWithValue("@username", username);
             insertCmd.Parameters.AddWithValue("@password", hashedPassword);
-            insertCmd.Parameters.AddWithValue("@weight", 0);
-            insertCmd.Parameters.AddWithValue("@height", 0);
-            insertCmd.Parameters.AddWithValue("@isOrganizer", 0);
+            insertCmd.Parameters.AddWithValue("@weight", weight);
+            insertCmd.Parameters.AddWithValue("@height", height);
+            insertCmd.Parameters.AddWithValue("@isOrganizer", isOrganizer ? 1 : 0);
             insertCmd.Parameters.AddWithValue("@createdAt", now.ToString("o"));
             insertCmd.ExecuteNonQuery();
         }
