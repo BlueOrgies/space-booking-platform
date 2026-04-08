@@ -21,8 +21,7 @@ public class HomeView(AppState state)
         {
             "Log in"             => "Login",
             "Register"          => "Register",
-            "Log out"            => "Logout",
-            _                   => null 
+            "Log out"            => null
         };
     }
 }
