@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Headers;
+using space_booking_platform.Views;
 
 namespace space_booking_platform;
 
@@ -16,9 +17,10 @@ public class ViewHandler
         "Booking"           => NotImplemented("BookingView"),
         "ProfileView"       => NotImplemented("ProfileView"),
         "MyBookings"        => NotImplemented("MyBookingsView"),
-        "Organizer"         => NotImplemented("OrganizerView"),
-        "CreateListing"     => NotImplemented("CreateListingView"),
-        "EditListing"       => NotImplemented("EditListingView"),
+        "MyListings"        => new MyListingsView(_state).Display(),
+        "OrganizerView"     => new OrganizerView(_state).Display(),
+        "CreateListing"     => new CreateListingView(_state).Display(),
+        "EditListing"       => new EditListingView(_state).Display(),
         "Review"            => NotImplemented("ReviewView"),
         _ => throw new ArgumentException($"Unknown view: {viewName}")
     };
