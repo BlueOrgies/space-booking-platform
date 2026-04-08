@@ -1,4 +1,6 @@
-﻿namespace space_booking_platform;
+﻿using space_booking_platform.Views;
+
+namespace space_booking_platform;
 
 public class ViewHandler
 {
@@ -13,7 +15,7 @@ public class ViewHandler
     
     private string? Dispatch(string viewName) => viewName switch
     {
-        "Home"              => NotImplemented("HomeView"),
+        "Home"              => new HomeView(_state).Display(),
         "Register"          => NotImplemented("RegisterView"),
         "Login"             => NotImplemented("Login"),
         "BrowseListing"     => NotImplemented("BrowseListingView"),
