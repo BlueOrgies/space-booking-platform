@@ -1,10 +1,15 @@
-﻿using System.Net.Http.Headers;
-
-namespace space_booking_platform;
+﻿namespace space_booking_platform;
 
 public class ViewHandler
 {
     private readonly AppState _state = new();
+
+    public void Run(string startView)
+    {
+        string? current = startView;
+        while (current != null)
+            current = Dispatch(current);
+    }
     
     private string? Dispatch(string viewName) => viewName switch
     {
