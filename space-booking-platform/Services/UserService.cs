@@ -13,6 +13,7 @@ public class UserService
         return Convert.ToHexString(hash).ToLowerInvariant();
     }
 
+
     public User Register(string username, string password, int weight, int height, bool isOrganizer)
     {
         if (string.IsNullOrWhiteSpace(username))
