@@ -7,13 +7,13 @@ public class HomeView(AppState state)
     public string? Display()
     {
         AnsiConsole.Clear();
-        AnsiConsole.MarkupLine("[green]✓ Build completed successfully[/]");
+        AnsiConsole.Write(new Rule("[bold green]Home[/]").RuleStyle("green"));
 
         var choices = new List<string> { "Log in", "Register", "Log out"};
 
         var choice = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
-                .Title("Where do you want to go?")
+                .Title("Welcome!")
                 .HighlightStyle(new Style(Color.Yellow))
                 .AddChoices(choices));
         
