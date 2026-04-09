@@ -1,4 +1,4 @@
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using space_booking_platform.Views;
 
 namespace space_booking_platform;
@@ -17,8 +17,8 @@ public class ViewHandler
     private string? Dispatch(string viewName) => viewName switch
     {
         "Home"              => new HomeView(_state).Display(),
-        "Register"          => NotImplemented("RegisterView"),
-        "Login"             => NotImplemented("Login"),
+        "Register"          => new RegisterView(_state).Display(),
+        "Login"             => new LoginView(_state).Display(),
         "BrowseListing"     => NotImplemented("BrowseListingView"),
         "SearchListing"     => NotImplemented("SearchView"),
         "Booking"           => NotImplemented("BookingView"),
