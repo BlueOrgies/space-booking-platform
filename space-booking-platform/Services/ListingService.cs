@@ -5,7 +5,7 @@ using Spectre.Console;
 
 namespace space_booking_platform.Services;
 
-public class ListingService
+public class ListingService(AppState state)
 {
     public static void AddListingToTable(Listings listing)
     {
@@ -93,29 +93,27 @@ public class ListingService
         myConn.Close();
     }
 
-    //TODO: Edit this to show by UUID when this is implemented
-    public static string ShowListings()
+    public string ShowUserListings()
     {
-        string sql = "SELECT * FROM listings ";
+        string sql = "SELECT * FROM listings " +
+                     "JOIN users on users.UUID = listings.UUID " +
+                     $"WHERE users.username = '{state.currentUser}'";
 
         return sql;
     }
 
-    //TODO: Edit this to show by UUID 
-    public static string ShowBookings(int bookingId)
+    public string ShowUserBookings()
     {
         string sql = "SELECT * FROM bookings " +
                      "JOIN listings ON listings.listingID = bookings.listingID " +
-                     $"WHERE bookingID = '{bookingId}' ";
+                     "JOIN users ON users.UUID = bookings.UUID " +
+                     $"WHERE users.username = '{state.currentUser}' ";
 
         return sql;
     }
 
-    public static void ShowMyListings()
+    public void ShowMyListingsOrBookings(string sql)
     {
-        //TODO: Change sql to show only logged in users listing 
-        string sql = "SELECT * FROM listings";
-
         SQLiteConnection myConn = Database.ConnectToDb();
 
         using SQLiteCommand readThis = new SQLiteCommand(sql, myConn);
