@@ -1,2 +1,10 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿namespace space_booking_platform;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        ViewHandler vh = new ViewHandler();
+        vh.Run("Home");
+    }
+}

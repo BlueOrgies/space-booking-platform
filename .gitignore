@@ -19,6 +19,9 @@ packages/
 *.db
 *.db-shm
 *.db-wal
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
 
 # Environment & secrets
 appsettings.Local.json
@@ -31,3 +34,4 @@ Desktop.ini
 
 # macOS
 .DS_Store
+space-booking-platform/SpaceBookings.sqlite
