@@ -36,6 +36,7 @@ public abstract class Database
         
         sql = "CREATE TABLE IF NOT EXISTS listings(" +
                      "listingID INTEGER PRIMARY KEY," +
+                     "UUID INTEGER NOT NULL," +
                      "type TEXT NOT NULL," +
                      "title TEXT NOT NULL," +
                      "description TEXT NOT NULL," +
@@ -50,7 +51,8 @@ public abstract class Database
                      "price INTEGER NOT NULL," +
                      "priceUnit TEXT NOT NULL," +
                      "createdAt DATETIME NOT NULL," +
-                     "listingStatus TEXT NOT NULL)";
+                     "listingStatus TEXT NOT NULL," +
+                     "FOREIGN KEY (UUID) REFERENCES users(UUID))";
         
         
         command = new SQLiteCommand(sql, myConn);
