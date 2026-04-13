@@ -29,7 +29,7 @@ public class HomeView(AppState state)
         
         return choice switch
         {
-            "Log in"             => "Login",
+            "Login"             => "Login",
             "Register"          => "Register",
             "BrowseListing"     => "BrowseListing",
             "SearchListing"     => "SearchListing",
