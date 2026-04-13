@@ -31,7 +31,12 @@ public class HomeView(AppState state)
         {
             "Log in"             => "Login",
             "Register"          => "Register",
-            "Log out"            => null
+            "BrowseListing"     => "BrowseListing",
+            "SearchListing"     => "SearchListing",
+            "ProfileView"       => "ProfileView",
+            "OrganizerView"     => "OrganizerView",
+            "Logout"            => "Logout",
+            _                   => null // quit
         };
     }
 }
