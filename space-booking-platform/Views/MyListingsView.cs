@@ -11,7 +11,7 @@ public class MyListingsView(AppState state)
         AnsiConsole.Clear();
         AnsiConsole.MarkupLine("[bold green]My listings[/]");
         
-        listingService ls = new listingService(state);
+        ListingService ls = new ListingService(state);
         
         ls.ShowMyListingsOrBookings(ls.ShowUserBookings());
 

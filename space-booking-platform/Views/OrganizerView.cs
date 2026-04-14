@@ -11,7 +11,7 @@ public class OrganizerView(AppState state)
         //TODO: Add name of user and average rating 
         //if (state.isOrganizer)
         {
-            listingService ls = new listingService(state);
+            ListingService ls = new ListingService(state);
             AnsiConsole.MarkupLine("[bold green]=== *Users* profile. [/]===" +
                                    "\nAverage rating: *Average rating from db*");
 

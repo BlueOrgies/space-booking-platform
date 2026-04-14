@@ -5,7 +5,7 @@ using Spectre.Console;
 
 namespace space_booking_platform.Services;
 
-public class listingService(AppState state)
+public class ListingService(AppState state)
 {
     public void AddListingToTable(Listings listing)
     {
