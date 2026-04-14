@@ -5,7 +5,7 @@ namespace space_booking_platform.Services;
 
 public class ReviewService
 {
-    public Review GetReview(int id)
+    public Review? GetReview(int id)
     {
         SQLiteConnection myConn = Database.ConnectToDb();
         
@@ -13,6 +13,10 @@ public class ReviewService
         command.Parameters.AddWithValue("@id", id);
         
         using SQLiteDataReader reader = command.ExecuteReader();
+        
+        if (!reader.Read())
+            return null;
+        
         return MapReview(reader);
     }
     
