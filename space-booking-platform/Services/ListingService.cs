@@ -95,11 +95,10 @@ public class ListingService(AppState state)
     }
 
     public string ShowUserListings()
-    { //TODO: Check how this looks 
+    {
         string sql = "SELECT * FROM listings " +
-                     "JOIN users on users.UUID = listings.UUID " +
-                     $"WHERE users.username = '{state.currentUser}' " +
-                     $"ORDER BY listings.date " +
+                     $"WHERE listings.UUID = '{state.currentUUID}' " +
+                     "ORDER BY listings.date " +
                      "LIMIT 5";
 
         return sql;
@@ -109,10 +108,9 @@ public class ListingService(AppState state)
     {
         string sql = "SELECT * FROM bookings " +
                      "JOIN listings ON listings.listingID = bookings.listingID " +
-                     "JOIN users ON users.UUID = bookings.UUID " +
-                     $"WHERE users.username = '{state.currentUser}' " +
-                     $"ORDER BY listings.date " +
-                     $"LIMIT 5";
+                     $"WHERE listings.UUID = '{state.currentUUID}' " +
+                     "ORDER BY listings.date " +
+                     "LIMIT 5";
 
         return sql;
     }
