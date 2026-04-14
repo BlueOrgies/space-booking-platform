@@ -8,22 +8,17 @@ public class OrganizerView(AppState state)
     public string? Display()
     {
         AnsiConsole.Clear();
-        //TODO: Add name of user and average rating 
-        //if (state.isOrganizer)
-        {
-            ListingService ls = new ListingService(state);
-            AnsiConsole.MarkupLine("[bold green]=== *Users* profile. [/]===" +
-                                   "\nAverage rating: *Average rating from db*");
+        
+        ListingService ls = new ListingService(state);
+        AnsiConsole.MarkupLine($"[bold green]=== {state.currentUser}s profile. [/]===");
 
-            AnsiConsole.MarkupLine("\n[green]My listings[/]");
-            ls.ShowOverview(ls.ShowUserListings());
-            AnsiConsole.MarkupLine("\n[green]My bookings[/]");
-            ls.ShowOverview(ls.ShowUserBookings());
-            AnsiConsole.MarkupLine("\n[green]My reviews[/]");
-        }
+        AnsiConsole.MarkupLine("\n[green]My listings[/]");
+        ls.ShowOverview(ls.ShowUserListings());
+        AnsiConsole.MarkupLine("\n[green]My reviews[/]");
+        //TODO: Fix this when reviews is made 
 
         var choices = new List<string>
-            { "View my listings", "View my bookings", "View my reviews", "Go back to main menu", "Quit" };
+            { "View my listings", "View my reviews", "Go back to main menu", "Quit" };
 
         var choice = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
@@ -34,11 +29,9 @@ public class OrganizerView(AppState state)
         return choice switch
         {
             "View my listings" => "MyListings",
-            "View my bookings" => "MyBookings",
             "View my reviews" => "MyReviews",
             "Go back to main menu" => "HomeView",
             _ => null // Quit
         };
-        //TODO: Add these views? 
     }
 }
