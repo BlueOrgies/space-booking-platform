@@ -8,7 +8,7 @@ public class EditListingView(AppState state)
 {
     public string? Display()
     {
-        int listingId = Services.ListingService.ChooseListing();
+        int listingId = state.currentListingID;
         ListingService listingService = new ListingService(state);
         
         AnsiConsole.Clear();
