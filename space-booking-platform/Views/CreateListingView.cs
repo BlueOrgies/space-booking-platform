@@ -13,6 +13,8 @@ public class CreateListingView(AppState state)
             AnsiConsole.MarkupLine("[bold underline]You are not an organizer and cannot create a listing[/]");
         }
         AnsiConsole.MarkupLine("[bold green]=== Create a listing ===[/]\n");
+
+        int uuid = state.currentUUID;
         
         var prompt = new SelectionPrompt<string>() //Todo: Fix space between title and choices?
             .Title("[bold]Category:[/]")
@@ -53,7 +55,7 @@ public class CreateListingView(AppState state)
         
         decimal price = AnsiConsole.Ask<decimal>($"[bold]Price[/] ({priceUnitEnum}): ");
 
-        Listings listing = new Listings(categoryEnum, title, description, transportMethod, origin, destination, date,
+        Listings listing = new Listings(uuid, categoryEnum, title, description, transportMethod, origin, destination, date,
            duration, durationType, capacity, capacityUnitEnum, price, priceUnitEnum);
         
         ListingService.AddListingToTable(listing);

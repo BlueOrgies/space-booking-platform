@@ -2,6 +2,8 @@ namespace space_booking_platform.Models;
 
 public class Listings
 {
+    private int _uuid;
+    
     private ListingCategory _category;
 
     private string _title;
@@ -122,11 +124,18 @@ public class Listings
         set => _listingStatus = value;
     }
 
-    public Listings(ListingCategory category, string title, string description, 
+    public int Uuid
+    {
+        get => _uuid;
+        set => _uuid = value;
+    }
+
+    public Listings(int uuid, ListingCategory category, string title, string description, 
         string transportMethod, string origin, string destination, DateTime date, int duration,
         string durationType, int capacity, ListingCapacityUnit capacityUnit, decimal price, 
         ListingPriceUnit priceUnit)
     {
+        _uuid = uuid;
         _category = category;
         _title = title;
         _description = description;
