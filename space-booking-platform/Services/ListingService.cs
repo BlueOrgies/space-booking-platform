@@ -14,7 +14,7 @@ public class ListingService(AppState state)
         string sql =
             "INSERT INTO listings(uuid, type, title, description, transportMethod, origin, destination, date, " +
             "duration, durationType, capacity, capacityUnit, price, priceUnit, createdAt, listingStatus) VALUES (" +
-            $"'{listing.Uuid}'" +
+            $"'{listing.Uuid}'," +
             $"'{listing.Category}'," +
             $"'{listing.Title}'," +
             $"'{listing.Description}'," +
@@ -166,32 +166,6 @@ public class ListingService(AppState state)
         myConn.Close();
     }
 
-    public static int ChooseListing()
-    {
-        //TODO: Change sql to only include listings from current user 
-        var listings = new Dictionary<string, int>();
-
-        string sql = "SELECT * FROM listings ";
-        SQLiteConnection myConn = Database.ConnectToDb();
-
-        using SQLiteCommand readThis = new SQLiteCommand(sql, myConn);
-        using SQLiteDataReader dataReader = readThis.ExecuteReader();
-        while (dataReader.Read())
-        {
-            string title = dataReader["title"].ToString();
-            int listingId = Convert.ToInt32(dataReader["listingID"]);
-            listings.Add(title, listingId);
-        }
-        myConn.Close();
-        
-        var choice = AnsiConsole.Prompt(
-            new SelectionPrompt<string>()
-                .Title("Which listing would you like to edit?")
-                .HighlightStyle(new Style(Color.Yellow))
-                .AddChoices(listings.Keys));
-
-        return listings.GetValueOrDefault(choice, -1);
-    }
 }
 
         
