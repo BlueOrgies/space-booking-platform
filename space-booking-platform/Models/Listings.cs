@@ -2,154 +2,38 @@ namespace space_booking_platform.Models;
 
 public class Listings
 {
-    private int _uuid;
-    
-    private ListingCategory _category;
+    public int ListingId { get; set; }
+    public int UUID { get; set; }
+    public ListingCategory Category { get; set; }
 
-    private string _title;
+    public string Title { get; set; }
 
-    private string _description;
+    public string Description { get; set; }
 
-    private string _transportMethod;
+    public string TransportMethod { get; set; }
 
-    private string _origin;
+    public string Origin { get; set; }
 
-    private string _destination;
+    public string Destination { get; set; }
 
-    private DateTime _date;
+    public DateTime Date { get; set; }
 
-    private int _duration;
+    public int Duration { get; set; }
 
-    private string _durationType;
+    public string DurationType { get; set; }
 
-    private int _capacity;
+    public int Capacity { get; set; }
 
-    private ListingCapacityUnit _capacityUnit;
+    public ListingCapacityUnit CapacityUnit { get; set; }
 
-    private decimal _price;
+    public decimal Price { get; set; }
 
-    private ListingPriceUnit _priceUnit;
+    public ListingPriceUnit PriceUnit { get; set; }
 
-    private DateTime _createdAt;
+    public DateTime CreatedAt { get; set; }
 
-    private ListingStatus _listingStatus;
+    public ListingStatus ListingStatus { get; set; }
 
-    public ListingCategory Category
-    {
-        get => _category;
-        set => _category = value;
-    }
+    public int Uuid { get; set; }
 
-    public string Title
-    {
-        get => _title;
-        set => _title = value;
-    }
-
-    public string Description
-    {
-        get => _description;
-        set => _description = value;
-    }
-
-    public string TransportMethod
-    {
-        get => _transportMethod;
-        set => _transportMethod = value;
-    }
-
-    public string Origin
-    {
-        get => _origin;
-        set => _origin = value;
-    }
-
-    public string Destination
-    {
-        get => _destination;
-        set => _destination = value;
-    }
-
-    public DateTime Date
-    {
-        get => _date;
-        set => _date = value;
-    }
-
-    public int Duration
-    {
-        get => _duration;
-        set => _duration = value;
-    }
-
-    public string DurationType
-    {
-        get => _durationType;
-        set => _durationType = value;
-    }
-
-    public int Capacity
-    {
-        get => _capacity;
-        set => _capacity = value;
-    }
-
-    public ListingCapacityUnit CapacityUnit
-    {
-        get => _capacityUnit;
-        set => _capacityUnit = value;
-    }
-
-    public decimal Price
-    {
-        get => _price;
-        set => _price = value;
-    }
-
-    public ListingPriceUnit PriceUnit
-    {
-        get => _priceUnit;
-        set => _priceUnit = value;
-    }
-
-    public DateTime CreatedAt
-    {
-        get => _createdAt;
-        set => _createdAt = value;
-    }
-
-    public ListingStatus ListingStatus
-    {
-        get => _listingStatus;
-        set => _listingStatus = value;
-    }
-
-    public int Uuid
-    {
-        get => _uuid;
-        set => _uuid = value;
-    }
-
-    public Listings(int uuid, ListingCategory category, string title, string description, 
-        string transportMethod, string origin, string destination, DateTime date, int duration,
-        string durationType, int capacity, ListingCapacityUnit capacityUnit, decimal price, 
-        ListingPriceUnit priceUnit)
-    {
-        _uuid = uuid;
-        _category = category;
-        _title = title;
-        _description = description;
-        _transportMethod = transportMethod;
-        _origin = origin;
-        _destination = destination;
-        _date = date;
-        _duration = duration;
-        _durationType = durationType;
-        _capacity = capacity;
-        _capacityUnit = capacityUnit;
-        _price = price;
-        _priceUnit = priceUnit;
-        _createdAt = DateTime.Now;
-        _listingStatus = ListingStatus.Active;
-    }
 }
