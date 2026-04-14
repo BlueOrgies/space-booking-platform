@@ -1,7 +1,8 @@
 namespace space_booking_platform.Models;
 
-public class Reviews
+public class Review
 {
+    public int ReviewId { get; set; }
     public int UUID { get; set; }
     public int BookingID { get; set; }
     public int Rating  { get; set; }
