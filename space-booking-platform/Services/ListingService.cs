@@ -20,14 +20,14 @@ public class ListingService(AppState state)
             $"'{listing.TransportMethod}'," +
             $"'{listing.Origin}'," +
             $"'{listing.Destination}'," +
-            $"'{listing.Date.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)}'," +
+            $"'{listing.Date:o}'," +
             $"'{listing.Duration}'," +
             $"'{listing.DurationType}'," +
             $"'{listing.Capacity}'," +
             $"'{listing.CapacityUnit}'," +
             $"'{listing.Price}'," +
             $"'{listing.PriceUnit}'," +
-            $"'{listing.CreatedAt}'," +
+            $"'{listing.CreatedAt:o}'," +
             $"'{listing.ListingStatus}')";
 
         SQLiteCommand command = new SQLiteCommand(sql, myConn);
