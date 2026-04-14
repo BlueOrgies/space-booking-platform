@@ -5,15 +5,16 @@ using Spectre.Console;
 
 namespace space_booking_platform.Services;
 
-public class ListingService(AppState state)
+public class listingService(AppState state)
 {
-    public static void AddListingToTable(Listings listing)
+    public void AddListingToTable(Listings listing)
     {
         SQLiteConnection myConn = Database.ConnectToDb();
 
         string sql =
-            "INSERT INTO listings(type, title, description, transportMethod, origin, destination, date, " +
+            "INSERT INTO listings(uuid, type, title, description, transportMethod, origin, destination, date, " +
             "duration, durationType, capacity, capacityUnit, price, priceUnit, createdAt, listingStatus) VALUES (" +
+            $"'{listing.Uuid}'" +
             $"'{listing.Category}'," +
             $"'{listing.Title}'," +
             $"'{listing.Description}'," +
@@ -36,7 +37,7 @@ public class ListingService(AppState state)
         myConn.Close();
     }
 
-    public static void EditListingInDb(string edit, string newData, int listingId)
+    public void EditListingInDb(string edit, string newData, int listingId)
     {
         SQLiteConnection myConn = Database.ConnectToDb();
 
@@ -49,7 +50,7 @@ public class ListingService(AppState state)
         myConn.Close();
     }
 
-    public static void ShowOverview(string sql)
+    public void ShowOverview(string sql)
     {
         bool exists = false;
         SQLiteConnection myConn = Database.ConnectToDb();
@@ -94,10 +95,12 @@ public class ListingService(AppState state)
     }
 
     public string ShowUserListings()
-    {
+    { //TODO: Check how this looks 
         string sql = "SELECT * FROM listings " +
                      "JOIN users on users.UUID = listings.UUID " +
-                     $"WHERE users.username = '{state.currentUser}'";
+                     $"WHERE users.username = '{state.currentUser}' " +
+                     $"ORDER BY listings.date " +
+                     "LIMIT 5";
 
         return sql;
     }
@@ -107,7 +110,9 @@ public class ListingService(AppState state)
         string sql = "SELECT * FROM bookings " +
                      "JOIN listings ON listings.listingID = bookings.listingID " +
                      "JOIN users ON users.UUID = bookings.UUID " +
-                     $"WHERE users.username = '{state.currentUser}' ";
+                     $"WHERE users.username = '{state.currentUser}' " +
+                     $"ORDER BY listings.date " +
+                     $"LIMIT 5";
 
         return sql;
     }

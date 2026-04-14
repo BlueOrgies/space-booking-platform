@@ -14,6 +14,8 @@ public class CreateListingView(AppState state)
         }
         AnsiConsole.MarkupLine("[bold green]=== Create a listing ===[/]\n");
 
+        listingService listingService = new listingService(state);
+
         int uuid = state.currentUUID;
         
         var prompt = new SelectionPrompt<string>() //Todo: Fix space between title and choices?
@@ -58,7 +60,7 @@ public class CreateListingView(AppState state)
         Listings listing = new Listings(uuid, categoryEnum, title, description, transportMethod, origin, destination, date,
            duration, durationType, capacity, capacityUnitEnum, price, priceUnitEnum);
         
-        ListingService.AddListingToTable(listing);
+        listingService.AddListingToTable(listing);
         
         var choice = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
