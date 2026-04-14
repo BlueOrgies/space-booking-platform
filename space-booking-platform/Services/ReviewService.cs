@@ -9,7 +9,9 @@ public class ReviewService
     {
         SQLiteConnection myConn = Database.ConnectToDb();
         
-        using SQLiteCommand command = new SQLiteCommand("SELECT * FROM reviews WHERE reviewID = @id", myConn);
+        using SQLiteCommand command = new SQLiteCommand("SELECT * FROM reviews JOIN bookings ON bookings.bookingID = reviews.bookingID " +
+                                                        "JOIN listings ON listings.listingID = bookings.listingID " +
+                                                        "WHERE reviewID = @id", myConn);
         command.Parameters.AddWithValue("@id", id);
         
         using SQLiteDataReader reader = command.ExecuteReader();
@@ -26,7 +28,9 @@ public class ReviewService
         UUID = Convert.ToInt32(reader["UUID"]),
         BookingID = Convert.ToInt32(reader["bookingID"]),
         Rating = Convert.ToInt32(reader["rating"]),
-        Comment = reader["weight"].ToString()!,
-        CreatedAt = DateTime.Parse(reader["createdAt"].ToString()!)
+        Comment = reader["comment"].ToString()!,
+        CreatedAt = DateTime.Parse(reader["createdAt"].ToString()!),
+        Type = reader["type"].ToString()!,
+        Title = reader["title"].ToString()!
     };
 }

@@ -8,4 +8,6 @@ public class Review
     public int Rating  { get; set; }
     public string Comment { get; set; }
     public DateTime CreatedAt { get; set; }
+    public string Type { get; set; }
+    public string Title  { get; set; }
 }
