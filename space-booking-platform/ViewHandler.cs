@@ -29,6 +29,7 @@ public class ViewHandler
         "CreateListing"     => new CreateListingView(_state).Display(),
         "EditListing"       => new EditListingView(_state).Display(),
         "Review"            => NotImplemented("ReviewView"),
+        "Logout"            => Logout(),
         _ => throw new ArgumentException($"Unknown view: {viewName}")
     };
 
@@ -37,6 +38,13 @@ public class ViewHandler
         Console.WriteLine($"{viewName} is not available yet.");
         Console.WriteLine($"Press any key to go back: ");
         Console.ReadKey();
+        return "Home";
+    }
+
+    private string? Logout()
+    {
+        _state.isLoggedIn = false;
+        _state.currentUser = null;
         return "Home";
     }
 }
