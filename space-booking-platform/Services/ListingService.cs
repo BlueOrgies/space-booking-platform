@@ -11,27 +11,29 @@ public class ListingService(AppState state)
     {
         SQLiteConnection myConn = Database.ConnectToDb();
 
-        string sql =
+        SQLiteCommand command = new SQLiteCommand(
             "INSERT INTO listings(uuid, type, title, description, transportMethod, origin, destination, date, " +
             "duration, durationType, capacity, capacityUnit, price, priceUnit, createdAt, listingStatus) VALUES (" +
-            $"'{listing.Uuid}'," +
-            $"'{listing.Category}'," +
-            $"'{listing.Title}'," +
-            $"'{listing.Description}'," +
-            $"'{listing.TransportMethod}'," +
-            $"'{listing.Origin}'," +
-            $"'{listing.Destination}'," +
-            $"'{listing.Date:o}'," +
-            $"'{listing.Duration}'," +
-            $"'{listing.DurationType}'," +
-            $"'{listing.Capacity}'," +
-            $"'{listing.CapacityUnit}'," +
-            $"'{listing.Price}'," +
-            $"'{listing.PriceUnit}'," +
-            $"'{listing.CreatedAt:o}'," +
-            $"'{listing.ListingStatus}')";
+            "@uuid, @type, @title, @description, @transportMethod, @origin, @destination, @date, @duration, @durationType, " +
+            "@capacity, @capacityUnit, @price, @priceUnit, @createdAt, @listingStatus)", myConn);
 
-        SQLiteCommand command = new SQLiteCommand(sql, myConn);
+        command.Parameters.AddWithValue("@uuid", listing.Uuid);
+        command.Parameters.AddWithValue("@type", listing.Category);
+        command.Parameters.AddWithValue("@title", listing.Title);
+        command.Parameters.AddWithValue("@description", listing.Description);
+        command.Parameters.AddWithValue("@transportMethod", listing.TransportMethod);
+        command.Parameters.AddWithValue("@origin", listing.Origin);
+        command.Parameters.AddWithValue("@destination", listing.Destination);
+        command.Parameters.AddWithValue("@date", listing.Date);
+        command.Parameters.AddWithValue("@duration", listing.Duration);
+        command.Parameters.AddWithValue("@durationType", listing.DurationType);
+        command.Parameters.AddWithValue("@capacity", listing.Capacity);
+        command.Parameters.AddWithValue("@capacityUnit", listing.CapacityUnit);
+        command.Parameters.AddWithValue("@price", listing.Price);
+        command.Parameters.AddWithValue("@priceUnit", listing.PriceUnit);
+        command.Parameters.AddWithValue("@createdAt", listing.CreatedAt);
+        command.Parameters.AddWithValue("@listingStatus", listing.ListingStatus);
+
         command.ExecuteNonQuery();
 
         myConn.Close();
