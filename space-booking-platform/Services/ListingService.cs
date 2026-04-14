@@ -76,29 +76,23 @@ public class ListingService(AppState state)
         table.AddColumn("[bold]Status[/]", col => col.LeftAligned());
 
         using SQLiteCommand readThis = new SQLiteCommand(sql, myConn);
-        using (SQLiteDataReader dataReader = readThis.ExecuteReader())
+        using SQLiteDataReader dataReader = readThis.ExecuteReader();
+        while (dataReader.Read())
         {
-            while (dataReader.Read())
-            {
-                string? category = dataReader["type"].ToString();
-                string? title = dataReader["title"].ToString();
-                string? origin = dataReader["origin"].ToString();
-                string? destination = dataReader["destination"].ToString();
-                string? date = dataReader["date"].ToString(); 
-                string? status = dataReader["listingStatus"].ToString();
+            Listings listing = MapListings(dataReader);
 
-                table.AddRow(category, title, origin, destination, date, status);
+            table.AddRow(listing.Category.ToString(), listing.Title, listing.Origin,
+                listing.Destination, listing.Date.ToString("o"), listing.ListingStatus.ToString());
 
-                exists = true;
-            }
+            exists = true;
         }
-
-        AnsiConsole.Write(table);
 
         if (!exists)
         {
             AnsiConsole.MarkupLine("There is nothing to show.");
         }
+
+        AnsiConsole.Write(table);
 
         myConn.Close();
     }
@@ -124,6 +118,52 @@ public class ListingService(AppState state)
         return sql;
     }
 
+    
+    private static Listings? MapListings(SQLiteDataReader reader) => new Listings
+    {
+        ListingId = Convert.ToInt32(reader["listingID"]),
+        UUID = Convert.ToInt32(reader["UUID"]),
+        Category = ParseListingCategory(reader),
+        Title = reader["title"].ToString()!,
+        Description = reader["description"].ToString()!,
+        TransportMethod = reader["transportMethod"].ToString()!,
+        Origin = reader["origin"].ToString()!,
+        Destination = reader["destination"].ToString()!,
+        Date = DateTime.Parse(reader["createdAt"].ToString()!), 
+        Duration = Convert.ToInt32(reader["UUID"]),
+        DurationType = reader["durationType"].ToString()!,
+        Capacity = Convert.ToInt32(reader["UUID"]),
+        CapacityUnit = ParseListingCapacityUnit(reader),
+        Price = Convert.ToInt32(reader["UUID"]),
+        PriceUnit = ParseListingPriceUnit(reader),
+        ListingStatus = ParseListingStatus(reader)
+    };
+
+    private static ListingCategory ParseListingCategory(SQLiteDataReader reader)
+    {
+        ListingCategory.TryParse(reader["ListingCategory"].ToString(), out ListingCategory category);
+        return category;
+    }
+    private static ListingCapacityUnit ParseListingCapacityUnit(SQLiteDataReader reader)
+    {
+        ListingCapacityUnit.TryParse(reader["ListingCategory"].ToString(), out ListingCapacityUnit unit);
+        return unit;
+    }
+    private static ListingPriceUnit ParseListingPriceUnit(SQLiteDataReader reader)
+    {
+        ListingPriceUnit.TryParse(reader["ListingCategory"].ToString(), out ListingPriceUnit price);
+        return price;
+    }
+    private static ListingStatus ParseListingStatus(SQLiteDataReader reader)
+    {
+        ListingStatus.TryParse(reader["ListingCategory"].ToString(), out ListingStatus status);
+        return status;
+    }
+    
+    /// <summary>
+    /// Deprecated method 
+    /// </summary>
+    /// <param name="sql"></param>
     public void ShowMyListingsOrBookings(string sql)
     {
         SQLiteConnection myConn = Database.ConnectToDb();
@@ -172,47 +212,6 @@ public class ListingService(AppState state)
 
         myConn.Close();
     }
-    private static Listings? MapListings(SQLiteDataReader reader) => new Listings
-    {
-        ListingId = Convert.ToInt32(reader["listingID"]),
-        UUID = Convert.ToInt32(reader["UUID"]),
-        Category = ParseListingCategory(reader),
-        Title = reader["title"].ToString()!,
-        Description = reader["description"].ToString()!,
-        TransportMethod = reader["transportMethod"].ToString()!,
-        Origin = reader["origin"].ToString()!,
-        Destination = reader["destination"].ToString()!,
-        Date = DateTime.Parse(reader["createdAt"].ToString()!), 
-        Duration = Convert.ToInt32(reader["UUID"]),
-        DurationType = reader["durationType"].ToString()!,
-        Capacity = Convert.ToInt32(reader["UUID"]),
-        CapacityUnit = ParseListingCapacityUnit(reader),
-        Price = Convert.ToInt32(reader["UUID"]),
-        PriceUnit = ParseListingPriceUnit(reader),
-        ListingStatus = ParseListingStatus(reader)
-    };
-
-    private static ListingCategory ParseListingCategory(SQLiteDataReader reader)
-    {
-        ListingCategory.TryParse(reader["ListingCategory"].ToString(), out ListingCategory category);
-        return category;
-    }
-    private static ListingCapacityUnit ParseListingCapacityUnit(SQLiteDataReader reader)
-    {
-        ListingCapacityUnit.TryParse(reader["ListingCategory"].ToString(), out ListingCapacityUnit unit);
-        return unit;
-    }
-    private static ListingPriceUnit ParseListingPriceUnit(SQLiteDataReader reader)
-    {
-        ListingPriceUnit.TryParse(reader["ListingCategory"].ToString(), out ListingPriceUnit price);
-        return price;
-    }
-    private static ListingStatus ParseListingStatus(SQLiteDataReader reader)
-    {
-        ListingStatus.TryParse(reader["ListingCategory"].ToString(), out ListingStatus status);
-        return status;
-    }
-
 }
 
         
