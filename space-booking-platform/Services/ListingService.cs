@@ -1,5 +1,4 @@
 using System.Data.SQLite;
-using System.Globalization;
 using space_booking_platform.Models;
 using Spectre.Console;
 
@@ -39,11 +38,11 @@ public class ListingService(AppState state)
         myConn.Close();
     }
 
-    public void EditListingInDb(string edit, string newData, int listingId)
+    public void EditListingInDb(string edit, string newData)
     {
         SQLiteConnection myConn = Database.ConnectToDb();
 
-        string sql = $"UPDATE listings SET '{edit}' = '{newData}' WHERE listingID = '{listingId}'";
+        string sql = $"UPDATE listings SET '{edit}' = '{newData}' WHERE listingID = '{state.currentListingID}'";
         SQLiteCommand command = new SQLiteCommand(sql, myConn);
         command.ExecuteNonQuery();
         myConn.Close();
@@ -164,6 +163,46 @@ public class ListingService(AppState state)
         }
 
         myConn.Close();
+    }
+    private static Listings? MapListings(SQLiteDataReader reader) => new Listings
+    {
+        ListingId = Convert.ToInt32(reader["listingID"]),
+        UUID = Convert.ToInt32(reader["UUID"]),
+        Category = ParseListingCategory(reader),
+        Title = reader["title"].ToString()!,
+        Description = reader["description"].ToString()!,
+        TransportMethod = reader["transportMethod"].ToString()!,
+        Origin = reader["origin"].ToString()!,
+        Destination = reader["destination"].ToString()!,
+        Date = DateTime.Parse(reader["createdAt"].ToString()!), 
+        Duration = Convert.ToInt32(reader["UUID"]),
+        DurationType = reader["durationType"].ToString()!,
+        Capacity = Convert.ToInt32(reader["UUID"]),
+        CapacityUnit = ParseListingCapacityUnit(reader),
+        Price = Convert.ToInt32(reader["UUID"]),
+        PriceUnit = ParseListingPriceUnit(reader),
+        ListingStatus = ParseListingStatus(reader)
+    };
+
+    private static ListingCategory ParseListingCategory(SQLiteDataReader reader)
+    {
+        ListingCategory.TryParse(reader["ListingCategory"].ToString(), out ListingCategory category);
+        return category;
+    }
+    private static ListingCapacityUnit ParseListingCapacityUnit(SQLiteDataReader reader)
+    {
+        ListingCapacityUnit.TryParse(reader["ListingCategory"].ToString(), out ListingCapacityUnit unit);
+        return unit;
+    }
+    private static ListingPriceUnit ParseListingPriceUnit(SQLiteDataReader reader)
+    {
+        ListingPriceUnit.TryParse(reader["ListingCategory"].ToString(), out ListingPriceUnit price);
+        return price;
+    }
+    private static ListingStatus ParseListingStatus(SQLiteDataReader reader)
+    {
+        ListingStatus.TryParse(reader["ListingCategory"].ToString(), out ListingStatus status);
+        return status;
     }
 
 }
