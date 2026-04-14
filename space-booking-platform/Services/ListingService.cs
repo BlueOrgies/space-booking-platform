@@ -8,7 +8,7 @@ public class ListingService(AppState state)
 {
     public Listings CreateListing(int uuid, ListingCategory category, string title, string description, string transportMethod, 
         string origin, string destination, DateTime date, int duration, string durationType, int capacity, 
-        ListingCapacityUnit capacityUnit, decimal price, string priceUnit, DateTime createdAt, ListingStatus listingStatus)
+        ListingCapacityUnit capacityUnit, decimal price, ListingPriceUnit priceUnit, DateTime createdAt, ListingStatus listingStatus)
     {
         SQLiteConnection myConn = Database.ConnectToDb();
 
