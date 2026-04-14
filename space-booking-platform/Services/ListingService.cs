@@ -6,7 +6,9 @@ namespace space_booking_platform.Services;
 
 public class ListingService(AppState state)
 {
-    public void AddListingToTable(Listings listing)
+    public Listings CreateListing(int uuid, ListingCategory category, string title, string description, string transportMethod, 
+        string origin, string destination, DateTime date, int duration, string durationType, int capacity, 
+        ListingCapacityUnit capacityUnit, decimal price, string priceUnit, DateTime createdAt, ListingStatus listingStatus)
     {
         SQLiteConnection myConn = Database.ConnectToDb();
 
@@ -16,26 +18,32 @@ public class ListingService(AppState state)
             "@uuid, @type, @title, @description, @transportMethod, @origin, @destination, @date, @duration, @durationType, " +
             "@capacity, @capacityUnit, @price, @priceUnit, @createdAt, @listingStatus)", myConn);
 
-        command.Parameters.AddWithValue("@uuid", listing.Uuid);
-        command.Parameters.AddWithValue("@type", listing.Category);
-        command.Parameters.AddWithValue("@title", listing.Title);
-        command.Parameters.AddWithValue("@description", listing.Description);
-        command.Parameters.AddWithValue("@transportMethod", listing.TransportMethod);
-        command.Parameters.AddWithValue("@origin", listing.Origin);
-        command.Parameters.AddWithValue("@destination", listing.Destination);
-        command.Parameters.AddWithValue("@date", listing.Date);
-        command.Parameters.AddWithValue("@duration", listing.Duration);
-        command.Parameters.AddWithValue("@durationType", listing.DurationType);
-        command.Parameters.AddWithValue("@capacity", listing.Capacity);
-        command.Parameters.AddWithValue("@capacityUnit", listing.CapacityUnit);
-        command.Parameters.AddWithValue("@price", listing.Price);
-        command.Parameters.AddWithValue("@priceUnit", listing.PriceUnit);
-        command.Parameters.AddWithValue("@createdAt", listing.CreatedAt);
-        command.Parameters.AddWithValue("@listingStatus", listing.ListingStatus);
+        command.Parameters.AddWithValue("@uuid", uuid);
+        command.Parameters.AddWithValue("@type", category);
+        command.Parameters.AddWithValue("@title", title);
+        command.Parameters.AddWithValue("@description", description);
+        command.Parameters.AddWithValue("@transportMethod", transportMethod);
+        command.Parameters.AddWithValue("@origin", origin);
+        command.Parameters.AddWithValue("@destination", destination);
+        command.Parameters.AddWithValue("@date", date);
+        command.Parameters.AddWithValue("@duration", duration);
+        command.Parameters.AddWithValue("@durationType", durationType);
+        command.Parameters.AddWithValue("@capacity", capacity);
+        command.Parameters.AddWithValue("@capacityUnit", capacityUnit);
+        command.Parameters.AddWithValue("@price", price);
+        command.Parameters.AddWithValue("@priceUnit", priceUnit);
+        command.Parameters.AddWithValue("@createdAt", createdAt);
+        command.Parameters.AddWithValue("@listingStatus", listingStatus);
 
         command.ExecuteNonQuery();
+        
+        using SQLiteCommand fetchCmd = new SQLiteCommand(
+            "SELECT * FROM listings WHERE listingID = last_insert_rowid()", myConn);
+        using SQLiteDataReader reader = fetchCmd.ExecuteReader();
 
+        reader.Read();
         myConn.Close();
+        return MapListings(reader);
     }
 
     public void EditListingInDb(string edit, string newData)

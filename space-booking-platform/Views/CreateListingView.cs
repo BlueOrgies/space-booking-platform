@@ -60,7 +60,7 @@ public class CreateListingView(AppState state)
         Listings listing = new Listings(uuid, categoryEnum, title, description, transportMethod, origin, destination, date,
            duration, durationType, capacity, capacityUnitEnum, price, priceUnitEnum);
         
-        listingService.AddListingToTable(listing);
+        listingService.CreateListing(listing);
         
         var choice = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
