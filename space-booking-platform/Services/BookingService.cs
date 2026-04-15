@@ -28,7 +28,7 @@ public class BookingService
     public List<Booking?> GetBookings(int id)
     {
         List<Booking?> bookings = new List<Booking?>();
-using SQLiteConnection myConn = Database.ConnectToDb();
+        using SQLiteConnection myConn = Database.ConnectToDb();
 
         using SQLiteCommand command = new SQLiteCommand(
             "SELECT * FROM bookings JOIN listings ON listings.listingID = bookings.listingID " +
@@ -49,26 +49,26 @@ using SQLiteConnection myConn = Database.ConnectToDb();
     {
         ListingStatus.TryParse(reader["bookingStatus"].ToString(), out ListingStatus bookingStatus);
         return new Booking
-    {
-        BookingId = Convert.ToInt32(reader["bookingID"]),
-        UUID = Convert.ToInt32(reader["UUID"]),
-        ListingId = Convert.ToInt32(reader["listingID"]),
+        {
+            BookingId = Convert.ToInt32(reader["bookingID"]),
+            UUID = Convert.ToInt32(reader["UUID"]),
+            ListingId = Convert.ToInt32(reader["listingID"]),
             BookingStatus = bookingStatus,
-        Category = ListingService.ParseListingCategory(reader),
-        Title = reader["title"].ToString()!,
-        Description = reader["description"].ToString()!,
-        TransportMethod = reader["transportMethod"].ToString()!,
-        Origin = reader["origin"].ToString()!,
-        Destination = reader["destination"].ToString()!,
+            Category = ListingService.ParseListingCategory(reader),
+            Title = reader["title"].ToString()!,
+            Description = reader["description"].ToString()!,
+            TransportMethod = reader["transportMethod"].ToString()!,
+            Origin = reader["origin"].ToString()!,
+            Destination = reader["destination"].ToString()!,
             Date = DateTime.Parse(reader["date"].ToString()!),
             Duration = Convert.ToInt32(reader["duration"]),
-        DurationType = reader["durationType"].ToString()!,
+            DurationType = reader["durationType"].ToString()!,
             Capacity = Convert.ToInt32(reader["capacity"]),
-        CapacityUnit = ListingService.ParseListingCapacityUnit(reader),
+            CapacityUnit = ListingService.ParseListingCapacityUnit(reader),
             Price = Convert.ToDecimal(reader["price"]),
-        PriceUnit = ListingService.ParseListingPriceUnit(reader),
-        ListingStatus = ListingService.ParseListingStatus(reader)
-    };
+            PriceUnit = ListingService.ParseListingPriceUnit(reader),
+            ListingStatus = ListingService.ParseListingStatus(reader)
+        };
     }
     
 }
