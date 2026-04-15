@@ -164,22 +164,22 @@ public class ListingService(AppState state)
         ListingStatus = ParseListingStatus(reader)
     };
 
-    private static ListingCategory ParseListingCategory(SQLiteDataReader reader)
+    public static ListingCategory ParseListingCategory(SQLiteDataReader reader)
     {
         ListingCategory.TryParse(reader["ListingCategory"].ToString(), out ListingCategory category);
         return category;
     }
-    private static ListingCapacityUnit ParseListingCapacityUnit(SQLiteDataReader reader)
+    public static ListingCapacityUnit ParseListingCapacityUnit(SQLiteDataReader reader)
     {
         ListingCapacityUnit.TryParse(reader["ListingCategory"].ToString(), out ListingCapacityUnit unit);
         return unit;
     }
-    private static ListingPriceUnit ParseListingPriceUnit(SQLiteDataReader reader)
+    public static ListingPriceUnit ParseListingPriceUnit(SQLiteDataReader reader)
     {
         ListingPriceUnit.TryParse(reader["ListingCategory"].ToString(), out ListingPriceUnit price);
         return price;
     }
-    private static ListingStatus ParseListingStatus(SQLiteDataReader reader)
+    public static ListingStatus ParseListingStatus(SQLiteDataReader reader)
     {
         ListingStatus.TryParse(reader["ListingCategory"].ToString(), out ListingStatus status);
         return status;

@@ -34,6 +34,4 @@ public class Listings
 
     public ListingStatus ListingStatus { get; set; }
 
-    public int Uuid { get; set; }
-
 }
