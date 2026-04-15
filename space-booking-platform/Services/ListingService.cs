@@ -131,7 +131,7 @@ public class ListingService
     }
 
 
-    private static Listings? MapListings(SQLiteDataReader reader) => new Listings
+    private static Listings MapListings(SQLiteDataReader reader) => new Listings
     {
         ListingId = Convert.ToInt32(reader["listingID"]),
         UUID = Convert.ToInt32(reader["UUID"]),
@@ -141,12 +141,12 @@ public class ListingService
         TransportMethod = reader["transportMethod"].ToString()!,
         Origin = reader["origin"].ToString()!,
         Destination = reader["destination"].ToString()!,
-        Date = DateTime.Parse(reader["date"].ToString()!), 
-        Duration = Convert.ToInt32(reader["UUID"]),
+        Date = DateTime.Parse(reader["date"].ToString()!),
+        Duration = Convert.ToInt32(reader["duration"]),
         DurationType = reader["durationType"].ToString()!,
-        Capacity = Convert.ToInt32(reader["UUID"]),
+        Capacity = Convert.ToInt32(reader["capacity"]),
         CapacityUnit = ParseListingCapacityUnit(reader),
-        Price = Convert.ToInt32(reader["UUID"]),
+        Price = Convert.ToDecimal(reader["price"]),
         PriceUnit = ParseListingPriceUnit(reader),
         ListingStatus = ParseListingStatus(reader),
         CreatedAt = DateTime.Parse(reader["createdAt"].ToString()!)
