@@ -4,7 +4,7 @@ using Spectre.Console;
 
 namespace space_booking_platform.Services;
 
-public class ListingService(AppState state)
+public class ListingService
 {
     public Listings CreateListing(int uuid, ListingCategory category, string title, string description, string transportMethod, 
         string origin, string destination, DateTime date, int duration, string durationType, int capacity, 
@@ -46,12 +46,16 @@ public class ListingService(AppState state)
         return MapListings(reader);
     }
 
-    public void EditListingIn(string edit, string newData)
+    public void EditListingIn(int id, string edit, string newData)
     {
         SQLiteConnection myConn = Database.ConnectToDb();
 
-        string sql = $"UPDATE listings SET '{edit}' = '{newData}' WHERE listingID = '{state.currentListingID}'";
-        SQLiteCommand command = new SQLiteCommand(sql, myConn);
+        string sql = $"";
+        using SQLiteCommand command = new SQLiteCommand(
+            "UPDATE listings SET @edit = @newData WHERE listingID = @id", myConn);
+        command.Parameters.AddWithValue("@id", id);
+        command.Parameters.AddWithValue("@edit", edit);
+        command.Parameters.AddWithValue("@newData", newData);
         command.ExecuteNonQuery();
         myConn.Close();
         AnsiConsole.MarkupLine("[bold]\nListing updated.[/]");
@@ -120,14 +124,14 @@ public class ListingService(AppState state)
         return sql;
     }
 
-    public List<Listings?> GetListings()
+    public List<Listings?> GetListings(int id)
     {
         List<Listings?> listings = new List<Listings?>();
         SQLiteConnection myConn = Database.ConnectToDb();
 
         using SQLiteCommand command = new SQLiteCommand(
             "SELECT * FROM listings WHERE UUID = @id", myConn);
-        command.Parameters.AddWithValue("@id", state.currentUUID);
+        command.Parameters.AddWithValue("@id", id);
 
         using SQLiteDataReader reader = command.ExecuteReader();
 

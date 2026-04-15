@@ -11,7 +11,7 @@ public class OrganizerView(AppState state)
     {
         AnsiConsole.Clear();
         
-        ListingService ls = new ListingService(state);
+        ListingService ls = new ListingService();
         ReviewService rs = new ReviewService(state);
         var choices = new List<string> { "Go back to main menu", "Quit" };
         
@@ -29,7 +29,7 @@ public class OrganizerView(AppState state)
         table.AddColumn("[bold]Date[/]", col => col.LeftAligned());
         table.AddColumn("[bold]Status[/]", col => col.LeftAligned());
         
-        List<Listings?> listings = ls.GetListings();
+        List<Listings?> listings = ls.GetListings(state.currentUUID);
         switch (listings.Count)
         {
             case > 0:

@@ -14,7 +14,7 @@ public class CreateListingView(AppState state)
         }
         AnsiConsole.MarkupLine("[bold green]=== Create a listing ===[/]\n");
 
-        ListingService listingService = new ListingService(state);
+        ListingService listingService = new ListingService();
 
         int uuid = state.currentUUID;
         
