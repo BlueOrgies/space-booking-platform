@@ -12,7 +12,7 @@ public class OrganizerView(AppState state)
         AnsiConsole.Clear();
         
         ListingService ls = new ListingService();
-        ReviewService rs = new ReviewService(state);
+        ReviewService rs = new ReviewService();
         var choices = new List<string> { "Go back to main menu", "Quit" };
         
         AnsiConsole.MarkupLine($"[bold green]=== {state.currentUser}s profile: Organizer ===[/]");
@@ -59,7 +59,7 @@ public class OrganizerView(AppState state)
         table2.AddColumn("[bold]Comment[/]", col => col.LeftAligned());
         table2.AddColumn("[bold]Date[/]", col => col.LeftAligned());
 
-        List<Review?> reviews = rs.GetReviews();
+        List<Review?> reviews = rs.GetReviews(state.currentUUID);
         switch (reviews.Count)
         {
             case > 0:
