@@ -22,6 +22,23 @@ public class ReviewService(AppState state)
         return MapReview(reader);
     }
     
+    public Review? GetReviews()
+    {
+        SQLiteConnection myConn = Database.ConnectToDb();
+        
+        using SQLiteCommand command = new SQLiteCommand("SELECT * FROM reviews JOIN bookings ON bookings.bookingID = reviews.bookingID " +
+                                                        "JOIN listings ON listings.listingID = bookings.listingID " +
+                                                        "WHERE listings.UUID = @id", myConn);
+        command.Parameters.AddWithValue("@id", state.currentUUID);
+        
+        using SQLiteDataReader reader = command.ExecuteReader();
+        
+        if (!reader.Read())
+            return null;
+        
+        return MapReview(reader);
+    }
+    
     private static Review MapReview(SQLiteDataReader reader) => new Review
     {
         ReviewId = Convert.ToInt32(reader["reviewID"]),
