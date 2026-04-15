@@ -1,3 +1,5 @@
+using System.Data.SQLite;
+using space_booking_platform.Models;
 using space_booking_platform.Services;
 using Spectre.Console;
 
@@ -10,19 +12,75 @@ public class OrganizerView(AppState state)
         AnsiConsole.Clear();
         
         ListingService ls = new ListingService(state);
-        AnsiConsole.MarkupLine($"[bold green]=== {state.currentUser}s profile. [/]===");
+        ReviewService rs = new ReviewService(state);
+        var choices = new List<string> { "Go back to main menu", "Quit" };
+        
+        AnsiConsole.MarkupLine($"[bold green]=== {state.currentUser}s profile: Organizer ===[/]");
 
         AnsiConsole.MarkupLine("\n[green]My listings[/]");
-        ls.ShowOverview(ls.ShowUserListings());
-        AnsiConsole.MarkupLine("\n[green]My reviews[/]");
-        //TODO: Fix this when reviews is made 
+        var table = new Table()
+            .SimpleBorder()
+            .BorderColor(Color.Green);
+        
+        table.AddColumn("[bold]Category[/]", col => col.LeftAligned());
+        table.AddColumn("[bold]Title[/]", col => col.LeftAligned());
+        table.AddColumn("[bold]Origin[/]", col => col.LeftAligned());
+        table.AddColumn("[bold]Destination[/]", col => col.LeftAligned());
+        table.AddColumn("[bold]Date[/]", col => col.LeftAligned());
+        table.AddColumn("[bold]Status[/]", col => col.LeftAligned());
+        
+        List<Listings?> listings = ls.GetListings();
+        switch (listings.Count)
+        {
+            case > 0:
+            {
+                foreach (var listing in listings)
+                {
+                    table.AddRow(listing.Category.ToString(), listing.Title, listing.Origin, listing.Destination, 
+                        listing.Date.ToString("o"), listing.ListingStatus.ToString());
+                }
+                AnsiConsole.Write(table);
+                choices.Add("View my listings");
+                break;
+            }
+            case 0:
+                AnsiConsole.MarkupLine("No listings found");
+                break;
+        }
 
-        var choices = new List<string>
-            { "View my listings", "View my reviews", "Go back to main menu", "Quit" };
+        AnsiConsole.MarkupLine("\n[green]My reviews[/]");
+        var table2 = new Table()
+            .RoundedBorder()
+            .BorderColor(Color.Grey);
+
+        table2.AddColumn("[bold]Type[/]", col => col.LeftAligned());
+        table2.AddColumn("[bold]Title[/]", col => col.LeftAligned());
+        table2.AddColumn("[bold]Rating[/]", col => col.LeftAligned());
+        table2.AddColumn("[bold]Comment[/]", col => col.LeftAligned());
+        table2.AddColumn("[bold]Date[/]", col => col.LeftAligned());
+
+        List<Review?> reviews = rs.GetReviews();
+        switch (reviews.Count)
+        {
+            case > 0:
+            {
+                foreach (var review in reviews)
+                {
+                    table2.AddRow(review.Title, review.Type, review.Rating.ToString(),
+                        review.Comment, review.CreatedAt.ToString("o"));
+                }
+                AnsiConsole.Write(table2);
+                choices.Add("View my reviews");
+                break;
+            }
+            case 0:
+                AnsiConsole.MarkupLine("No reviews found");
+                break;
+        }
 
         var choice = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
-                .Title("Where would you like to go?")
+                .Title("\nWhere would you like to go?")
                 .HighlightStyle(new Style(Color.Yellow))
                 .AddChoices(choices));
 
@@ -30,7 +88,7 @@ public class OrganizerView(AppState state)
         {
             "View my listings" => "MyListings",
             "View my reviews" => "MyReviews",
-            "Go back to main menu" => "HomeView",
+            "Go back to main menu" => "Home",
             _ => null // Quit
         };
     }

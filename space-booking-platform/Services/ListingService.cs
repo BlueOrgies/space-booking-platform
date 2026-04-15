@@ -46,7 +46,7 @@ public class ListingService(AppState state)
         return MapListings(reader);
     }
 
-    public void EditListingInDb(string edit, string newData)
+    public void EditListingIn(string edit, string newData)
     {
         SQLiteConnection myConn = Database.ConnectToDb();
 
@@ -65,8 +65,8 @@ public class ListingService(AppState state)
         SQLiteConnection myConn = Database.ConnectToDb();
 
         var table = new Table()
-            .RoundedBorder()
-            .BorderColor(Color.Grey);
+            .SimpleBorder()
+            .BorderColor(Color.Green);
 
         table.AddColumn("[bold]Category[/]", col => col.LeftAligned());
         table.AddColumn("[bold]Title[/]", col => col.LeftAligned());
@@ -90,11 +90,13 @@ public class ListingService(AppState state)
         if (!exists)
         {
             AnsiConsole.MarkupLine("There is nothing to show.");
+            myConn.Close();
         }
-
-        AnsiConsole.Write(table);
-
-        myConn.Close();
+        else
+        {
+            AnsiConsole.Write(table);
+            myConn.Close();
+        }
     }
 
     public string ShowUserListings()
@@ -111,14 +113,37 @@ public class ListingService(AppState state)
     {
         string sql = "SELECT * FROM bookings " +
                      "JOIN listings ON listings.listingID = bookings.listingID " +
-                     $"WHERE listings.UUID = '{state.currentUUID}' " +
+                     $"WHERE bookings.UUID = '{state.currentUUID}' " +
                      "ORDER BY listings.date " +
                      "LIMIT 5";
 
         return sql;
     }
 
-    
+    public List<Listings?> GetListings()
+    {
+        List<Listings?> listings = new List<Listings?>();
+        SQLiteConnection myConn = Database.ConnectToDb();
+
+        using SQLiteCommand command = new SQLiteCommand(
+            "SELECT * FROM listings WHERE UUID = @id", myConn);
+        command.Parameters.AddWithValue("@id", state.currentUUID);
+
+        using SQLiteDataReader reader = command.ExecuteReader();
+
+        if (!reader.Read())
+            return listings;
+
+        while (reader.Read())
+        {
+            Listings listing = MapListings(reader);
+            listings.Add(listing);
+        }
+
+        return listings;
+    }
+
+
     private static Listings? MapListings(SQLiteDataReader reader) => new Listings
     {
         ListingId = Convert.ToInt32(reader["listingID"]),

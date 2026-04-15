@@ -7,4 +7,5 @@ public class AppState
     public string? currentUser { get; set; }
     public int currentUUID { get; set; }
     public int currentListingID { get; set; }
+    public int currentReviewID { get; set; }
 }

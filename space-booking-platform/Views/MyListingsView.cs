@@ -47,11 +47,11 @@ public class MyListingsView(AppState state)
             state.currentListingID = int.Parse(value);
             return "ListingView";
         }
-
+        //TODO: Add pagination
         return choice switch
         {
             "Go back to profile" => "ProfileView",
-            "Go back to main menu" => "HomeView",
+            "Go back to main menu" => "Home",
             _ => null // Quit
         };
     }
