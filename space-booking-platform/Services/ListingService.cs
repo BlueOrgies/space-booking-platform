@@ -65,8 +65,8 @@ public class ListingService(AppState state)
         SQLiteConnection myConn = Database.ConnectToDb();
 
         var table = new Table()
-            .RoundedBorder()
-            .BorderColor(Color.Grey);
+            .SimpleBorder()
+            .BorderColor(Color.Green);
 
         table.AddColumn("[bold]Category[/]", col => col.LeftAligned());
         table.AddColumn("[bold]Title[/]", col => col.LeftAligned());
@@ -118,7 +118,30 @@ public class ListingService(AppState state)
         return sql;
     }
 
-    
+    public List<Listings?> GetListings()
+    {
+        List<Listings?> listings = new List<Listings?>();
+        SQLiteConnection myConn = Database.ConnectToDb();
+
+        using SQLiteCommand command = new SQLiteCommand(
+            "SELECT * FROM listings WHERE UUID = @id", myConn);
+        command.Parameters.AddWithValue("@id", state.currentUUID);
+
+        using SQLiteDataReader reader = command.ExecuteReader();
+
+        if (!reader.Read())
+            return listings;
+
+        while (reader.Read())
+        {
+            Listings listing = MapListings(reader);
+            listings.Add(listing);
+        }
+
+        return listings;
+    }
+
+
     private static Listings? MapListings(SQLiteDataReader reader) => new Listings
     {
         ListingId = Convert.ToInt32(reader["listingID"]),
