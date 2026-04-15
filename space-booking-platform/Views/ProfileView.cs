@@ -1,3 +1,4 @@
+using space_booking_platform.Models;
 using space_booking_platform.Services;
 using Spectre.Console;
 
@@ -8,17 +9,43 @@ public class ProfileView(AppState state)
     public string? Display()
     {
         AnsiConsole.Clear();
-            
-        ListingService ls = new ListingService(state);
+
+        BookingService bs = new BookingService();
+        var choices = new List<string> { "Go back to main menu", "Quit" };
         AnsiConsole.MarkupLine($"[bold green]=== {state.currentUser}s profile. [/]===");
 
         AnsiConsole.MarkupLine("\n[green]My Bookings[/]");
-        ls.ShowOverview(ls.ShowUserBookings());
+        AnsiConsole.MarkupLine("\n[green]My reviews[/]");
+        var table = new Table()
+            .SimpleBorder()
+            .BorderColor(Color.Green);
 
+        table.AddColumn("[bold]Category[/]", col => col.LeftAligned());
+        table.AddColumn("[bold]Title[/]", col => col.LeftAligned());
+        table.AddColumn("[bold]Origin[/]", col => col.LeftAligned());
+        table.AddColumn("[bold]Destination[/]", col => col.LeftAligned());
+        table.AddColumn("[bold]Date[/]", col => col.LeftAligned());
+        table.AddColumn("[bold]Status[/]", col => col.LeftAligned());
+
+        List<Booking?> bookings = bs.GetListings(state.currentUUID);
+        switch (bookings.Count)
+        {
+            case > 0:
+            {
+                foreach (var booking in bookings)
+                {
+                    table.AddRow(booking.Category.ToString(), booking.Title, booking.Origin, 
+                        booking.Destination, booking.Date.ToString("o"), booking.BookingStatus.ToString());
+                }
+                AnsiConsole.Write(table);
+                choices.Add("View my bookings");
+                break;
+            }
+            case 0:
+                AnsiConsole.MarkupLine("No reviews found");
+                break;
+        }
         Console.WriteLine();
-
-        var choices = new List<string>
-            { "View my bookings", "Go back to main menu", "Quit" };
 
         var choice = AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
