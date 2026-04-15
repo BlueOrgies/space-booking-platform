@@ -18,7 +18,7 @@ public class OrganizerView(AppState state)
         //TODO: Fix this when reviews is made 
 
         var choices = new List<string>
-            { "View my listings", "View my reviews", "Go back to main menu", "Quit" };
+            { "Create a listing", "View my listings", "View my reviews", "Go back to main menu", "Quit" };
 
         var choice = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
@@ -28,6 +28,7 @@ public class OrganizerView(AppState state)
 
         return choice switch
         {
+            "Create a listing" => "CreateListing",
             "View my listings" => "MyListings",
             "View my reviews" => "MyReviews",
             "Go back to main menu" => "Home",
