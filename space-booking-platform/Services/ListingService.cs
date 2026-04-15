@@ -63,66 +63,7 @@ public class ListingService
         myConn.Close();
     }
 
-    public void ShowOverview(string sql)
-    {
-        bool exists = false;
-        SQLiteConnection myConn = Database.ConnectToDb();
-
-        var table = new Table()
-            .SimpleBorder()
-            .BorderColor(Color.Green);
-
-        table.AddColumn("[bold]Category[/]", col => col.LeftAligned());
-        table.AddColumn("[bold]Title[/]", col => col.LeftAligned());
-        table.AddColumn("[bold]Origin[/]", col => col.LeftAligned());
-        table.AddColumn("[bold]Destination[/]", col => col.LeftAligned());
-        table.AddColumn("[bold]Date[/]", col => col.LeftAligned());
-        table.AddColumn("[bold]Status[/]", col => col.LeftAligned());
-
-        using SQLiteCommand readThis = new SQLiteCommand(sql, myConn);
-        using SQLiteDataReader dataReader = readThis.ExecuteReader();
-        while (dataReader.Read())
-        {
-            Listings listing = MapListings(dataReader);
-
-            table.AddRow(listing.Category.ToString(), listing.Title, listing.Origin,
-                listing.Destination, listing.Date.ToString("o"), listing.ListingStatus.ToString());
-
-            exists = true;
-        }
-
-        if (!exists)
-        {
-            AnsiConsole.MarkupLine("There is nothing to show.");
-            myConn.Close();
-        }
-        else
-        {
-            AnsiConsole.Write(table);
-            myConn.Close();
-        }
-    }
-
-    public string ShowUserListings()
-    {
-        string sql = "SELECT * FROM listings " +
-                     $"WHERE listings.UUID = '{state.currentUUID}' " +
-                     "ORDER BY listings.date " +
-                     "LIMIT 5";
-
-        return sql;
-    }
-
-    public string ShowUserBookings()
-    {
-        string sql = "SELECT * FROM bookings " +
-                     "JOIN listings ON listings.listingID = bookings.listingID " +
-                     $"WHERE bookings.UUID = '{state.currentUUID}' " +
-                     "ORDER BY listings.date " +
-                     "LIMIT 5";
-
-        return sql;
-    }
+    
 
     public List<Listings?> GetListings(int id)
     {
@@ -240,6 +181,76 @@ public class ListingService
         }
 
         myConn.Close();
+    }
+    /// <summary>
+    /// Deprecated
+    /// </summary>
+    /// <param name="sql"></param>
+    public void ShowOverview(string sql)
+    {
+        bool exists = false;
+        SQLiteConnection myConn = Database.ConnectToDb();
+
+        var table = new Table()
+            .SimpleBorder()
+            .BorderColor(Color.Green);
+
+        table.AddColumn("[bold]Category[/]", col => col.LeftAligned());
+        table.AddColumn("[bold]Title[/]", col => col.LeftAligned());
+        table.AddColumn("[bold]Origin[/]", col => col.LeftAligned());
+        table.AddColumn("[bold]Destination[/]", col => col.LeftAligned());
+        table.AddColumn("[bold]Date[/]", col => col.LeftAligned());
+        table.AddColumn("[bold]Status[/]", col => col.LeftAligned());
+
+        using SQLiteCommand readThis = new SQLiteCommand(sql, myConn);
+        using SQLiteDataReader dataReader = readThis.ExecuteReader();
+        while (dataReader.Read())
+        {
+            Listings listing = MapListings(dataReader);
+
+            table.AddRow(listing.Category.ToString(), listing.Title, listing.Origin,
+                listing.Destination, listing.Date.ToString("o"), listing.ListingStatus.ToString());
+
+            exists = true;
+        }
+
+        if (!exists)
+        {
+            AnsiConsole.MarkupLine("There is nothing to show.");
+            myConn.Close();
+        }
+        else
+        {
+            AnsiConsole.Write(table);
+            myConn.Close();
+        }
+    }
+    /// <summary>
+    /// Deprecated
+    /// </summary>
+    /// <returns></returns>
+    public string ShowUserListings(int id)
+    {
+        string sql = "SELECT * FROM listings " +
+                     $"WHERE listings.UUID = '{id}' " +
+                     "ORDER BY listings.date " +
+                     "LIMIT 5";
+
+        return sql;
+    }
+    /// <summary>
+    /// Deprecated
+    /// </summary>
+    /// <returns></returns>
+    public string ShowUserBookings(int id)
+    {
+        string sql = "SELECT * FROM bookings " +
+                     "JOIN listings ON listings.listingID = bookings.listingID " +
+                     $"WHERE bookings.UUID = '{id}' " +
+                     "ORDER BY listings.date " +
+                     "LIMIT 5";
+
+        return sql;
     }
 }
 
