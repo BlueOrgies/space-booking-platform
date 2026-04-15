@@ -90,11 +90,13 @@ public class ListingService(AppState state)
         if (!exists)
         {
             AnsiConsole.MarkupLine("There is nothing to show.");
+            myConn.Close();
         }
-
-        AnsiConsole.Write(table);
-
-        myConn.Close();
+        else
+        {
+            AnsiConsole.Write(table);
+            myConn.Close();
+        }
     }
 
     public string ShowUserListings()
