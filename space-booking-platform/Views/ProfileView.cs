@@ -27,7 +27,7 @@ public class ProfileView(AppState state)
             return choice switch
         {
             "View my bookings" => "MyBookings",
-            "Go back to main menu" => "HomeView",
+            "Go back to main menu" => "Home",
             _ => null // Quit
         };
 }
