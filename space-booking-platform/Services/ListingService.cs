@@ -74,9 +74,6 @@ public class ListingService
 
         using SQLiteDataReader reader = command.ExecuteReader();
 
-        if (!reader.Read())
-            return listings;
-
         while (reader.Read())
         {
             Listings listing = MapListings(reader);
