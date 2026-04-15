@@ -28,10 +28,10 @@ public class BookingService
     public List<Booking?> GetBookings(int id)
     {
         List<Booking?> bookings = new List<Booking?>();
-        SQLiteConnection myConn = Database.ConnectToDb();
+using SQLiteConnection myConn = Database.ConnectToDb();
 
         using SQLiteCommand command = new SQLiteCommand(
-            "SELECT * FROM bookings JOIN main.listings ON listings.listingID = bookings.bookingID " +
+            "SELECT * FROM bookings JOIN listings ON listings.listingID = bookings.listingID " +
             "WHERE bookings.UUID = @id", myConn);
         command.Parameters.AddWithValue("@id", id);
 
