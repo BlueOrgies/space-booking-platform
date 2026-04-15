@@ -88,10 +88,10 @@ public class EditListingView(AppState state)
 
         return choice switch
         {
-            "Edit more from this listing" => "EditListingView",
-            "Go back to my listings" => "MyListingsView",
-            "Go back to profile" => "ProfileView",
-            "Go back to main menu" => "HomeView",
+            "Edit more from this listing" => "EditListing",
+            "Go back to my listings" => "MyListings",
+            "Go back to profile" => "Profile",
+            "Go back to main menu" => "Home",
             _ => null // Quit
         };
     }

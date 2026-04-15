@@ -30,7 +30,7 @@ public class OrganizerView(AppState state)
         {
             "View my listings" => "MyListings",
             "View my reviews" => "MyReviews",
-            "Go back to main menu" => "HomeView",
+            "Go back to main menu" => "Home",
             _ => null // Quit
         };
     }
