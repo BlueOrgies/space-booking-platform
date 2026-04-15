@@ -69,7 +69,7 @@ public class ListingService
         SQLiteConnection myConn = Database.ConnectToDb();
 
         using SQLiteCommand command = new SQLiteCommand(
-            "SELECT * FROM listings WHERE UUID = @id", myConn);
+            "SELECT * FROM listings  WHERE UUID = @id ORDER BY date", myConn);
         command.Parameters.AddWithValue("@id", id);
 
         using SQLiteDataReader reader = command.ExecuteReader();
