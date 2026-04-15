@@ -22,8 +22,9 @@ public class ReviewService(AppState state)
         return MapReview(reader);
     }
     
-    public Review? GetReviews()
+    public List<Review?> GetReviews()
     {
+        List<Review?> reviews = new List<Review?>();
         SQLiteConnection myConn = Database.ConnectToDb();
         
         using SQLiteCommand command = new SQLiteCommand("SELECT * FROM reviews JOIN bookings ON bookings.bookingID = reviews.bookingID " +
@@ -34,9 +35,14 @@ public class ReviewService(AppState state)
         using SQLiteDataReader reader = command.ExecuteReader();
         
         if (!reader.Read())
-            return null;
-        
-        return MapReview(reader);
+            return reviews;
+
+        while (reader.Read())
+        {
+            Review review = MapReview(reader);
+            reviews.Add(review);
+        }
+        return reviews;
     }
     
     private static Review MapReview(SQLiteDataReader reader) => new Review
