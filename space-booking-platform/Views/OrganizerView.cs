@@ -40,7 +40,7 @@ public class OrganizerView(AppState state)
                         listings[i].Date.ToString("o"), listings[i].ListingStatus.ToString());
                 }
                 AnsiConsole.Write(table);
-                choices.Add("View my listings");
+                choices.Insert(0, "View my listings");
                 break;
             }
             case > 0:
@@ -51,7 +51,7 @@ public class OrganizerView(AppState state)
                         listings[i].Date.ToString("o"), listings[i].ListingStatus.ToString());
                 }
                 AnsiConsole.Write(table);
-                choices.Add("View my listings");
+                choices.Insert(0, "View my listings");
                 break;
             }
             case 0:
@@ -81,7 +81,7 @@ public class OrganizerView(AppState state)
                         reviews[i].Comment, reviews[i].CreatedAt.ToString("o"));
                 }
                 AnsiConsole.Write(table2);
-                choices.Add("View my reviews");
+                choices.Insert(0, "View my reviews");
                 break;
             }
                 case > 0:
@@ -92,7 +92,7 @@ public class OrganizerView(AppState state)
                         reviews[i].Comment, reviews[i].CreatedAt.ToString("o"));
                 }
                 AnsiConsole.Write(table2);
-                choices.Add("View my reviews");
+                choices.Insert(0, "View my reviews");
                 break;
             }
             case 0:
