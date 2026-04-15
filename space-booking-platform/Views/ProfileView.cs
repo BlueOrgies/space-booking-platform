@@ -15,6 +15,8 @@ public class ProfileView(AppState state)
         AnsiConsole.MarkupLine("\n[green]My Bookings[/]");
         ls.ShowOverview(ls.ShowUserBookings());
 
+        Console.WriteLine();
+
         var choices = new List<string>
             { "View my bookings", "Go back to main menu", "Quit" };
 

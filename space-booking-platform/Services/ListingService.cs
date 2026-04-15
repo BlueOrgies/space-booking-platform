@@ -65,8 +65,8 @@ public class ListingService(AppState state)
         SQLiteConnection myConn = Database.ConnectToDb();
 
         var table = new Table()
-            .RoundedBorder()
-            .BorderColor(Color.Grey);
+            .SimpleBorder()
+            .BorderColor(Color.Green);
 
         table.AddColumn("[bold]Category[/]", col => col.LeftAligned());
         table.AddColumn("[bold]Title[/]", col => col.LeftAligned());
@@ -90,11 +90,13 @@ public class ListingService(AppState state)
         if (!exists)
         {
             AnsiConsole.MarkupLine("There is nothing to show.");
+            myConn.Close();
         }
-
-        AnsiConsole.Write(table);
-
-        myConn.Close();
+        else
+        {
+            AnsiConsole.Write(table);
+            myConn.Close();
+        }
     }
 
     public string ShowUserListings()

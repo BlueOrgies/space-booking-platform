@@ -17,6 +17,8 @@ public class OrganizerView(AppState state)
         AnsiConsole.MarkupLine("\n[green]My reviews[/]");
         //TODO: Fix this when reviews is made 
 
+        Console.WriteLine();
+
         var choices = new List<string>
             { "Create a listing", "View my listings", "View my reviews", "Go back to main menu", "Quit" };
 
