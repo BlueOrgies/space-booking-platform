@@ -36,10 +36,6 @@ using SQLiteConnection myConn = Database.ConnectToDb();
         command.Parameters.AddWithValue("@id", id);
 
         using SQLiteDataReader reader = command.ExecuteReader();
-
-        if (!reader.Read())
-            return bookings;
-
         while (reader.Read())
         {
             Booking booking = MapBooking(reader);
