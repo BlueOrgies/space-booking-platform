@@ -3,16 +3,16 @@ using space_booking_platform.Models;
 
 namespace space_booking_platform.Services;
 
-public class ReviewService
+public class ReviewService(AppState state)
 {
-    public Review? GetReview(int id)
+    public Review? GetReview()
     {
         SQLiteConnection myConn = Database.ConnectToDb();
         
         using SQLiteCommand command = new SQLiteCommand("SELECT * FROM reviews JOIN bookings ON bookings.bookingID = reviews.bookingID " +
                                                         "JOIN listings ON listings.listingID = bookings.listingID " +
                                                         "WHERE reviewID = @id", myConn);
-        command.Parameters.AddWithValue("@id", id);
+        command.Parameters.AddWithValue("@id", state.currentReviewID);
         
         using SQLiteDataReader reader = command.ExecuteReader();
         

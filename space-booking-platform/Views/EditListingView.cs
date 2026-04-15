@@ -24,33 +24,33 @@ public class EditListingView(AppState state)
         {
             case "Title":
                 string title = AnsiConsole.Ask<string>("New title: ");
-                listingService.EditListingInDb("title", title, listingId);
+                listingService.EditListingInDb("title", title);
                 break;
             case "Description":
                 string description = AnsiConsole.Ask<string>("New description: ");
-                listingService.EditListingInDb("description", description, listingId);
+                listingService.EditListingInDb("description", description);
                 break;
             case "Transportation method":
                 string transportation = AnsiConsole.Ask<string>("Transportation method: ");
-                listingService.EditListingInDb("transportationMethod", transportation, listingId);
+                listingService.EditListingInDb("transportationMethod", transportation);
                 break;
             case "Origin":
                 string origin = AnsiConsole.Ask<string>("Edit origin: ");
-                listingService.EditListingInDb("origin", origin, listingId);
+                listingService.EditListingInDb("origin", origin);
                 break;
             case "Destination":
                 string destination = AnsiConsole.Ask<string>("Edit destination: ");
-                listingService.EditListingInDb("destination", destination, listingId);
+                listingService.EditListingInDb("destination", destination);
                 break;
             case "Date":
                 DateTime date = AnsiConsole.Ask<DateTime>("New date and time (yyyy-MM-dd HH:mm): ");
-                listingService.EditListingInDb("date", date.ToString(), listingId);
+                listingService.EditListingInDb("date", date.ToString());
                 break;
             case "Duration":
                 int duration = AnsiConsole.Ask<int>("Edit duration: ");
                 string durationType = AnsiConsole.Ask<string>("Edit duration type: ");
-                listingService.EditListingInDb("duration", duration.ToString(), listingId);
-                listingService.EditListingInDb("durationType", durationType, listingId);
+                listingService.EditListingInDb("duration", duration.ToString());
+                listingService.EditListingInDb("durationType", durationType);
                 break;
             case "Capacity":
                 prompt = new SelectionPrompt<string>()
@@ -58,8 +58,8 @@ public class EditListingView(AppState state)
                     .AddChoices(Enum.GetNames<ListingCapacityUnit>());
                 var capacityUnit = AnsiConsole.Prompt(prompt);
                 int capacity = AnsiConsole.Ask<int>($"Edit duration ({capacityUnit}): ");
-                listingService.EditListingInDb("capacity", capacity.ToString(), listingId);
-                listingService.EditListingInDb("capacityUnit", capacityUnit, listingId);
+                listingService.EditListingInDb("capacity", capacity.ToString());
+                listingService.EditListingInDb("capacityUnit", capacityUnit);
                 break;
             case "Price":
                 prompt = new SelectionPrompt<string>()
@@ -67,15 +67,15 @@ public class EditListingView(AppState state)
                     .AddChoices(Enum.GetNames<ListingPriceUnit>());
                 var priceUnit = AnsiConsole.Prompt(prompt);
                 int price = AnsiConsole.Ask<int>($"Edit duration ({priceUnit}): ");
-                listingService.EditListingInDb("capacity", price.ToString(), listingId);
-                listingService.EditListingInDb("capacityUnit", priceUnit, listingId);
+                listingService.EditListingInDb("capacity", price.ToString());
+                listingService.EditListingInDb("capacityUnit", priceUnit);
                 break;
             case "Status":
                 prompt = new SelectionPrompt<string>()
                     .Title("[bold]Price unit:[/]")
                     .AddChoices(Enum.GetNames<ListingStatus>());
                 var status = AnsiConsole.Prompt(prompt);
-                listingService.EditListingInDb("Status", status, listingId);
+                listingService.EditListingInDb("Status", status);
                 break;
         }
         
