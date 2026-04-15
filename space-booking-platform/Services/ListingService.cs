@@ -111,7 +111,7 @@ public class ListingService(AppState state)
     {
         string sql = "SELECT * FROM bookings " +
                      "JOIN listings ON listings.listingID = bookings.listingID " +
-                     $"WHERE listings.UUID = '{state.currentUUID}' " +
+                     $"WHERE bookings.UUID = '{state.currentUUID}' " +
                      "ORDER BY listings.date " +
                      "LIMIT 5";
 
