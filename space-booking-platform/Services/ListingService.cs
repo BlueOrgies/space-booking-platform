@@ -46,7 +46,7 @@ public class ListingService(AppState state)
         return MapListings(reader);
     }
 
-    public void EditListingInDb(string edit, string newData)
+    public void EditListingIn(string edit, string newData)
     {
         SQLiteConnection myConn = Database.ConnectToDb();
 
