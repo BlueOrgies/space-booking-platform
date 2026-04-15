@@ -46,11 +46,10 @@ public class ListingService
         return MapListings(reader);
     }
 
-    public void EditListingIn(int id, string edit, string newData)
+    public void EditListing(int id, string edit, string newData)
     {
         SQLiteConnection myConn = Database.ConnectToDb();
 
-        string sql = $"";
         using SQLiteCommand command = new SQLiteCommand(
             "UPDATE listings SET @edit = @newData WHERE listingID = @id", myConn);
         command.Parameters.AddWithValue("@id", id);
