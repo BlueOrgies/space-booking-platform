@@ -15,7 +15,6 @@ public class ProfileView(AppState state)
         AnsiConsole.MarkupLine($"[bold green]=== {state.currentUser}s profile. [/]===");
 
         AnsiConsole.MarkupLine("\n[green]My Bookings[/]");
-        AnsiConsole.MarkupLine("\n[green]My reviews[/]");
         var table = new Table()
             .SimpleBorder()
             .BorderColor(Color.Green);
@@ -42,7 +41,7 @@ public class ProfileView(AppState state)
                 break;
             }
             case 0:
-                AnsiConsole.MarkupLine("No reviews found");
+                AnsiConsole.MarkupLine("No bookings found");
                 break;
         }
         Console.WriteLine();

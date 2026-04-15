@@ -8,10 +8,7 @@ public class CreateListingView(AppState state)
 {
     public string? Display()
     {
-        if (!state.isOrganizer)
-        {
-            AnsiConsole.MarkupLine("[bold underline]You are not an organizer and cannot create a listing[/]");
-        }
+        AnsiConsole.Clear();
         AnsiConsole.MarkupLine("[bold green]=== Create a listing ===[/]\n");
 
         ListingService listingService = new ListingService();
@@ -69,11 +66,11 @@ public class CreateListingView(AppState state)
 
         return choice switch
         {
-            "Create another listing" => "CreateListingView",
-            "My listings" => "MyListingsView",
+            "Create another listing" => "CreateListing",
+            "My listings" => "MyListings",
             "My organizer profile" => "OrganizerView",
             "My profile" => "ProfileView",
-            "Go back to main menu" => "HomeView",
+            "Go back to main menu" => "Home",
             _ => null // Quit
         };
     }
