@@ -8,7 +8,7 @@ public class Booking
     
     public int ListingId { get; set; }
     
-    public ListingStatus Status { get; set; }
+    public ListingStatus BookingStatus { get; set; }
     
     public ListingCategory Category { get; set; }
     
