@@ -93,6 +93,20 @@ public class ListingService
         return listings;
     }
 
+    public Listings? GetListingById(int listingId)
+    {
+        using SQLiteConnection myConn = Database.ConnectToDb();
+
+        using SQLiteCommand cmd = new SQLiteCommand(
+            "SELECT * FROM listings WHERE listingID = @id", myConn);
+        cmd.Parameters.AddWithValue("@id", listingId);
+
+        using SQLiteDataReader reader = cmd.ExecuteReader();
+        if (!reader.Read()) return null;
+
+        return MapListings(reader);
+    }
+
 
     private static Listings? MapListings(SQLiteDataReader reader) => new Listings
     {
