@@ -107,6 +107,29 @@ public class ListingService
         return MapListings(reader);
     }
 
+    public List<Listings> SearchListings(string keyword, ListingCategory? category)
+    {
+        using SQLiteConnection myConn = Database.ConnectToDb();
+        var listings = new List<Listings>();
+
+        string sql = "SELECT * FROM listings WHERE listingStatus = 'Active' " +
+                     "AND (title LIKE @kw OR origin LIKE @kw OR destination LIKE @kw)";
+        if (category.HasValue)
+            sql += " AND type = @category";
+        sql += " ORDER BY date";
+
+        using SQLiteCommand cmd = new SQLiteCommand(sql, myConn);
+        cmd.Parameters.AddWithValue("@kw", $"%{keyword}%");
+        if (category.HasValue)
+            cmd.Parameters.AddWithValue("@category", category.Value.ToString());
+
+        using SQLiteDataReader reader = cmd.ExecuteReader();
+        while (reader.Read())
+            listings.Add(MapListings(reader));
+
+        return listings;
+    }
+
 
     private static Listings? MapListings(SQLiteDataReader reader) => new Listings
     {
