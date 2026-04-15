@@ -45,7 +45,7 @@ public class MyListingsView(AppState state)
         if (rows.TryGetValue(choice, out string? value))
         {
             state.currentListingID = int.Parse(value);
-            return "ListingView";
+            return "Listing";
         }
         //TODO: Add pagination
         return choice switch

@@ -25,6 +25,7 @@ public class ViewHandler
         "ProfileView"       => new ProfileView(_state).Display(),
         "MyBookings"        => NotImplemented("MyBookingsView"),
         "MyListings"        => new MyListingsView(_state).Display(),
+        "Listing"           => NotImplemented("ListingView"),
         "OrganizerView"     => new OrganizerView(_state).Display(),
         "CreateListing"     => new CreateListingView(_state).Display(),
         "EditListing"       => new EditListingView(_state).Display(),
