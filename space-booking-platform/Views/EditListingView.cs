@@ -9,7 +9,7 @@ public class EditListingView(AppState state)
     public string? Display()
     {
         int listingId = state.currentListingID;
-        ListingService listingService = new ListingService(state);
+        ListingService listingService = new ListingService();
         
         AnsiConsole.Clear();
         
@@ -24,33 +24,33 @@ public class EditListingView(AppState state)
         {
             case "Title":
                 string title = AnsiConsole.Ask<string>("New title: ");
-                listingService.EditListingIn("title", title);
+                listingService.EditListing(listingId, "title", title);
                 break;
             case "Description":
                 string description = AnsiConsole.Ask<string>("New description: ");
-                listingService.EditListingIn("description", description);
+                listingService.EditListing(listingId, "description", description);
                 break;
             case "Transportation method":
                 string transportation = AnsiConsole.Ask<string>("Transportation method: ");
-                listingService.EditListingIn("transportationMethod", transportation);
+                listingService.EditListing(listingId, "transportationMethod", transportation);
                 break;
             case "Origin":
                 string origin = AnsiConsole.Ask<string>("Edit origin: ");
-                listingService.EditListingIn("origin", origin);
+                listingService.EditListing(listingId, "origin", origin);
                 break;
             case "Destination":
                 string destination = AnsiConsole.Ask<string>("Edit destination: ");
-                listingService.EditListingIn("destination", destination);
+                listingService.EditListing(listingId, "destination", destination);
                 break;
             case "Date":
                 DateTime date = AnsiConsole.Ask<DateTime>("New date and time (yyyy-MM-dd HH:mm): ");
-                listingService.EditListingIn("date", date.ToString());
+                listingService.EditListing(listingId, "date", date.ToString());
                 break;
             case "Duration":
                 int duration = AnsiConsole.Ask<int>("Edit duration: ");
                 string durationType = AnsiConsole.Ask<string>("Edit duration type: ");
-                listingService.EditListingIn("duration", duration.ToString());
-                listingService.EditListingIn("durationType", durationType);
+                listingService.EditListing(listingId, "duration", duration.ToString());
+                listingService.EditListing(listingId, "durationType", durationType);
                 break;
             case "Capacity":
                 prompt = new SelectionPrompt<string>()
@@ -58,8 +58,8 @@ public class EditListingView(AppState state)
                     .AddChoices(Enum.GetNames<ListingCapacityUnit>());
                 var capacityUnit = AnsiConsole.Prompt(prompt);
                 int capacity = AnsiConsole.Ask<int>($"Edit duration ({capacityUnit}): ");
-                listingService.EditListingIn("capacity", capacity.ToString());
-                listingService.EditListingIn("capacityUnit", capacityUnit);
+                listingService.EditListing(listingId, "capacity", capacity.ToString());
+                listingService.EditListing(listingId, "capacityUnit", capacityUnit);
                 break;
             case "Price":
                 prompt = new SelectionPrompt<string>()
@@ -67,15 +67,15 @@ public class EditListingView(AppState state)
                     .AddChoices(Enum.GetNames<ListingPriceUnit>());
                 var priceUnit = AnsiConsole.Prompt(prompt);
                 int price = AnsiConsole.Ask<int>($"Edit duration ({priceUnit}): ");
-                listingService.EditListingIn("capacity", price.ToString());
-                listingService.EditListingIn("capacityUnit", priceUnit);
+                listingService.EditListing(listingId, "capacity", price.ToString());
+                listingService.EditListing(listingId, "capacityUnit", priceUnit);
                 break;
             case "Status":
                 prompt = new SelectionPrompt<string>()
                     .Title("[bold]Price unit:[/]")
                     .AddChoices(Enum.GetNames<ListingStatus>());
                 var status = AnsiConsole.Prompt(prompt);
-                listingService.EditListingIn("Status", status);
+                listingService.EditListing(listingId, "Status", status);
                 break;
         }
         

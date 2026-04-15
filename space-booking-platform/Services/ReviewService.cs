@@ -3,16 +3,17 @@ using space_booking_platform.Models;
 
 namespace space_booking_platform.Services;
 
-public class ReviewService(AppState state)
+public class ReviewService
 {
-    public Review? GetReview()
+    public Review? GetReview(int reviewId)
     {
         SQLiteConnection myConn = Database.ConnectToDb();
         
-        using SQLiteCommand command = new SQLiteCommand("SELECT * FROM reviews JOIN bookings ON bookings.bookingID = reviews.bookingID " +
-                                                        "JOIN listings ON listings.listingID = bookings.listingID " +
-                                                        "WHERE reviewID = @id", myConn);
-        command.Parameters.AddWithValue("@id", state.currentReviewID);
+        using SQLiteCommand command = new SQLiteCommand(
+            "SELECT * FROM reviews JOIN bookings ON bookings.bookingID = reviews.bookingID " +
+            "JOIN listings ON listings.listingID = bookings.listingID " +
+            "WHERE reviewID = @id", myConn);
+        command.Parameters.AddWithValue("@id", reviewId);
         
         using SQLiteDataReader reader = command.ExecuteReader();
         
@@ -22,7 +23,7 @@ public class ReviewService(AppState state)
         return MapReview(reader);
     }
     
-    public List<Review?> GetReviews()
+    public List<Review?> GetReviews(int UUID)
     {
         List<Review?> reviews = new List<Review?>();
         SQLiteConnection myConn = Database.ConnectToDb();
@@ -30,7 +31,7 @@ public class ReviewService(AppState state)
         using SQLiteCommand command = new SQLiteCommand("SELECT * FROM reviews JOIN bookings ON bookings.bookingID = reviews.bookingID " +
                                                         "JOIN listings ON listings.listingID = bookings.listingID " +
                                                         "WHERE listings.UUID = @id", myConn);
-        command.Parameters.AddWithValue("@id", state.currentUUID);
+        command.Parameters.AddWithValue("@id", UUID);
         
         using SQLiteDataReader reader = command.ExecuteReader();
         

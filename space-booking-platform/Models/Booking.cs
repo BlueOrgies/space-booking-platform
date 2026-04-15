@@ -1,13 +1,19 @@
 namespace space_booking_platform.Models;
 
-public class Listings
+public class Booking
 {
-    public int ListingId { get; set; }
+    public int BookingId  { get; set; }
+    
     public int UUID { get; set; }
+    
+    public int ListingId { get; set; }
+    
+    public ListingStatus BookingStatus { get; set; }
+    
     public ListingCategory Category { get; set; }
-
+    
     public string Title { get; set; }
-
+    
     public string Description { get; set; }
 
     public string TransportMethod { get; set; }
@@ -33,5 +39,4 @@ public class Listings
     public DateTime CreatedAt { get; set; }
 
     public ListingStatus ListingStatus { get; set; }
-
 }
