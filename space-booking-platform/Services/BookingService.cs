@@ -5,7 +5,7 @@ namespace space_booking_platform.Services;
 
 public class BookingService
 {
-    public List<Booking?> GetListings(int id)
+    public List<Booking?> GetBookings(int id)
     {
         List<Booking?> bookings = new List<Booking?>();
         SQLiteConnection myConn = Database.ConnectToDb();

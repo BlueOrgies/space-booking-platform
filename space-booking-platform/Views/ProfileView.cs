@@ -26,7 +26,7 @@ public class ProfileView(AppState state)
         table.AddColumn("[bold]Date[/]", col => col.LeftAligned());
         table.AddColumn("[bold]Status[/]", col => col.LeftAligned());
 
-        List<Booking?> bookings = bs.GetListings(state.currentUUID);
+        List<Booking?> bookings = bs.GetBookings(state.currentUUID);
         switch (bookings.Count)
         {
             case > 5:
