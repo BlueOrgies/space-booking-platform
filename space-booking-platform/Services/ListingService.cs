@@ -48,18 +48,14 @@ public class ListingService
 
     public void EditListing(int id, string edit, string newData)
     {
-        SQLiteConnection myConn = Database.ConnectToDb();
+        using SQLiteConnection myConn = Database.ConnectToDb();
 
         using SQLiteCommand command = new SQLiteCommand(
-            "UPDATE listings SET @edit = @newData WHERE listingID = @id", myConn);
+            $"UPDATE listings SET [{edit}] = @newData WHERE listingID = @id", myConn);
         command.Parameters.AddWithValue("@id", id);
-        command.Parameters.AddWithValue("@edit", edit);
         command.Parameters.AddWithValue("@newData", newData);
         command.ExecuteNonQuery();
-        myConn.Close();
         AnsiConsole.MarkupLine("[bold]\nListing updated.[/]");
-
-        myConn.Close();
     }
 
     
