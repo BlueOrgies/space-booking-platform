@@ -10,30 +10,46 @@ public class MyListingsView(AppState state)
     {
         AnsiConsole.Clear();
         AnsiConsole.MarkupLine("[bold green]My listings[/]");
+
+        SQLiteConnection myConn = Database.ConnectToDb();
+
+        Dictionary<string, string> rows = new Dictionary<string, string>();
         
-        ListingService ls = new ListingService(state);
-        
-        ls.ShowMyListingsOrBookings(ls.ShowUserBookings());
+        //TODO: Fix sql
+        string sql = "SELECT * FROM listings";
+
+        using SQLiteCommand readThis = new SQLiteCommand(sql, myConn);
+        using (SQLiteDataReader dataReader = readThis.ExecuteReader())
+        {
+            while (dataReader.Read())
+            {
+                string? id = dataReader["listingID"].ToString();
+                string? category = dataReader["type"].ToString();
+                string? title = dataReader["title"].ToString();
+                string? origin = dataReader["origin"].ToString();
+                string? destination = dataReader["destination"].ToString();
+                string? date = dataReader["date"].ToString();
+                string? status = dataReader["listingStatus"].ToString();
+
+                rows.Add($"{category} | {title} | {origin} | {destination} | {date} | {status}", id);
+            }
+        }
 
         var choice = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
                 .Title("\nWhere would you like to go?")
                 .HighlightStyle(new Style(Color.Yellow))
-                .AddChoices("Edit listing", "Go back to profile",
-                    "Go back to main menu", "Quit"));
-        if (state.isOrganizer)
+                .AddChoiceGroup("", rows.Keys.ToArray())
+                .AddChoiceGroup("", "Next page", "Go back to profile", "Go back to main menu", "Quit"));
+
+        if (rows.TryGetValue(choice, out string? value))
         {
-            return choice switch
-            {
-                "Edit listing" => "EditListing",
-                "Go back to profile" => "OrganizerView",
-                "Go back to main menu" => "HomeView",
-                _ => null // Quit
-            };
+            state.currentListingID = int.Parse(value);
+            return "ListingView";
         }
+
         return choice switch
         {
-            "Edit listing" => "EditListing",
             "Go back to profile" => "ProfileView",
             "Go back to main menu" => "HomeView",
             _ => null // Quit

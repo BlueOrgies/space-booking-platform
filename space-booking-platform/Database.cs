@@ -22,7 +22,8 @@ public abstract class Database
     {
         SQLiteConnection myConn = ConnectToDb();
         
-        string sql = "CREATE TABLE IF NOT EXISTS users(" +
+        string sql = "DROP TABLE IF EXISTS users; " +
+                     "CREATE TABLE IF NOT EXISTS users(" +
                      "UUID INTEGER PRIMARY KEY," +
                      "username TEXT NOT NULL," +
                      "password TEXT NOT NULL," +
@@ -34,7 +35,8 @@ public abstract class Database
         SQLiteCommand command = new SQLiteCommand(sql, myConn);
         command.ExecuteNonQuery();
         
-        sql = "CREATE TABLE IF NOT EXISTS listings(" +
+        sql = "DROP TABLE IF EXISTS listings; " +
+              "CREATE TABLE IF NOT EXISTS listings(" +
                      "listingID INTEGER PRIMARY KEY," +
                      "UUID INTEGER NOT NULL," +
                      "type TEXT NOT NULL," +
@@ -58,7 +60,8 @@ public abstract class Database
         command = new SQLiteCommand(sql, myConn);
         command.ExecuteNonQuery();
                 
-        sql = "CREATE TABLE IF NOT EXISTS bookings(" +
+        sql = "DROP TABLE IF EXISTS bookings; " +
+              "CREATE TABLE IF NOT EXISTS bookings(" +
               "bookingID INTEGER PRIMARY KEY," +
               "UUID INTEGER NOT NULL," +
               "listingID INTEGER NOT NULL," +
@@ -69,7 +72,8 @@ public abstract class Database
         command = new SQLiteCommand(sql, myConn);
         command.ExecuteNonQuery();
         
-        sql = "CREATE TABLE IF NOT EXISTS reviews(" +
+        sql = "DROP TABLE IF EXISTS reviews;" +
+              "CREATE TABLE IF NOT EXISTS reviews(" +
               "reviewID INTEGER PRIMARY KEY," +
               "UUID INTEGER NOT NULL," +
               "bookingID INTEGER NOT NULL," +

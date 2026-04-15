@@ -13,6 +13,10 @@ public class CreateListingView(AppState state)
             AnsiConsole.MarkupLine("[bold underline]You are not an organizer and cannot create a listing[/]");
         }
         AnsiConsole.MarkupLine("[bold green]=== Create a listing ===[/]\n");
+
+        ListingService listingService = new ListingService(state);
+
+        int uuid = state.currentUUID;
         
         var prompt = new SelectionPrompt<string>() //Todo: Fix space between title and choices?
             .Title("[bold]Category:[/]")
@@ -53,23 +57,22 @@ public class CreateListingView(AppState state)
         
         decimal price = AnsiConsole.Ask<decimal>($"[bold]Price[/] ({priceUnitEnum}): ");
 
-        Listings listing = new Listings(categoryEnum, title, description, transportMethod, origin, destination, date,
-           duration, durationType, capacity, capacityUnitEnum, price, priceUnitEnum);
-        
-        ListingService.AddListingToTable(listing);
+        listingService.CreateListing(uuid, categoryEnum, title, description, transportMethod, origin, destination,
+            date, duration, durationType, capacity, capacityUnitEnum, price, priceUnitEnum, DateTime.Now, ListingStatus.Active);
         
         var choice = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
                 .Title("Where would you like to go?")
                 .HighlightStyle(new Style(Color.Yellow))
-                .AddChoices("Create another listing", "Go to my listings", "Go to profile",
-                    "Go to main menu", "Quit"));
+                .AddChoices("Create another listing", "My listings", "My organizer profile",
+                    "My profile", "Go to main menu", "Quit"));
 
         return choice switch
         {
             "Create another listing" => "CreateListingView",
-            "Go back to my listings" => "MyListingsView",
-            "Go back to profile" => "OrganizerView",
+            "My listings" => "MyListingsView",
+            "My organizer profile" => "OrganizerView",
+            "My profile" => "ProfileView",
             "Go back to main menu" => "HomeView",
             _ => null // Quit
         };

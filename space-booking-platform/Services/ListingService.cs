@@ -1,5 +1,4 @@
 using System.Data.SQLite;
-using System.Globalization;
 using space_booking_platform.Models;
 using Spectre.Console;
 
@@ -7,40 +6,51 @@ namespace space_booking_platform.Services;
 
 public class ListingService(AppState state)
 {
-    public static void AddListingToTable(Listings listing)
+    public Listings CreateListing(int uuid, ListingCategory category, string title, string description, string transportMethod, 
+        string origin, string destination, DateTime date, int duration, string durationType, int capacity, 
+        ListingCapacityUnit capacityUnit, decimal price, ListingPriceUnit priceUnit, DateTime createdAt, ListingStatus listingStatus)
     {
         SQLiteConnection myConn = Database.ConnectToDb();
 
-        string sql =
-            "INSERT INTO listings(type, title, description, transportMethod, origin, destination, date, " +
+        SQLiteCommand command = new SQLiteCommand(
+            "INSERT INTO listings(uuid, type, title, description, transportMethod, origin, destination, date, " +
             "duration, durationType, capacity, capacityUnit, price, priceUnit, createdAt, listingStatus) VALUES (" +
-            $"'{listing.Category}'," +
-            $"'{listing.Title}'," +
-            $"'{listing.Description}'," +
-            $"'{listing.TransportMethod}'," +
-            $"'{listing.Origin}'," +
-            $"'{listing.Destination}'," +
-            $"'{listing.Date.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)}'," +
-            $"'{listing.Duration}'," +
-            $"'{listing.DurationType}'," +
-            $"'{listing.Capacity}'," +
-            $"'{listing.CapacityUnit}'," +
-            $"'{listing.Price}'," +
-            $"'{listing.PriceUnit}'," +
-            $"'{listing.CreatedAt}'," +
-            $"'{listing.ListingStatus}')";
+            "@uuid, @type, @title, @description, @transportMethod, @origin, @destination, @date, @duration, @durationType, " +
+            "@capacity, @capacityUnit, @price, @priceUnit, @createdAt, @listingStatus)", myConn);
 
-        SQLiteCommand command = new SQLiteCommand(sql, myConn);
+        command.Parameters.AddWithValue("@uuid", uuid);
+        command.Parameters.AddWithValue("@type", category);
+        command.Parameters.AddWithValue("@title", title);
+        command.Parameters.AddWithValue("@description", description);
+        command.Parameters.AddWithValue("@transportMethod", transportMethod);
+        command.Parameters.AddWithValue("@origin", origin);
+        command.Parameters.AddWithValue("@destination", destination);
+        command.Parameters.AddWithValue("@date", date);
+        command.Parameters.AddWithValue("@duration", duration);
+        command.Parameters.AddWithValue("@durationType", durationType);
+        command.Parameters.AddWithValue("@capacity", capacity);
+        command.Parameters.AddWithValue("@capacityUnit", capacityUnit);
+        command.Parameters.AddWithValue("@price", price);
+        command.Parameters.AddWithValue("@priceUnit", priceUnit);
+        command.Parameters.AddWithValue("@createdAt", createdAt);
+        command.Parameters.AddWithValue("@listingStatus", listingStatus);
+
         command.ExecuteNonQuery();
+        
+        using SQLiteCommand fetchCmd = new SQLiteCommand(
+            "SELECT * FROM listings WHERE listingID = last_insert_rowid()", myConn);
+        using SQLiteDataReader reader = fetchCmd.ExecuteReader();
 
+        reader.Read();
         myConn.Close();
+        return MapListings(reader);
     }
 
-    public static void EditListingInDb(string edit, string newData, int listingId)
+    public void EditListingInDb(string edit, string newData)
     {
         SQLiteConnection myConn = Database.ConnectToDb();
 
-        string sql = $"UPDATE listings SET '{edit}' = '{newData}' WHERE listingID = '{listingId}'";
+        string sql = $"UPDATE listings SET '{edit}' = '{newData}' WHERE listingID = '{state.currentListingID}'";
         SQLiteCommand command = new SQLiteCommand(sql, myConn);
         command.ExecuteNonQuery();
         myConn.Close();
@@ -49,7 +59,7 @@ public class ListingService(AppState state)
         myConn.Close();
     }
 
-    public static void ShowOverview(string sql)
+    public void ShowOverview(string sql)
     {
         bool exists = false;
         SQLiteConnection myConn = Database.ConnectToDb();
@@ -66,29 +76,23 @@ public class ListingService(AppState state)
         table.AddColumn("[bold]Status[/]", col => col.LeftAligned());
 
         using SQLiteCommand readThis = new SQLiteCommand(sql, myConn);
-        using (SQLiteDataReader dataReader = readThis.ExecuteReader())
+        using SQLiteDataReader dataReader = readThis.ExecuteReader();
+        while (dataReader.Read())
         {
-            while (dataReader.Read())
-            {
-                string? category = dataReader["type"].ToString();
-                string? title = dataReader["title"].ToString();
-                string? origin = dataReader["origin"].ToString();
-                string? destination = dataReader["destination"].ToString();
-                string? date = dataReader["date"].ToString(); 
-                string? status = dataReader["listingStatus"].ToString();
+            Listings listing = MapListings(dataReader);
 
-                table.AddRow(category, title, origin, destination, date, status);
+            table.AddRow(listing.Category.ToString(), listing.Title, listing.Origin,
+                listing.Destination, listing.Date.ToString("o"), listing.ListingStatus.ToString());
 
-                exists = true;
-            }
+            exists = true;
         }
-
-        AnsiConsole.Write(table);
 
         if (!exists)
         {
             AnsiConsole.MarkupLine("There is nothing to show.");
         }
+
+        AnsiConsole.Write(table);
 
         myConn.Close();
     }
@@ -96,8 +100,9 @@ public class ListingService(AppState state)
     public string ShowUserListings()
     {
         string sql = "SELECT * FROM listings " +
-                     "JOIN users on users.UUID = listings.UUID " +
-                     $"WHERE users.username = '{state.currentUser}'";
+                     $"WHERE listings.UUID = '{state.currentUUID}' " +
+                     "ORDER BY listings.date " +
+                     "LIMIT 5";
 
         return sql;
     }
@@ -106,12 +111,59 @@ public class ListingService(AppState state)
     {
         string sql = "SELECT * FROM bookings " +
                      "JOIN listings ON listings.listingID = bookings.listingID " +
-                     "JOIN users ON users.UUID = bookings.UUID " +
-                     $"WHERE users.username = '{state.currentUser}' ";
+                     $"WHERE listings.UUID = '{state.currentUUID}' " +
+                     "ORDER BY listings.date " +
+                     "LIMIT 5";
 
         return sql;
     }
 
+    
+    private static Listings? MapListings(SQLiteDataReader reader) => new Listings
+    {
+        ListingId = Convert.ToInt32(reader["listingID"]),
+        UUID = Convert.ToInt32(reader["UUID"]),
+        Category = ParseListingCategory(reader),
+        Title = reader["title"].ToString()!,
+        Description = reader["description"].ToString()!,
+        TransportMethod = reader["transportMethod"].ToString()!,
+        Origin = reader["origin"].ToString()!,
+        Destination = reader["destination"].ToString()!,
+        Date = DateTime.Parse(reader["createdAt"].ToString()!), 
+        Duration = Convert.ToInt32(reader["UUID"]),
+        DurationType = reader["durationType"].ToString()!,
+        Capacity = Convert.ToInt32(reader["UUID"]),
+        CapacityUnit = ParseListingCapacityUnit(reader),
+        Price = Convert.ToInt32(reader["UUID"]),
+        PriceUnit = ParseListingPriceUnit(reader),
+        ListingStatus = ParseListingStatus(reader)
+    };
+
+    private static ListingCategory ParseListingCategory(SQLiteDataReader reader)
+    {
+        ListingCategory.TryParse(reader["ListingCategory"].ToString(), out ListingCategory category);
+        return category;
+    }
+    private static ListingCapacityUnit ParseListingCapacityUnit(SQLiteDataReader reader)
+    {
+        ListingCapacityUnit.TryParse(reader["ListingCategory"].ToString(), out ListingCapacityUnit unit);
+        return unit;
+    }
+    private static ListingPriceUnit ParseListingPriceUnit(SQLiteDataReader reader)
+    {
+        ListingPriceUnit.TryParse(reader["ListingCategory"].ToString(), out ListingPriceUnit price);
+        return price;
+    }
+    private static ListingStatus ParseListingStatus(SQLiteDataReader reader)
+    {
+        ListingStatus.TryParse(reader["ListingCategory"].ToString(), out ListingStatus status);
+        return status;
+    }
+    
+    /// <summary>
+    /// Deprecated method 
+    /// </summary>
+    /// <param name="sql"></param>
     public void ShowMyListingsOrBookings(string sql)
     {
         SQLiteConnection myConn = Database.ConnectToDb();
@@ -159,33 +211,6 @@ public class ListingService(AppState state)
         }
 
         myConn.Close();
-    }
-
-    public static int ChooseListing()
-    {
-        //TODO: Change sql to only include listings from current user 
-        var listings = new Dictionary<string, int>();
-
-        string sql = "SELECT * FROM listings ";
-        SQLiteConnection myConn = Database.ConnectToDb();
-
-        using SQLiteCommand readThis = new SQLiteCommand(sql, myConn);
-        using SQLiteDataReader dataReader = readThis.ExecuteReader();
-        while (dataReader.Read())
-        {
-            string title = dataReader["title"].ToString();
-            int listingId = Convert.ToInt32(dataReader["listingID"]);
-            listings.Add(title, listingId);
-        }
-        myConn.Close();
-        
-        var choice = AnsiConsole.Prompt(
-            new SelectionPrompt<string>()
-                .Title("Which listing would you like to edit?")
-                .HighlightStyle(new Style(Color.Yellow))
-                .AddChoices(listings.Keys));
-
-        return listings.GetValueOrDefault(choice, -1);
     }
 }
 
