@@ -1,4 +1,5 @@
 using System.Data.SQLite;
+using space_booking_platform.Models;
 using space_booking_platform.Services;
 using Spectre.Console;
 
@@ -11,28 +12,15 @@ public class MyListingsView(AppState state)
         AnsiConsole.Clear();
         AnsiConsole.MarkupLine("[bold green]My listings[/]");
 
-        SQLiteConnection myConn = Database.ConnectToDb();
+        ListingService ls = new ListingService();
 
         Dictionary<string, string> rows = new Dictionary<string, string>();
-        
-        //TODO: Fix sql
-        string sql = "SELECT * FROM listings";
+        List<Listings?> listings = ls.GetListings(state.currentUUID);
 
-        using SQLiteCommand readThis = new SQLiteCommand(sql, myConn);
-        using (SQLiteDataReader dataReader = readThis.ExecuteReader())
+        foreach (Listings? listing in listings)
         {
-            while (dataReader.Read())
-            {
-                string? id = dataReader["listingID"].ToString();
-                string? category = dataReader["type"].ToString();
-                string? title = dataReader["title"].ToString();
-                string? origin = dataReader["origin"].ToString();
-                string? destination = dataReader["destination"].ToString();
-                string? date = dataReader["date"].ToString();
-                string? status = dataReader["listingStatus"].ToString();
-
-                rows.Add($"{category} | {title} | {origin} | {destination} | {date} | {status}", id);
-            }
+            rows.Add($"{listing.Category} | {listing.Title} | {listing.Origin} | {listing.Destination}" +
+                     $" | {listing.Date} | {listing.ListingStatus}", listing.ListingId.ToString());
         }
 
         var choice = AnsiConsole.Prompt(
@@ -40,19 +28,18 @@ public class MyListingsView(AppState state)
                 .Title("\nWhere would you like to go?")
                 .HighlightStyle(new Style(Color.Yellow))
                 .AddChoiceGroup("", rows.Keys.ToArray())
-                .AddChoiceGroup("", "Next page", "Go back to profile", "Go back to main menu", "Quit"));
+                .AddChoiceGroup("", "Next page", "Go back to profile", 
+                                "Go back to main menu", "Quit"));
 
-        if (rows.TryGetValue(choice, out string? value))
-        {
-            state.currentListingID = int.Parse(value);
-            return "Listing";
-        }
+        if (!rows.TryGetValue(choice, out string? value))
+            return choice switch
+            {
+                "Go back to profile" => "ProfileView",
+                "Go back to main menu" => "Home",
+                _ => null // Quit
+            };
+        state.currentListingID = int.Parse(value);
+        return "Listing";
         //TODO: Add pagination
-        return choice switch
-        {
-            "Go back to profile" => "ProfileView",
-            "Go back to main menu" => "Home",
-            _ => null // Quit
-        };
     }
 }
