@@ -45,25 +45,30 @@ using SQLiteConnection myConn = Database.ConnectToDb();
         return bookings;
     }
     
-    private static Booking MapBooking(SQLiteDataReader reader) => new Booking
+    private static Booking MapBooking(SQLiteDataReader reader)
+    {
+        ListingStatus.TryParse(reader["bookingStatus"].ToString(), out ListingStatus bookingStatus);
+        return new Booking
     {
         BookingId = Convert.ToInt32(reader["bookingID"]),
         UUID = Convert.ToInt32(reader["UUID"]),
         ListingId = Convert.ToInt32(reader["listingID"]),
+            BookingStatus = bookingStatus,
         Category = ListingService.ParseListingCategory(reader),
         Title = reader["title"].ToString()!,
         Description = reader["description"].ToString()!,
         TransportMethod = reader["transportMethod"].ToString()!,
         Origin = reader["origin"].ToString()!,
         Destination = reader["destination"].ToString()!,
-        Date = DateTime.Parse(reader["createdAt"].ToString()!), 
-        Duration = Convert.ToInt32(reader["UUID"]),
+            Date = DateTime.Parse(reader["date"].ToString()!),
+            Duration = Convert.ToInt32(reader["duration"]),
         DurationType = reader["durationType"].ToString()!,
-        Capacity = Convert.ToInt32(reader["UUID"]),
+            Capacity = Convert.ToInt32(reader["capacity"]),
         CapacityUnit = ListingService.ParseListingCapacityUnit(reader),
-        Price = Convert.ToInt32(reader["UUID"]),
+            Price = Convert.ToDecimal(reader["price"]),
         PriceUnit = ListingService.ParseListingPriceUnit(reader),
         ListingStatus = ListingService.ParseListingStatus(reader)
     };
+    }
     
 }
