@@ -19,30 +19,31 @@ public class ListingService
                    "@capacity, @capacityUnit, @price, @priceUnit, @createdAt, @listingStatus)", myConn))
         {
             command.Parameters.AddWithValue("@uuid", uuid);
-            command.Parameters.AddWithValue("@type", category);
+            command.Parameters.AddWithValue("@type", category.ToString());
             command.Parameters.AddWithValue("@title", title);
             command.Parameters.AddWithValue("@description", description);
             command.Parameters.AddWithValue("@transportMethod", transportMethod);
             command.Parameters.AddWithValue("@origin", origin);
             command.Parameters.AddWithValue("@destination", destination);
-            command.Parameters.AddWithValue("@date", date);
+            command.Parameters.AddWithValue("@date", date.ToString("o"));
             command.Parameters.AddWithValue("@duration", duration);
             command.Parameters.AddWithValue("@durationType", durationType);
             command.Parameters.AddWithValue("@capacity", capacity);
-            command.Parameters.AddWithValue("@capacityUnit", capacityUnit);
+            command.Parameters.AddWithValue("@capacityUnit", capacityUnit.ToString());
             command.Parameters.AddWithValue("@price", price);
-            command.Parameters.AddWithValue("@priceUnit", priceUnit);
-            command.Parameters.AddWithValue("@createdAt", createdAt);
-            command.Parameters.AddWithValue("@listingStatus", listingStatus);
+            command.Parameters.AddWithValue("@priceUnit", priceUnit.ToString());
+            command.Parameters.AddWithValue("@createdAt", createdAt.ToString("o"));
+            command.Parameters.AddWithValue("@listingStatus", listingStatus.ToString());
             command.ExecuteNonQuery();
         }
 
         using SQLiteCommand fetchCmd = new SQLiteCommand(
             "SELECT * FROM listings WHERE listingID = last_insert_rowid()", myConn);
         using SQLiteDataReader reader = fetchCmd.ExecuteReader();
-
         reader.Read();
-        return MapListings(reader);
+        var listing = MapListings(reader);
+        myConn.Close();
+        return listing;
     }
 
     public void EditListing(int id, string edit, string newData)
