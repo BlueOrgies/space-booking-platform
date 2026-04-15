@@ -60,22 +60,18 @@ public class ListingService
 
     
 
-    public List<Listings?> GetListings(int id)
+    public List<Listings> GetListings(int id)
     {
-        List<Listings?> listings = new List<Listings?>();
-        SQLiteConnection myConn = Database.ConnectToDb();
+        List<Listings> listings = new List<Listings>();
+        using SQLiteConnection myConn = Database.ConnectToDb();
 
         using SQLiteCommand command = new SQLiteCommand(
-            "SELECT * FROM listings  WHERE UUID = @id ORDER BY date", myConn);
+            "SELECT * FROM listings WHERE UUID = @id ORDER BY date", myConn);
         command.Parameters.AddWithValue("@id", id);
 
         using SQLiteDataReader reader = command.ExecuteReader();
-
         while (reader.Read())
-        {
-            Listings listing = MapListings(reader);
-            listings.Add(listing);
-        }
+            listings.Add(MapListings(reader));
 
         return listings;
     }
