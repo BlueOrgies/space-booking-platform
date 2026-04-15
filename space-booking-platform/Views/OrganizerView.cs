@@ -13,7 +13,7 @@ public class OrganizerView(AppState state)
         
         ListingService ls = new ListingService();
         ReviewService rs = new ReviewService();
-        var choices = new List<string> { "Go back to main menu", "Quit" };
+        var choices = new List<string> {"Create listing", "Go back to main menu", "Quit" };
         
         AnsiConsole.MarkupLine($"[bold green]=== {state.currentUser}s profile: Organizer ===[/]");
 
@@ -87,6 +87,7 @@ public class OrganizerView(AppState state)
         return choice switch
         {
             "View my listings" => "MyListings",
+            "Create listing" => "CreateListing",
             "View my reviews" => "MyReviews",
             "Go back to main menu" => "Home",
             _ => null // Quit
