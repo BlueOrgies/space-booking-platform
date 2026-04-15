@@ -29,6 +29,18 @@ public class ProfileView(AppState state)
         List<Booking?> bookings = bs.GetListings(state.currentUUID);
         switch (bookings.Count)
         {
+            case > 5:
+            {
+                for (int i = 0; i < 5; i++)
+                {
+                    Booking? booking = bookings[i];
+                    table.AddRow(booking.Category.ToString(), booking.Title, booking.Origin, 
+                        booking.Destination, booking.Date.ToString("o"), booking.BookingStatus.ToString());
+                }
+                AnsiConsole.Write(table);
+                choices.Add("View my bookings");
+                break;
+            }
             case > 0:
             {
                 foreach (var booking in bookings)
