@@ -32,12 +32,23 @@ public class OrganizerView(AppState state)
         List<Listings?> listings = ls.GetListings(state.currentUUID);
         switch (listings.Count)
         {
+            case > 5:
+            {
+                for (int i = 0; i < 5; i++)
+                {
+                    table.AddRow(listings[i].Category.ToString(), listings[i].Title, listings[i].Origin, listings[i].Destination,
+                        listings[i].Date.ToString("o"), listings[i].ListingStatus.ToString());
+                }
+                AnsiConsole.Write(table);
+                choices.Add("View my listings");
+                break;
+            }
             case > 0:
             {
-                foreach (var listing in listings)
+                for (int i = 0; listings.Count > i; i++)
                 {
-                    table.AddRow(listing.Category.ToString(), listing.Title, listing.Origin, listing.Destination, 
-                        listing.Date.ToString("o"), listing.ListingStatus.ToString());
+                    table.AddRow(listings[i].Category.ToString(), listings[i].Title, listings[i].Origin, listings[i].Destination,
+                        listings[i].Date.ToString("o"), listings[i].ListingStatus.ToString());
                 }
                 AnsiConsole.Write(table);
                 choices.Add("View my listings");
@@ -62,12 +73,23 @@ public class OrganizerView(AppState state)
         List<Review?> reviews = rs.GetReviews(state.currentUUID);
         switch (reviews.Count)
         {
-            case > 0:
+            case > 5:
             {
-                foreach (var review in reviews)
+                for (int i = 0; i < 5; i++)
                 {
-                    table2.AddRow(review.Title, review.Type, review.Rating.ToString(),
-                        review.Comment, review.CreatedAt.ToString("o"));
+                    table2.AddRow(reviews[i].Title, reviews[i].Type, reviews[i].Rating.ToString(),
+                        reviews[i].Comment, reviews[i].CreatedAt.ToString("o"));
+                }
+                AnsiConsole.Write(table2);
+                choices.Add("View my reviews");
+                break;
+            }
+                case > 0:
+            {
+                for (int i = 0; i < reviews.Count; i++)
+                {
+                    table2.AddRow(reviews[i].Title, reviews[i].Type, reviews[i].Rating.ToString(),
+                        reviews[i].Comment, reviews[i].CreatedAt.ToString("o"));
                 }
                 AnsiConsole.Write(table2);
                 choices.Add("View my reviews");
