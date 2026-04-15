@@ -14,6 +14,17 @@ public class BookingService
         cmd.Parameters.AddWithValue("@listingId", listingId);
         return (long)cmd.ExecuteScalar()! > 0;
     }
+
+    public void CreateBooking(int uuid, int listingId)
+    {
+        using SQLiteConnection conn = Database.ConnectToDb();
+        using SQLiteCommand cmd = new SQLiteCommand(
+            "INSERT INTO bookings (UUID, listingID, bookingStatus) VALUES (@uuid, @listingId, 'Confirmed')", conn);
+        cmd.Parameters.AddWithValue("@uuid", uuid);
+        cmd.Parameters.AddWithValue("@listingId", listingId);
+        cmd.ExecuteNonQuery();
+    }
+
     public List<Booking?> GetBookings(int id)
     {
         List<Booking?> bookings = new List<Booking?>();
