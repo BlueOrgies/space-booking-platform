@@ -76,6 +76,23 @@ public class ListingService
         return listings;
     }
 
+    public List<Listings> GetAllListings(int offset)
+    {
+        using SQLiteConnection myConn = Database.ConnectToDb();
+        var listings = new List<Listings>();
+
+        using SQLiteCommand cmd = new SQLiteCommand(
+            "SELECT * FROM listings WHERE listingStatus = 'Active' ORDER BY date LIMIT 10 OFFSET @offset",
+            myConn);
+        cmd.Parameters.AddWithValue("@offset", offset);
+
+        using SQLiteDataReader reader = cmd.ExecuteReader();
+        while (reader.Read())
+            listings.Add(MapListings(reader));
+
+        return listings;
+    }
+
 
     private static Listings? MapListings(SQLiteDataReader reader) => new Listings
     {
