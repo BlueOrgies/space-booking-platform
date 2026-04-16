@@ -13,9 +13,9 @@ public class LeaveReviewView(AppState state)
         AnsiConsole.MarkupLine("[bold green]=== Leave a Review ===[/]\n");
         
         int rating = AnsiConsole.Prompt(
-            new SelectionPrompt<int>()
-                .Title("How would you rate your experience?")
-                .AddChoices(1, 2, 3, 4, 5, 6));
+            new TextPrompt<int>("How would you rate your experience (1-6)?")
+                .ValidationErrorMessage("[red]Rating must be between 1 and 6[/]")
+                .Validate(n => n is >= 1 and <= 6));
         
         string comment = AnsiConsole.Prompt(
             new TextPrompt<string>("[bold]Comment (optional):[/]")
