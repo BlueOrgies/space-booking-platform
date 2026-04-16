@@ -73,6 +73,25 @@ public class MyBookingsView(AppState state)
                 {
                     options.Insert(0, "Leave Review");
                 }
+                var subChoice = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                        .Title("What would you like to do with this booking?")
+                        .HighlightStyle(new Style(Color.Yellow))
+                        .AddChoices(options));
+
+                if (subChoice == "Leave Review")
+                {
+                    state.currentBookingID = selectedBooking.BookingId;
+                    return "LeaveReview";
+                }
+                
+                if (subChoice == "View Listing")
+                {
+                    state.currentListingID = int.Parse(listingId);
+                    return "Listing";
+                }
+                
+                continue;
             }
             
             switch (choice)
