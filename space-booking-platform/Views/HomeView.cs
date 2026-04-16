@@ -12,7 +12,7 @@ public class HomeView(AppState state)
         var choices = new List<string> { "Login", "Register", "Quit" };
         if (state.isLoggedIn)
         {
-            choices = new List<string> { "BrowseListing", "SearchListing", "ProfileView" };
+            choices = new List<string> { "BrowseListings", "SearchListings", "ProfileView" };
             if (state.isOrganizer)
             {
                 choices.Add("OrganizerView");
@@ -31,8 +31,8 @@ public class HomeView(AppState state)
         {
             "Login"             => "Login",
             "Register"          => "Register",
-            "BrowseListing"     => "BrowseListing",
-            "SearchListing"     => "SearchListing",
+            "BrowseListings"     => "BrowseListings",
+            "SearchListings"     => "SearchListings",
             "ProfileView"       => "ProfileView",
             "OrganizerView"     => "OrganizerView",
             "Logout"            => "Logout",
