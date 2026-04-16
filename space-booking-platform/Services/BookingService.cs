@@ -17,8 +17,11 @@ public class BookingService
 
         using SQLiteDataReader reader = command.ExecuteReader();
 
-        if (!reader.Read())
-            return bookings;
+        if (reader.Read())
+        {
+             Booking booking = MapBooking(reader);
+             bookings.Add(booking);
+        }
 
         while (reader.Read())
         {
