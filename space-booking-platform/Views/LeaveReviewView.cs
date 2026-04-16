@@ -1,9 +1,14 @@
-﻿namespace space_booking_platform.Views;
+﻿using space_booking_platform.Services;
+using Spectre.Console;
+
+namespace space_booking_platform.Views;
 
 public class LeaveReviewView
 {
     public string? Display(AppState state)
     {
+        ReviewService reviewService = new ReviewService();
+        
         AnsiConsole.Clear();
         AnsiConsole.MarkupLine("[bold green]=== Leave a Review ===[/]\n");
         
@@ -15,6 +20,8 @@ public class LeaveReviewView
         string comment = AnsiConsole.Prompt(
             new TextPrompt<string>("[bold]Comment (optional):[/]")
                 .AllowEmpty());
+        
+        reviewService.CreateReview(state.currentUUID, state.currentBookingID, rating, comment);
         
         return "";
     }
