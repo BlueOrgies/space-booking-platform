@@ -8,4 +8,5 @@ public class AppState
     public int currentUUID { get; set; }
     public int currentListingID { get; set; }
     public int currentReviewID { get; set; }
+    public int currentPage {get; set;}
 }

@@ -41,6 +41,7 @@ public class OrganizerView(AppState state)
                 }
                 AnsiConsole.Write(table);
                 choices.Insert(0, "View my listings");
+                state.currentPage = 0;
                 break;
             }
             case > 0:
@@ -52,6 +53,7 @@ public class OrganizerView(AppState state)
                 }
                 AnsiConsole.Write(table);
                 choices.Insert(0, "View my listings");
+                state.currentPage = 0;
                 break;
             }
             case 0:
