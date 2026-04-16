@@ -61,6 +61,16 @@ public class ReviewService
         
         cmd.ExecuteNonQuery();
     }
+
+    public bool HasReview(int bookingId)
+    {
+        using SQLiteConnection conn = Database.ConnectToDb();
+        using SQLiteCommand cmd = new SQLiteCommand(
+            "SELECT COUNT(*) FROM reviews WHERE bookingID = @bookingId", conn);
+
+        cmd.Parameters.AddWithValue("@bookingId", bookingId);
+        return (long)cmd.ExecuteScalar()! > 0;
+    }
     
     private static Review MapReview(SQLiteDataReader reader) => new Review
     {
