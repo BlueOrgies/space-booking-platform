@@ -6,8 +6,8 @@ public class Review
     public int UUID { get; set; }
     public int BookingID { get; set; }
     public int Rating  { get; set; }
-    public string Comment { get; set; }
+    public string Comment { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
-    public string Type { get; set; }
-    public string Title  { get; set; }
+    public string Type { get; set; } = string.Empty;
+    public string Title  { get; set; } = string.Empty;
 }

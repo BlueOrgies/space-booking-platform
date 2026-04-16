@@ -15,9 +15,9 @@ public class MyListingsView(AppState state)
         ListingService ls = new ListingService();
 
         Dictionary<string, string> rows = new Dictionary<string, string>();
-        List<Listings?> listings = ls.GetListings(state.currentUUID);
+        List<Listings> listings = ls.GetListings(state.currentUUID);
 
-        foreach (Listings? listing in listings)
+        foreach (Listings listing in listings)
         {
             rows.Add($"{listing.Category} | {listing.Title} | {listing.Origin} | {listing.Destination}" +
                      $" | {listing.Date} | {listing.ListingStatus}", listing.ListingId.ToString());
