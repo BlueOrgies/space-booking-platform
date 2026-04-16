@@ -23,7 +23,7 @@ public class ViewHandler
         "SearchListing"     => NotImplemented("SearchView"),
         "Booking"           => NotImplemented("BookingView"),
         "ProfileView"       => new ProfileView(_state).Display(),
-        "MyBookings"        => NotImplemented("MyBookingsView"),
+        "MyBookings"        => new MyBookingsView(_state).Display(),
         "MyListings"        => new MyListingsView(_state).Display(),
         "Listing"           => NotImplemented("ListingView"),
         "OrganizerView"     => new OrganizerView(_state).Display(),
