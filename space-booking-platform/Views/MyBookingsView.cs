@@ -38,6 +38,10 @@ public class MyBookingsView(AppState state)
                               $"{booking.Date:dd.MM.yyyy} | {booking.BookingStatus}";
                 rows.Add(text, booking.ListingId.ToString());
             }
+            
+            var prompt = new SelectionPrompt<string>()
+                .Title($"\nShowing page {currentPage + 1} of {totalPages}. Where would you like to go?")
+                .HighlightStyle(new Style(Color.Yellow));
         }
     }
 }
