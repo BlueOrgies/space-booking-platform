@@ -66,6 +66,24 @@ public class MyBookingsView(AppState state)
                 state.currentListingID = int.Parse(listingId);
                 return "Listing";
             }
+            
+            switch (choice)
+            {
+                case "Next page":
+                    currentPage++;
+                    break;
+                case "Previous page":
+                    currentPage--;
+                    break;
+                case "Go back to profile":
+                    return "ProfileView";
+                case "Go back to main menu":
+                    return "Home";
+                case "Quit":
+                    return null;
+                default:
+                    throw new Exception("Invalid choice");
+            }
         }
     }
 }
