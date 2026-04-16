@@ -3,9 +3,9 @@ using Spectre.Console;
 
 namespace space_booking_platform.Views;
 
-public class LeaveReviewView
+public class LeaveReviewView(AppState state)
 {
-    public string? Display(AppState state)
+    public string? Display()
     {
         ReviewService reviewService = new ReviewService();
         
@@ -23,6 +23,10 @@ public class LeaveReviewView
         
         reviewService.CreateReview(state.currentUUID, state.currentBookingID, rating, comment);
         
-        return "";
+        AnsiConsole.MarkupLine("\n[green]Thank you for your review![/]");
+        AnsiConsole.WriteLine("Press any key to return to your bookings...");
+        Console.ReadKey(true);
+        
+        return "MyBookings";
     }
 }
