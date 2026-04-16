@@ -42,6 +42,30 @@ public class MyBookingsView(AppState state)
             var prompt = new SelectionPrompt<string>()
                 .Title($"\nShowing page {currentPage + 1} of {totalPages}. Where would you like to go?")
                 .HighlightStyle(new Style(Color.Yellow));
+            
+            foreach (var key in rows.Keys)
+            {
+                prompt.AddChoice(key);
+            }
+            
+            if (endIndex < allBookings.Count)
+            {
+                prompt.AddChoice("Next page");
+            }
+            if (startIndex > 0)
+            {
+                prompt.AddChoice("Previous page");
+            }
+            
+            prompt.AddChoices("Go back to profile", "Go back to main menu", "Quit");
+            
+            var choice = AnsiConsole.Prompt(prompt);
+            
+            if (rows.TryGetValue(choice, out string? listingId))
+            {
+                state.currentListingID = int.Parse(listingId);
+                return "Listing";
+            }
         }
     }
 }
