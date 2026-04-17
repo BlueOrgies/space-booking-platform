@@ -35,9 +35,6 @@ public class ReviewService
         
         using SQLiteDataReader reader = command.ExecuteReader();
         
-        if (!reader.Read())
-            return reviews;
-
         while (reader.Read())
         {
             Review review = MapReview(reader);
