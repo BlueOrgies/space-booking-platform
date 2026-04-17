@@ -37,9 +37,23 @@ public class ListingView(AppState state)
 
         var bookingService = new BookingService();
         int booked = bookingService.GetBookingCount(listing.ListingId);
-        int remaining = listing.Capacity - booked;
-        string availColor = remaining > 0 ? "green" : "red";
-        table.AddRow("[bold]Availability[/]", $"[{availColor}]{booked}/{listing.Capacity} booked ({remaining} remaining)[/]");
+        bool isFull;
+
+        if (listing.CapacityUnit == ListingCapacityUnit.MaxWeight)
+        {
+            int bookedWeight = bookingService.GetBookedWeight(listing.ListingId);
+            int remainingWeight = listing.Capacity - bookedWeight;
+            string wAvailColor = remainingWeight > 0 ? "green" : "red";
+            table.AddRow("[bold]Availability[/]", $"[{wAvailColor}]{bookedWeight}/{listing.Capacity} kg used ({remainingWeight} kg remaining)[/]");
+            isFull = state.isLoggedIn && remainingWeight < state.currentUserWeight;
+        }
+        else
+        {
+            int remaining = listing.Capacity - booked;
+            string availColor = remaining > 0 ? "green" : "red";
+            table.AddRow("[bold]Availability[/]", $"[{availColor}]{booked}/{listing.Capacity} booked ({remaining} remaining)[/]");
+            isFull = remaining <= 0;
+        }
 
         string priceDisplay = listing.PriceUnit == ListingPriceUnit.EurosPerKg && state.isLoggedIn && state.currentUserWeight > 0
             ? $"{listing.Price} €/kg (Your total: [bold]{listing.Price * state.currentUserWeight} €[/] for {state.currentUserWeight} kg)"
@@ -67,8 +81,10 @@ public class ListingView(AppState state)
         {
             if (bookingService.HasBooked(state.currentUUID, listing.ListingId))
                 AnsiConsole.MarkupLine("[grey]You have already booked this listing.[/]");
-            else if (remaining <= 0)
-                AnsiConsole.MarkupLine("[red]This listing is fully booked.[/]");
+            else if (isFull)
+                AnsiConsole.MarkupLine(listing.CapacityUnit == ListingCapacityUnit.MaxWeight
+                    ? $"[red]Not enough weight capacity (your weight: {state.currentUserWeight} kg).[/]"
+                    : "[red]This listing is fully booked.[/]");
             else
                 choices.Add("Book this listing");
         }

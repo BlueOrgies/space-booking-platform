@@ -56,12 +56,30 @@ public class BookingService
             long booked = (long)countCmd.ExecuteScalar()!;
 
             using SQLiteCommand capCmd = new SQLiteCommand(
-                "SELECT capacity FROM listings WHERE listingID = @listingId", conn);
+                "SELECT capacity, capacityUnit FROM listings WHERE listingID = @listingId", conn);
             capCmd.Parameters.AddWithValue("@listingId", listingId);
-            int capacity = Convert.ToInt32(capCmd.ExecuteScalar()!);
+            using var capReader = capCmd.ExecuteReader();
+            if (capReader.Read())
+            {
+                int capacity = Convert.ToInt32(capReader["capacity"]);
+                string unit = capReader["capacityUnit"].ToString()!;
 
-            if (booked >= capacity)
-                throw new InvalidOperationException("This listing is fully booked.");
+                if (unit == "MaxWeight")
+                {
+                    int totalWeight = GetBookedWeight(listingId);
+                    using SQLiteCommand userCmd = new SQLiteCommand(
+                        "SELECT weight FROM users WHERE UUID = @uuid", conn);
+                    userCmd.Parameters.AddWithValue("@uuid", uuid);
+                    int userWeight = Convert.ToInt32(userCmd.ExecuteScalar()!);
+                    if (totalWeight + userWeight > capacity)
+                        throw new InvalidOperationException("Not enough weight capacity for this transport.");
+                }
+                else
+                {
+                    if (booked >= capacity)
+                        throw new InvalidOperationException("This listing is fully booked.");
+                }
+            }
         }
 
         using SQLiteCommand cmd = new SQLiteCommand(
