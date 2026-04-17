@@ -44,7 +44,7 @@ public class EditListingView(AppState state)
                 break;
             case "Date":
                 DateTime date = AnsiConsole.Ask<DateTime>("New date and time (yyyy-MM-dd HH:mm): ");
-                listingService.EditListing(listingId, "date", date.ToString());
+                listingService.EditListing(listingId, "date", date.ToString("o"));
                 break;
             case "Duration":
                 int duration = AnsiConsole.Ask<int>("Edit duration: ");
