@@ -59,7 +59,11 @@ public class ListingView(AppState state)
 
         var choices = new List<string>();
 
-        if (state.isLoggedIn && listing.ListingStatus == ListingStatus.Active)
+        if (state.isLoggedIn && listing.UUID == state.currentUUID)
+        {
+            choices.Add("Edit this listing");
+        }
+        else if (state.isLoggedIn && listing.ListingStatus == ListingStatus.Active)
         {
             var bookingService = new BookingService();
             if (bookingService.HasBooked(state.currentUUID, listing.ListingId))
