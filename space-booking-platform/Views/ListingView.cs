@@ -17,7 +17,7 @@ public class ListingView(AppState state)
         {
             AnsiConsole.MarkupLine("[red]Listing not found.[/]");
             AnsiConsole.Prompt(new SelectionPrompt<string>().AddChoices("Back to Browse Listings"));
-            return "BrowseListing";
+            return "BrowseListings";
         }
 
         AnsiConsole.Write(new Rule($"[bold green]{Markup.Escape(listing.Title)}[/]").RuleStyle("green"));
