@@ -41,6 +41,19 @@ public class ListingView(AppState state)
         string availColor = remaining > 0 ? "green" : "red";
         table.AddRow("[bold]Availability[/]", $"[{availColor}]{booked}/{listing.Capacity} booked ({remaining} remaining)[/]");
 
+        string priceDisplay = listing.PriceUnit == ListingPriceUnit.EurosPerKg && state.isLoggedIn && state.currentUserWeight > 0
+            ? $"{listing.Price} €/kg (Your total: [bold]{listing.Price * state.currentUserWeight} €[/] for {state.currentUserWeight} kg)"
+            : $"{listing.Price} {listing.PriceUnit}";
+        table.AddRow("[bold]Price[/]",       priceDisplay);
+
+        string statusColor = listing.ListingStatus switch
+        {
+            ListingStatus.Active => "green",
+            ListingStatus.Cancelled => "red",
+            _ => "yellow"
+        };
+        table.AddRow("[bold]Status[/]",      $"[{statusColor}]{listing.ListingStatus}[/]");
+
         AnsiConsole.Write(table);
         AnsiConsole.WriteLine();
 
