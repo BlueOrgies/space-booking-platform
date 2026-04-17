@@ -84,10 +84,15 @@ public class ListingView(AppState state)
 
         if (choice == "Book this listing")
         {
-            var bookingService = new BookingService();
-            bookingService.CreateBooking(state.currentUUID, listing.ListingId);
-            AnsiConsole.MarkupLine("[bold green]Booking confirmed![/]");
-            AnsiConsole.WriteLine("Press any key to continue...");
+            if (!AnsiConsole.Confirm("Are you sure you want to book this listing?"))
+                return "Listing";
+
+            var bookingService2 = new BookingService();
+            bookingService2.CreateBooking(state.currentUUID, listing.ListingId);
+            AnsiConsole.WriteLine();
+            AnsiConsole.Write(new Rule("[bold green]✓ Booking Confirmed![/]").RuleStyle("green"));
+            AnsiConsole.WriteLine();
+            AnsiConsole.MarkupLine("Press any key to continue...");
             Console.ReadKey(intercept: true);
             return "BrowseListings";
         }
