@@ -65,9 +65,10 @@ public class ListingView(AppState state)
         }
         else if (state.isLoggedIn && listing.ListingStatus == ListingStatus.Active)
         {
-            var bookingService = new BookingService();
             if (bookingService.HasBooked(state.currentUUID, listing.ListingId))
                 AnsiConsole.MarkupLine("[grey]You have already booked this listing.[/]");
+            else if (remaining <= 0)
+                AnsiConsole.MarkupLine("[red]This listing is fully booked.[/]");
             else
                 choices.Add("Book this listing");
         }
