@@ -32,7 +32,7 @@ public class CreateListingView(AppState state)
         
         string destination = AnsiConsole.Ask<string>("[bold]Destination: [/]");
         
-        DateTime date = AnsiConsole.Ask<DateTime>("[bold]Date: [/]");
+        DateTime date = AnsiConsole.Ask<DateTime>("[bold]Date and time[/] (yyyy-mm-dd hh:mm) : ");
         
         int duration = AnsiConsole.Ask<int>("[bold]Duration: [/]");
         
