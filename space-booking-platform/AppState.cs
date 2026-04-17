@@ -9,5 +9,6 @@ public class AppState
     public int currentListingID { get; set; }
     public int currentBookingID { get; set; }
     public int currentReviewID { get; set; }
+    public int currentUserWeight { get; set; }
     public int currentPage {get; set;}
 }
