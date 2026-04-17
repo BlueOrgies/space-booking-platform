@@ -92,6 +92,12 @@ public class ListingView(AppState state)
             return "BrowseListings";
         }
 
+        if (choice == "Edit this listing")
+        {
+            state.currentListingID = listing.ListingId;
+            return "EditListing";
+        }
+
         return choice switch
         {
             "Back to Browse Listings" => "BrowseListings",
