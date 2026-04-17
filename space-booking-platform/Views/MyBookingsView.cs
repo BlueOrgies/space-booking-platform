@@ -63,8 +63,35 @@ public class MyBookingsView(AppState state)
             
             if (rows.TryGetValue(choice, out string? listingId))
             {
-                state.currentListingID = int.Parse(listingId);
-                return "Listing";
+                var selectedBooking = allBookings.FirstOrDefault(b => b?.ListingId.ToString() == listingId);
+                if (selectedBooking == null) continue;
+
+                var reviewService = new ReviewService();
+                var options = new List<string> { "View Listing", "Back" };
+                
+                if (!reviewService.HasReview(selectedBooking.BookingId))
+                {
+                    options.Insert(0, "Leave Review");
+                }
+                var subChoice = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                        .Title("What would you like to do with this booking?")
+                        .HighlightStyle(new Style(Color.Yellow))
+                        .AddChoices(options));
+
+                if (subChoice == "Leave Review")
+                {
+                    state.currentBookingID = selectedBooking.BookingId;
+                    return "LeaveReview";
+                }
+                
+                if (subChoice == "View Listing")
+                {
+                    state.currentListingID = int.Parse(listingId);
+                    return "Listing";
+                }
+                
+                continue;
             }
             
             switch (choice)

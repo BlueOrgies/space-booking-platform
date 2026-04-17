@@ -45,6 +45,32 @@ public class ReviewService
         }
         return reviews;
     }
+
+    public void CreateReview(int uuid, int bookingId, int rating, string comment)
+    {
+        using SQLiteConnection conn = Database.ConnectToDb();
+        using SQLiteCommand cmd = new SQLiteCommand(
+            "INSERT INTO reviews (UUID, bookingID, rating, comment, createdAt) " +
+            "VALUES (@uuid, @bookingId, @rating, @comment, @createdAt)", conn);
+        
+        cmd.Parameters.AddWithValue("@uuid", uuid);
+        cmd.Parameters.AddWithValue("@bookingId", bookingId);
+        cmd.Parameters.AddWithValue("@rating", rating);
+        cmd.Parameters.AddWithValue("@comment", comment);
+        cmd.Parameters.AddWithValue("@createdAt", DateTime.UtcNow.ToString("o"));
+        
+        cmd.ExecuteNonQuery();
+    }
+
+    public bool HasReview(int bookingId)
+    {
+        using SQLiteConnection conn = Database.ConnectToDb();
+        using SQLiteCommand cmd = new SQLiteCommand(
+            "SELECT COUNT(*) FROM reviews WHERE bookingID = @bookingId", conn);
+
+        cmd.Parameters.AddWithValue("@bookingId", bookingId);
+        return (long)cmd.ExecuteScalar()! > 0;
+    }
     
     private static Review MapReview(SQLiteDataReader reader) => new Review
     {
