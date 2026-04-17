@@ -51,9 +51,10 @@ public class ListingService
         using SQLiteConnection myConn = Database.ConnectToDb();
 
         using SQLiteCommand command = new SQLiteCommand(
-            $"UPDATE listings SET [{edit}] = @newData WHERE listingID = @id", myConn);
+            $"UPDATE listings SET @edit = @newData WHERE listingID = @id", myConn);
         command.Parameters.AddWithValue("@id", id);
         command.Parameters.AddWithValue("@newData", newData);
+        command.Parameters.AddWithValue("@edit", edit);
         command.ExecuteNonQuery();
         AnsiConsole.MarkupLine("[bold]\nListing updated.[/]");
     }
