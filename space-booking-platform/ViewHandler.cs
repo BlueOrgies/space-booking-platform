@@ -30,6 +30,7 @@ public class ViewHandler
         "CreateListing"     => new CreateListingView(_state).Display(),
         "EditListing"       => new EditListingView(_state).Display(),
         "Review"            => NotImplemented("ReviewView"),
+        "OrganizerReviews"  => new OrganizerReviewsView(_state).Display(),
         "LeaveReview"       => new LeaveReviewView(_state).Display(),
         "Logout"            => Logout(),
         _ => throw new ArgumentException($"Unknown view: {viewName}")
