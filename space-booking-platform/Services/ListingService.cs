@@ -19,72 +19,119 @@ public class ListingService
                    "@capacity, @capacityUnit, @price, @priceUnit, @createdAt, @listingStatus)", myConn))
         {
             command.Parameters.AddWithValue("@uuid", uuid);
-            command.Parameters.AddWithValue("@type", category);
+            command.Parameters.AddWithValue("@type", category.ToString());
             command.Parameters.AddWithValue("@title", title);
             command.Parameters.AddWithValue("@description", description);
             command.Parameters.AddWithValue("@transportMethod", transportMethod);
             command.Parameters.AddWithValue("@origin", origin);
             command.Parameters.AddWithValue("@destination", destination);
-            command.Parameters.AddWithValue("@date", date);
+            command.Parameters.AddWithValue("@date", date.ToString("o"));
             command.Parameters.AddWithValue("@duration", duration);
             command.Parameters.AddWithValue("@durationType", durationType);
             command.Parameters.AddWithValue("@capacity", capacity);
-            command.Parameters.AddWithValue("@capacityUnit", capacityUnit);
+            command.Parameters.AddWithValue("@capacityUnit", capacityUnit.ToString());
             command.Parameters.AddWithValue("@price", price);
-            command.Parameters.AddWithValue("@priceUnit", priceUnit);
-            command.Parameters.AddWithValue("@createdAt", createdAt);
-            command.Parameters.AddWithValue("@listingStatus", listingStatus);
+            command.Parameters.AddWithValue("@priceUnit", priceUnit.ToString());
+            command.Parameters.AddWithValue("@createdAt", createdAt.ToString("o"));
+            command.Parameters.AddWithValue("@listingStatus", listingStatus.ToString());
             command.ExecuteNonQuery();
         }
 
         using SQLiteCommand fetchCmd = new SQLiteCommand(
             "SELECT * FROM listings WHERE listingID = last_insert_rowid()", myConn);
         using SQLiteDataReader reader = fetchCmd.ExecuteReader();
-
         reader.Read();
-        return MapListings(reader);
+        var listing = MapListings(reader);
+        myConn.Close();
+        return listing;
     }
 
     public void EditListing(int id, string edit, string newData)
     {
-        SQLiteConnection myConn = Database.ConnectToDb();
+        using SQLiteConnection myConn = Database.ConnectToDb();
 
         using SQLiteCommand command = new SQLiteCommand(
-            "UPDATE listings SET @edit = @newData WHERE listingID = @id", myConn);
+            $"UPDATE listings SET [{edit}] = @newData WHERE listingID = @id", myConn);
         command.Parameters.AddWithValue("@id", id);
-        command.Parameters.AddWithValue("@edit", edit);
         command.Parameters.AddWithValue("@newData", newData);
         command.ExecuteNonQuery();
-        myConn.Close();
         AnsiConsole.MarkupLine("[bold]\nListing updated.[/]");
-
-        myConn.Close();
     }
 
     
 
-    public List<Listings?> GetListings(int id)
+    public List<Listings> GetListings(int id)
     {
-        List<Listings?> listings = new List<Listings?>();
-        SQLiteConnection myConn = Database.ConnectToDb();
+        List<Listings> listings = new List<Listings>();
+        using SQLiteConnection myConn = Database.ConnectToDb();
 
         using SQLiteCommand command = new SQLiteCommand(
-            "SELECT * FROM listings  WHERE UUID = @id ORDER BY date", myConn);
+            "SELECT * FROM listings WHERE UUID = @id ORDER BY date", myConn);
         command.Parameters.AddWithValue("@id", id);
 
         using SQLiteDataReader reader = command.ExecuteReader();
-
         while (reader.Read())
-        {
-            Listings listing = MapListings(reader);
-            listings.Add(listing);
-        }
+            listings.Add(MapListings(reader));
+
+        return listings;
+    }
+
+    public List<Listings> GetAllListings(int offset)
+    {
+        using SQLiteConnection myConn = Database.ConnectToDb();
+        var listings = new List<Listings>();
+
+        using SQLiteCommand cmd = new SQLiteCommand(
+            "SELECT * FROM listings WHERE listingStatus = 'Active' ORDER BY date LIMIT 10 OFFSET @offset",
+            myConn);
+        cmd.Parameters.AddWithValue("@offset", offset);
+
+        using SQLiteDataReader reader = cmd.ExecuteReader();
+        while (reader.Read())
+            listings.Add(MapListings(reader));
+
+        return listings;
+    }
+
+    public Listings? GetListingById(int listingId)
+    {
+        using SQLiteConnection myConn = Database.ConnectToDb();
+
+        using SQLiteCommand cmd = new SQLiteCommand(
+            "SELECT * FROM listings WHERE listingID = @id", myConn);
+        cmd.Parameters.AddWithValue("@id", listingId);
+
+        using SQLiteDataReader reader = cmd.ExecuteReader();
+        if (!reader.Read()) return null;
+
+        return MapListings(reader);
+    }
+
+    public List<Listings> SearchListings(string keyword, ListingCategory? category)
+    {
+        using SQLiteConnection myConn = Database.ConnectToDb();
+        var listings = new List<Listings>();
+
+        string sql = "SELECT * FROM listings WHERE listingStatus = 'Active' " +
+                     "AND (title LIKE @kw OR origin LIKE @kw OR destination LIKE @kw)";
+        if (category.HasValue)
+            sql += " AND type = @category";
+        sql += " ORDER BY date";
+
+        using SQLiteCommand cmd = new SQLiteCommand(sql, myConn);
+        cmd.Parameters.AddWithValue("@kw", $"%{keyword}%");
+        if (category.HasValue)
+            cmd.Parameters.AddWithValue("@category", category.Value.ToString());
+
+        using SQLiteDataReader reader = cmd.ExecuteReader();
+        while (reader.Read())
+            listings.Add(MapListings(reader));
 
         return listings;
     }
 
 
-    private static Listings? MapListings(SQLiteDataReader reader) => new Listings
+    private static Listings MapListings(SQLiteDataReader reader) => new Listings
     {
         ListingId = Convert.ToInt32(reader["listingID"]),
         UUID = Convert.ToInt32(reader["UUID"]),
@@ -94,12 +141,12 @@ public class ListingService
         TransportMethod = reader["transportMethod"].ToString()!,
         Origin = reader["origin"].ToString()!,
         Destination = reader["destination"].ToString()!,
-        Date = DateTime.Parse(reader["date"].ToString()!), 
-        Duration = Convert.ToInt32(reader["UUID"]),
+        Date = DateTime.Parse(reader["date"].ToString()!),
+        Duration = Convert.ToInt32(reader["duration"]),
         DurationType = reader["durationType"].ToString()!,
-        Capacity = Convert.ToInt32(reader["UUID"]),
+        Capacity = Convert.ToInt32(reader["capacity"]),
         CapacityUnit = ParseListingCapacityUnit(reader),
-        Price = Convert.ToInt32(reader["UUID"]),
+        Price = Convert.ToDecimal(reader["price"]),
         PriceUnit = ParseListingPriceUnit(reader),
         ListingStatus = ParseListingStatus(reader),
         CreatedAt = DateTime.Parse(reader["createdAt"].ToString()!)

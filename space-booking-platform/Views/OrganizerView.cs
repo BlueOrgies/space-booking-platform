@@ -29,12 +29,12 @@ public class OrganizerView(AppState state)
         table.AddColumn("[bold]Date[/]", col => col.LeftAligned());
         table.AddColumn("[bold]Status[/]", col => col.LeftAligned());
         
-        List<Listings?> listings = ls.GetListings(state.currentUUID);
+        List<Listings> listings = ls.GetListings(state.currentUUID);
         switch (listings.Count)
         { 
             case > 5:
             {
-                foreach (Listings? listing in listings.GetRange(0, 5))
+                foreach (Listings listing in listings.GetRange(0, 5))
                 {
                     table.AddRow(listing.Category.ToString(), listing.Title, listing.Origin, listing.Destination,
                         listing.Date.ToString("o"), listing.ListingStatus.ToString());

@@ -15,21 +15,21 @@ public class MyListingsView(AppState state)
         ListingService ls = new ListingService();
 
         Dictionary<string, string> rows = new Dictionary<string, string>();
-        List<Listings?> listings = ls.GetListings(state.currentUUID);
-        
+        List<Listings> listings = ls.GetListings(state.currentUUID);
+
         int startIndex = state.currentPage * PageSize;
         int endIndex = Math.Min(startIndex + PageSize, listings.Count);
         int totalPages = (int)Math.Ceiling((double)listings.Count / PageSize);
-        
+
         for (int i = startIndex; i < endIndex; i++)
         {
-            Listings? listing = listings[i];
+            Listings listing = listings[i];
             rows.Add($"{listing.Category} | {listing.Title} | {listing.Origin} | {listing.Destination}" +
                      $" | {listing.Date} | {listing.ListingStatus}", listing.ListingId.ToString());
         }
-        
+
         var choices = new List<string> { "Go back to profile", "Go back to main menu", "Quit" };
-        
+
         if (endIndex < listings.Count)
         {
             choices.Insert(0, "Next page");
@@ -51,7 +51,7 @@ public class MyListingsView(AppState state)
             state.currentListingID = int.Parse(value);
             return "Listing";
         }
-        
+
         switch (choice)
         {
             case "Next page":
@@ -63,7 +63,7 @@ public class MyListingsView(AppState state)
             case "Go back to main menu":
                 return "Home";
             case "Go back to profile":
-                return "Profile";
+                return "ProfileView";
             default:
                 return null;
         }
