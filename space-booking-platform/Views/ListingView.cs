@@ -34,8 +34,12 @@ public class ListingView(AppState state)
         table.AddRow("[bold]Date[/]",        listing.Date.ToString("yyyy-MM-dd HH:mm"));
         table.AddRow("[bold]Duration[/]",    $"{listing.Duration} {listing.DurationType}");
         table.AddRow("[bold]Capacity[/]",    $"{listing.Capacity} {listing.CapacityUnit}");
-        table.AddRow("[bold]Price[/]",       $"{listing.Price} {listing.PriceUnit}");
-        table.AddRow("[bold]Status[/]",      listing.ListingStatus.ToString());
+
+        var bookingService = new BookingService();
+        int booked = bookingService.GetBookingCount(listing.ListingId);
+        int remaining = listing.Capacity - booked;
+        string availColor = remaining > 0 ? "green" : "red";
+        table.AddRow("[bold]Availability[/]", $"[{availColor}]{booked}/{listing.Capacity} booked ({remaining} remaining)[/]");
 
         AnsiConsole.Write(table);
         AnsiConsole.WriteLine();
