@@ -24,6 +24,15 @@ public class BookingService
         return Convert.ToInt32((long)cmd.ExecuteScalar()!);
     }
 
+    public int GetBookedWeight(int listingId)
+    {
+        using SQLiteConnection conn = Database.ConnectToDb();
+        using SQLiteCommand cmd = new SQLiteCommand(
+            "SELECT COALESCE(SUM(u.weight), 0) FROM bookings b JOIN users u ON u.UUID = b.UUID WHERE b.listingID = @listingId", conn);
+        cmd.Parameters.AddWithValue("@listingId", listingId);
+        return Convert.ToInt32(cmd.ExecuteScalar()!);
+    }
+
     public void CreateBooking(int uuid, int listingId)
     {
         using SQLiteConnection conn = Database.ConnectToDb();
