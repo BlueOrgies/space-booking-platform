@@ -1,3 +1,5 @@
+using System.Data.SQLite;
+using space_booking_platform.Models;
 using space_booking_platform.Services;
 using Spectre.Console;
 
@@ -8,37 +10,111 @@ public class OrganizerView(AppState state)
     public string? Display()
     {
         AnsiConsole.Clear();
-        //TODO: Add name of user and average rating 
-        if (state.isOrganizer)
-        {
-            ListingService ls = new ListingService(state);
-            AnsiConsole.MarkupLine("[bold green]=== *Users* profile. [/]===" +
-                                   "\nAverage rating: *Average rating from db*");
+        
+        ListingService ls = new ListingService();
+        ReviewService rs = new ReviewService();
+        var choices = new List<string> {"Create listing", "Go back to main menu", "Quit" };
+        
+        AnsiConsole.MarkupLine($"[bold green]=== {state.currentUser}s profile: Organizer ===[/]");
 
-            AnsiConsole.MarkupLine("\n[green]My listings[/]");
-            ListingService.ShowOverview(ls.ShowUserListings());
-            AnsiConsole.MarkupLine("\n[green]My bookings[/]");
-            ListingService.ShowOverview(ls.ShowUserBookings());
-            AnsiConsole.MarkupLine("\n[green]My reviews[/]");
+        AnsiConsole.MarkupLine("\n[green]My listings[/]");
+        var table = new Table()
+            .SimpleBorder()
+            .BorderColor(Color.Green);
+        
+        table.AddColumn("[bold]Category[/]", col => col.LeftAligned());
+        table.AddColumn("[bold]Title[/]", col => col.LeftAligned());
+        table.AddColumn("[bold]Origin[/]", col => col.LeftAligned());
+        table.AddColumn("[bold]Destination[/]", col => col.LeftAligned());
+        table.AddColumn("[bold]Date[/]", col => col.LeftAligned());
+        table.AddColumn("[bold]Status[/]", col => col.LeftAligned());
+        
+        List<Listings> listings = ls.GetListings(state.currentUUID);
+        switch (listings.Count)
+        { 
+            case > 5:
+            {
+                foreach (Listings listing in listings.GetRange(0, 5))
+                {
+                    table.AddRow(listing.Category.ToString(), listing.Title, listing.Origin, listing.Destination,
+                        listing.Date.ToString("o"), listing.ListingStatus.ToString());
+                }
+                AnsiConsole.Write(table);
+                choices.Insert(0, "View my listings");
+                state.currentPage = 0;
+                break;
+            }
+            case > 0:
+            {
+                foreach (Listings listing in listings)
+                {
+                    table.AddRow(listing.Category.ToString(), listing.Title, listing.Origin, listing.Destination,
+                        listing.Date.ToString("o"), listing.ListingStatus.ToString());
+                }
+                AnsiConsole.Write(table);
+                choices.Insert(0, "View my listings");
+                state.currentPage = 0;
+                break;
+            }
+            case 0:
+                AnsiConsole.MarkupLine("No listings found");
+                break;
         }
 
-        var choices = new List<string>
-            { "View my listings", "View my bookings", "View my reviews", "Go back to main menu", "Quit" };
+        AnsiConsole.MarkupLine("\n[green]My reviews[/]");
+        var table2 = new Table()
+            .RoundedBorder()
+            .BorderColor(Color.Grey);
+
+        table2.AddColumn("[bold]Type[/]", col => col.LeftAligned());
+        table2.AddColumn("[bold]Title[/]", col => col.LeftAligned());
+        table2.AddColumn("[bold]Rating[/]", col => col.LeftAligned());
+        table2.AddColumn("[bold]Comment[/]", col => col.LeftAligned());
+        table2.AddColumn("[bold]Date[/]", col => col.LeftAligned());
+
+        List<Review?> reviews = rs.GetReviews(state.currentUUID);
+        switch (reviews.Count)
+        {
+            case > 5:
+            {
+                foreach (Review? review in reviews.GetRange(0, 5))
+                {
+                    table2.AddRow(review.Title, review.Type, review.Rating.ToString(),
+                        review.Comment, review.CreatedAt.ToString("o"));
+                }
+                AnsiConsole.Write(table2);
+                choices.Insert(0, "View my reviews");
+                break;
+            }
+            case > 0:
+            {
+                foreach (Review? review in reviews)
+                {
+                    table2.AddRow(review.Title, review.Type, review.Rating.ToString(),
+                        review.Comment, review.CreatedAt.ToString("o"));
+                }
+                AnsiConsole.Write(table2);
+                choices.Insert(0, "View my reviews");
+                break;
+            }
+            case 0:
+                AnsiConsole.MarkupLine("No reviews found");
+                break;
+        }
 
         var choice = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
-                .Title("Where would you like to go?")
+                .Title("\nWhere would you like to go?")
                 .HighlightStyle(new Style(Color.Yellow))
                 .AddChoices(choices));
 
         return choice switch
         {
             "View my listings" => "MyListings",
-            "View my bookings" => "MyBookings",
+            "Create listing" => "CreateListing",
             "View my reviews" => "MyReviews",
-            "Go back to main menu" => "HomeView",
+            "Go back to main menu" => "Home",
             _ => null // Quit
         };
-        //TODO: Add these views? 
     }
 }

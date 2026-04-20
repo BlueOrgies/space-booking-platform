@@ -19,16 +19,20 @@ public class ViewHandler
         "Home"              => new HomeView(_state).Display(),
         "Register"          => new RegisterView(_state).Display(),
         "Login"             => new LoginView(_state).Display(),
-        "BrowseListing"     => NotImplemented("BrowseListingView"),
-        "SearchListing"     => NotImplemented("SearchView"),
+        "BrowseListings"     => new BrowseListingsView(_state).Display(),
+        "SearchListings"     => new SearchListingsView(_state).Display(),
         "Booking"           => NotImplemented("BookingView"),
-        "ProfileView"       => NotImplemented("ProfileView"),
-        "MyBookings"        => NotImplemented("MyBookingsView"),
+        "ProfileView"       => new ProfileView(_state).Display(),
+        "MyBookings"        => new MyBookingsView(_state).Display(),
         "MyListings"        => new MyListingsView(_state).Display(),
+        "Listing"           => new ListingView(_state).Display(),
         "OrganizerView"     => new OrganizerView(_state).Display(),
         "CreateListing"     => new CreateListingView(_state).Display(),
         "EditListing"       => new EditListingView(_state).Display(),
         "Review"            => NotImplemented("ReviewView"),
+        "OrganizerReviews"  => new OrganizerReviewsView(_state).Display(),
+        "LeaveReview"       => new LeaveReviewView(_state).Display(),
+        "Logout"            => Logout(),
         _ => throw new ArgumentException($"Unknown view: {viewName}")
     };
 
@@ -37,6 +41,13 @@ public class ViewHandler
         Console.WriteLine($"{viewName} is not available yet.");
         Console.WriteLine($"Press any key to go back: ");
         Console.ReadKey();
+        return "Home";
+    }
+
+    private string? Logout()
+    {
+        _state.isLoggedIn = false;
+        _state.currentUser = null;
         return "Home";
     }
 }
