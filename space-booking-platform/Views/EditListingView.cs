@@ -8,16 +8,35 @@ public class EditListingView(AppState state)
 {
     public string? Display()
     {
-        int listingId = state.CurrentListingID;
         ListingService listingService = new ListingService();
+        int listingId = state.CurrentListingID;
+
+        Listings? listing = listingService.GetListingById(listingId);
+
+        List<string> choices =
+        [
+            "Title", "Description", "Transportation Method", "Origin", "Destination",
+            "Date", "Duration", "Capacity", "Price"
+        ];
         
-        AnsiConsole.Clear();
-        
+        switch (listing.ListingStatus)
+        {
+            case ListingStatus.Active:
+                choices.Add("Cancel listing");
+                break;
+            case ListingStatus.Cancelled:
+                choices.Add("Reactivate listing");
+                break;
+            case ListingStatus.Inactive:
+                Console.WriteLine("You cannot edit a past listing \nPress any key to continue...." );
+                Console.ReadKey();
+                return "MyListings";
+        }
+
         var prompt = new SelectionPrompt<string>()
             .Title("[bold]What would you like to edit?:[/]")
             .WrapAround()
-            .AddChoices("Title", "Description", "Transportation Method", "Origin", "Destination",
-                "Date", "Duration", "Capacity", "Price", "Status");
+            .AddChoices(choices);
         string edit = AnsiConsole.Prompt(prompt);
 
         switch (edit)
@@ -70,28 +89,26 @@ public class EditListingView(AppState state)
                 listingService.EditListing(listingId, "capacity", price.ToString());
                 listingService.EditListing(listingId, "capacityUnit", priceUnit);
                 break;
-            case "Status":
-                prompt = new SelectionPrompt<string>()
-                    .Title("[bold]Price unit:[/]")
-                    .AddChoices(Enum.GetNames<ListingStatus>());
-                var status = AnsiConsole.Prompt(prompt);
-                listingService.EditListing(listingId, "Status", status);
+            case "Cancel this listing":
+                listingService.EditListing(listingId, "ListingStatus", nameof(ListingStatus.Cancelled));
+                break;
+            case "Reactivate this listing":
+                listingService.EditListing(listingId, "ListingStatus", nameof(ListingStatus.Active));
                 break;
         }
         
         var choice = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
-                .Title("Where would you like to go?")
                 .HighlightStyle(new Style(Color.Yellow))
-                .AddChoices("Edit more from this listing", "Go back to my listings", "Go back to profile",
-                    "Go back to main menu", "Quit"));
+                .AddChoices("Edit more from this listing", "My listings", "My profile",
+                    "Main menu"));
 
         return choice switch
         {
             "Edit more from this listing" => "EditListing",
-            "Go back to my listings" => "MyListings",
-            "Go back to profile" => "Profile",
-            "Go back to main menu" => "Home",
+            "My listings" => "MyListings",
+            "My profile" => "Profile",
+            "Main menu" => "Home",
             _ => null // Quit
         };
     }
