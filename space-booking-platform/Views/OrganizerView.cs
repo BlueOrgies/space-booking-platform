@@ -15,17 +15,11 @@ public class OrganizerView(AppState state)
         ReviewService rs = new ReviewService();
         var choices = new List<string> {"Create listing", "Go back to main menu", "Quit" };
         
-        AnsiConsole.Write(new Rule($"[bold green]{state.CurrentUser}s profile: Organizer[/]").RuleStyle("green"));
-        
-        double rating = rs.GetAverageRating(state.CurrentUUID);
-        if (rating > 0.0)
-        {
-            AnsiConsole.MarkupLine($"\nAverage rating: [green]{rating}[/]");
-        }
+        AnsiConsole.MarkupLine($"[bold green]=== {state.CurrentUser}s profile: Organizer ===[/]");
 
         AnsiConsole.MarkupLine("\n[green]My listings[/]");
         var table = new Table()
-            .MinimalDoubleHeadBorder()
+            .SimpleBorder()
             .BorderColor(Color.Green);
         
         table.AddColumn("[bold]Category[/]", col => col.LeftAligned());
@@ -40,22 +34,36 @@ public class OrganizerView(AppState state)
         {
             foreach (Listings listing in listings)
             {
-                table.AddRow(listing.Category.ToString(), listing.Title, listing.Origin, listing.Destination,
-                    listing.Date.ToString("o"), listing.ListingStatus.ToString());
+                foreach (Listings listing in listings.GetRange(0, 5))
+                {
+                    table.AddRow(listing.Category.ToString(), listing.Title, listing.Origin, listing.Destination,
+                        listing.Date.ToString("o"), listing.ListingStatus.ToString());
+                }
+                AnsiConsole.Write(table);
+                choices.Insert(0, "View my listings");
+                state.CurrentPage = 0;
+                break;
             }
-
-            AnsiConsole.Write(table);
-            choices.Insert(0, "View my listings");
-            state.Offset = 0;
-        }
-        else
-        {
-                AnsiConsole.MarkupLine("[grey]No listings available[/]");
+            case > 0:
+            {
+                foreach (Listings listing in listings)
+                {
+                    table.AddRow(listing.Category.ToString(), listing.Title, listing.Origin, listing.Destination,
+                        listing.Date.ToString("o"), listing.ListingStatus.ToString());
+                }
+                AnsiConsole.Write(table);
+                choices.Insert(0, "View my listings");
+                state.CurrentPage = 0;
+                break;
+            }
+            case 0:
+                AnsiConsole.MarkupLine("No listings found");
+                break;
         }
 
         AnsiConsole.MarkupLine("\n[green]My reviews[/]");
         var table2 = new Table()
-            .MinimalDoubleHeadBorder()
+            .RoundedBorder()
             .BorderColor(Color.Grey);
 
         table2.AddColumn("[bold]Type[/]", col => col.LeftAligned());
@@ -69,23 +77,36 @@ public class OrganizerView(AppState state)
         {
             foreach (Review? review in reviews)
             {
-                table2.AddRow(review.Title, review.Type, review.Rating.ToString(),
-                    review.Comment, review.CreatedAt.ToString("o"));
+                foreach (Review? review in reviews.GetRange(0, 5))
+                {
+                    table2.AddRow(review.Title, review.Type, review.Rating.ToString(),
+                        review.Comment, review.CreatedAt.ToString("o"));
+                }
+                AnsiConsole.Write(table2);
+                choices.Insert(0, "View my reviews");
+                break;
             }
-
-            AnsiConsole.Write(table2);
-            choices.Insert(0, "View my reviews");
-            state.Offset = 0;
-        }
-        else
-        {
-            AnsiConsole.MarkupLine("[grey]No reviews available[/]");
+            case > 0:
+            {
+                foreach (Review? review in reviews)
+                {
+                    table2.AddRow(review.Title, review.Type, review.Rating.ToString(),
+                        review.Comment, review.CreatedAt.ToString("o"));
+                }
+                AnsiConsole.Write(table2);
+                choices.Insert(0, "View my reviews");
+                break;
+            }
+            case 0:
+                AnsiConsole.MarkupLine("No reviews found");
+                break;
         }
 
         Console.WriteLine("");
 
         var choice = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
+                .Title("\nWhere would you like to go?")
                 .HighlightStyle(new Style(Color.Yellow))
                 .AddChoices(choices));
 
