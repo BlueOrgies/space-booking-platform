@@ -20,13 +20,13 @@ public class OrganizerView(AppState state)
         double rating = rs.GetAverageRating(state.CurrentUUID);
         if (rating > 0.0)
         {
-            AnsiConsole.WriteLine($"Average rating: {rating}");
+            AnsiConsole.MarkupLine($"Average rating: [yellow]{rating}[/]");
         }
 
         AnsiConsole.MarkupLine("\n[green]My listings[/]");
         var table = new Table()
             .RoundedBorder()
-            .BorderColor(Color.Green);
+            .BorderColor(Color.Grey);
         
         table.AddColumn("[bold]Category[/]", col => col.LeftAligned());
         table.AddColumn("[bold]Title[/]", col => col.LeftAligned());
