@@ -1,4 +1,3 @@
-using System.Data.SQLite;
 using space_booking_platform.Models;
 using space_booking_platform.Services;
 using Spectre.Console;
@@ -7,6 +6,7 @@ namespace space_booking_platform.Views;
 
 public class OrganizerView(AppState state)
 {
+    private const int Limit = 5;
     public string? Display()
     {
         AnsiConsole.Clear();
@@ -29,7 +29,8 @@ public class OrganizerView(AppState state)
         table.AddColumn("[bold]Date[/]", col => col.LeftAligned());
         table.AddColumn("[bold]Status[/]", col => col.LeftAligned());
         
-        List<Listings> listings = ls.GetListings(state.CurrentUUID);
+        state.Offset = 0;
+        List<Listings> listings = ls.GetListingsById(state.CurrentUUID, Limit, state.Offset);
         switch (listings.Count)
         { 
             case > 5:

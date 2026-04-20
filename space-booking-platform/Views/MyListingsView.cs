@@ -6,7 +6,7 @@ namespace space_booking_platform.Views;
 
 public class MyListingsView(AppState state)
 {
-    private const int PageSize = 5;
+    private const int Limit = 11;
     public string? Display()
     {
         AnsiConsole.Clear();
@@ -15,33 +15,35 @@ public class MyListingsView(AppState state)
         ListingService ls = new ListingService();
 
         Dictionary<string, string> rows = new Dictionary<string, string>();
-        List<Listings> listings = ls.GetListings(state.CurrentUUID);
+        List<Listings> listings = ls.GetListingsById(state.CurrentUUID, Limit, state.Offset);
 
-        int startIndex = state.CurrentPage * PageSize;
-        int endIndex = Math.Min(startIndex + PageSize, listings.Count);
-        int totalPages = (int)Math.Ceiling((double)listings.Count / PageSize);
-
-        for (int i = startIndex; i < endIndex; i++)
+        if (listings.Count > 0)
         {
-            Listings listing = listings[i];
-            rows.Add($"{listing.Category} | {listing.Title} | {listing.Origin} | {listing.Destination}" +
-                     $" | {listing.Date} | {listing.ListingStatus}", listing.ListingId.ToString());
+            for (int i = 0; i < 10; i++)
+            {
+                Listings listing = listings[i];
+                rows.Add($"{listing.Category} | {listing.Title} | {listing.Origin} | {listing.Destination}" +
+                         $" | {listing.Date} | {listing.ListingStatus}", listing.ListingId.ToString());
+            }
+        }
+        else
+        {
+            AnsiConsole.MarkupLine("[grey]No listings available[/]");
         }
 
         var choices = new List<string> { "Go back to profile", "Go back to main menu", "Quit" };
-
-        if (endIndex < listings.Count)
+        
+        if (listings.Count > 10) //Limit is 11, so if there is more than 10 (something to put on the next page) you get next page option
         {
             choices.Insert(0, "Next page");
         }
-        if (startIndex > 0)
+        if (state.Offset > 0)
         {
             choices.Insert(0, "Previous page");
         }
 
         var choice = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
-                .Title($"\nShowing page {state.CurrentPage + 1} of {totalPages}. Where would you like to go?")
                 .HighlightStyle(new Style(Color.Yellow))
                 .AddChoiceGroup("", rows.Keys.ToArray())
                 .AddChoiceGroup("", choices));
@@ -55,10 +57,10 @@ public class MyListingsView(AppState state)
         switch (choice)
         {
             case "Next page":
-                state.CurrentPage++;
+                state.Offset += 10;
                 return "MyListings";
             case "Previous page":
-                state.CurrentPage--;
+                state.Offset -= 10;
                 return "MyListings";
             case "Go back to main menu":
                 return "Home";
