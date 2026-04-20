@@ -29,11 +29,10 @@ public class OrganizerView(AppState state)
         table.AddColumn("[bold]Date[/]", col => col.LeftAligned());
         table.AddColumn("[bold]Status[/]", col => col.LeftAligned());
         
-        state.Offset = 0;
-        List<Listings> listings = ls.GetListingsById(state.CurrentUUID, Limit, state.Offset);
-        switch (listings.Count)
-        { 
-            case > 5:
+        List<Listings> listings = ls.GetListingsById(state.CurrentUUID, Limit, 0);
+        if (listings.Count > 0)
+        {
+            foreach (Listings listing in listings)
             {
                 foreach (Listings listing in listings.GetRange(0, 5))
                 {
@@ -73,10 +72,10 @@ public class OrganizerView(AppState state)
         table2.AddColumn("[bold]Comment[/]", col => col.LeftAligned());
         table2.AddColumn("[bold]Date[/]", col => col.LeftAligned());
 
-        List<Review?> reviews = rs.GetReviews(state.CurrentUUID);
-        switch (reviews.Count)
+        List<Review?> reviews = rs.GetLimitedReviews(state.CurrentUUID, Limit);
+        if (reviews.Count > 0)
         {
-            case > 5:
+            foreach (Review? review in reviews)
             {
                 foreach (Review? review in reviews.GetRange(0, 5))
                 {
@@ -102,6 +101,8 @@ public class OrganizerView(AppState state)
                 AnsiConsole.MarkupLine("No reviews found");
                 break;
         }
+
+        Console.WriteLine("");
 
         var choice = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
