@@ -6,7 +6,7 @@ namespace space_booking_platform.Views;
 
 public class MyListingsView(AppState state)
 {
-    private const int Limit = 11;
+    private const int Limit = 10;
     public string? Display()
     {
         AnsiConsole.Clear();
@@ -19,9 +19,8 @@ public class MyListingsView(AppState state)
 
         if (listings.Count > 0)
         {
-            for (int i = 0; i < 10; i++)
+            foreach (var listing in listings)
             {
-                Listings listing = listings[i];
                 rows.Add($"{listing.Category} | {listing.Title} | {listing.Origin} | {listing.Destination}" +
                          $" | {listing.Date} | {listing.ListingStatus}", listing.ListingId.ToString());
             }
@@ -33,7 +32,8 @@ public class MyListingsView(AppState state)
 
         var choices = new List<string> { "Go back to profile", "Go back to main menu", "Quit" };
         
-        if (listings.Count > 10) //Limit is 11, so if there is more than 10 (something to put on the next page) you get next page option
+        //TODO: what to do if there is only 10 listings?
+        if (listings.Count == 10) 
         {
             choices.Insert(0, "Next page");
         }
