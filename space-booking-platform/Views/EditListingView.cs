@@ -90,24 +90,23 @@ public class EditListingView(AppState state)
                 listingService.EditListing(listingId, "capacityUnit", priceUnit);
                 break;
             case "Cancel this listing":
-                listingService.EditListing(listingId, "ListingStatus", nameof(ListingStatus.Cancelled));
+                listingService.EditListing(listingId, "listingStatus", nameof(ListingStatus.Cancelled));
                 break;
             case "Reactivate this listing":
-                listingService.EditListing(listingId, "ListingStatus", nameof(ListingStatus.Active));
+                listingService.EditListing(listingId, "listingStatus", nameof(ListingStatus.Active));
                 break;
         }
         
         var choice = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
                 .HighlightStyle(new Style(Color.Yellow))
-                .AddChoices("Edit more from this listing", "My listings", "My profile",
+                .AddChoices("Edit more from this listing", "My listings",
                     "Main menu"));
 
         return choice switch
         {
             "Edit more from this listing" => "EditListing",
             "My listings" => "MyListings",
-            "My profile" => "Profile",
             "Main menu" => "Home",
             _ => null // Quit
         };
