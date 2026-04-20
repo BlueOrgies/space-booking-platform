@@ -23,7 +23,26 @@ public class ReviewService
         return MapReview(reader);
     }
     
-    public List<Review?> GetReviews(int UUID, int limit)
+    public List<Review?> GetReviews(int UUID)
+    {
+        List<Review?> reviews = new List<Review?>();
+        SQLiteConnection myConn = Database.ConnectToDb();
+        
+        using SQLiteCommand command = new SQLiteCommand("SELECT * FROM reviews JOIN bookings ON bookings.bookingID = reviews.bookingID " +
+                                                        "JOIN listings ON listings.listingID = bookings.listingID " +
+                                                        "WHERE listings.UUID = @id", myConn);
+        command.Parameters.AddWithValue("@id", UUID);
+        
+        using SQLiteDataReader reader = command.ExecuteReader();
+        
+        while (reader.Read())
+        {
+            Review review = MapReview(reader);
+            reviews.Add(review);
+        }
+        return reviews;
+    }
+    public List<Review?> GetLimitedReviews(int UUID, int limit)
     {
         List<Review?> reviews = new List<Review?>();
         SQLiteConnection myConn = Database.ConnectToDb();
