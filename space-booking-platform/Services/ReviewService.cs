@@ -23,15 +23,18 @@ public class ReviewService
         return MapReview(reader);
     }
     
-    public List<Review?> GetReviews(int UUID)
+    public List<Review?> GetReviews(int UUID, int limit)
     {
         List<Review?> reviews = new List<Review?>();
         SQLiteConnection myConn = Database.ConnectToDb();
         
         using SQLiteCommand command = new SQLiteCommand("SELECT * FROM reviews JOIN bookings ON bookings.bookingID = reviews.bookingID " +
                                                         "JOIN listings ON listings.listingID = bookings.listingID " +
-                                                        "WHERE listings.UUID = @id", myConn);
+                                                        "WHERE listings.UUID = @id " +
+                                                        "ORDER BY reviews.createdAt " +
+                                                        "LIMIT @limit", myConn);
         command.Parameters.AddWithValue("@id", UUID);
+        command.Parameters.AddWithValue("@limit", limit);
         
         using SQLiteDataReader reader = command.ExecuteReader();
         
@@ -67,6 +70,18 @@ public class ReviewService
 
         cmd.Parameters.AddWithValue("@bookingId", bookingId);
         return (long)cmd.ExecuteScalar()! > 0;
+    }
+
+    public double GetAverageRating(int currentUserId)
+    {
+        using SQLiteConnection conn = Database.ConnectToDb();
+        using SQLiteCommand cmd = new SQLiteCommand("SELECT AVG(rating) FROM reviews " +
+                                                    "JOIN bookings ON bookings.bookingID = reviews.bookingID " +
+                                                    "JOIN listings ON listings.listingID = bookings.listingID " +
+                                                    "WHERE listings.UUID = @uuid", conn);
+        cmd.Parameters.AddWithValue("@uuid", currentUserId);
+        var rating = cmd.ExecuteScalar();
+        return rating != null ? Convert.ToDouble(rating) : 0.0;
     }
     
     private static Review MapReview(SQLiteDataReader reader) => new Review
