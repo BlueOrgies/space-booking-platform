@@ -11,7 +11,7 @@ public class ListingView(AppState state)
         AnsiConsole.Clear();
 
         var listingService = new ListingService();
-        Listings? listing = listingService.GetListingById(state.currentListingID);
+        Listings? listing = listingService.GetListingById(state.CurrentListingID);
 
         if (listing == null)
         {
@@ -45,7 +45,7 @@ public class ListingView(AppState state)
             int remainingWeight = listing.Capacity - bookedWeight;
             string wAvailColor = remainingWeight > 0 ? "green" : "red";
             table.AddRow("[bold]Availability[/]", $"[{wAvailColor}]{bookedWeight}/{listing.Capacity} kg used ({remainingWeight} kg remaining)[/]");
-            isFull = state.isLoggedIn && remainingWeight < state.currentUserWeight;
+            isFull = state.IsLoggedIn && remainingWeight < state.CurrentUserWeight;
         }
         else
         {
@@ -55,8 +55,8 @@ public class ListingView(AppState state)
             isFull = remaining <= 0;
         }
 
-        string priceDisplay = listing.PriceUnit == ListingPriceUnit.EurosPerKg && state.isLoggedIn && state.currentUserWeight > 0
-            ? $"{listing.Price} €/kg (Your total: [bold]{listing.Price * state.currentUserWeight} €[/] for {state.currentUserWeight} kg)"
+        string priceDisplay = listing.PriceUnit == ListingPriceUnit.EurosPerKg && state.IsLoggedIn && state.CurrentUserWeight > 0
+            ? $"{listing.Price} €/kg (Your total: [bold]{listing.Price * state.CurrentUserWeight} €[/] for {state.CurrentUserWeight} kg)"
             : $"{listing.Price} {listing.PriceUnit}";
         table.AddRow("[bold]Price[/]",       priceDisplay);
 
@@ -73,17 +73,17 @@ public class ListingView(AppState state)
 
         var choices = new List<string>();
 
-        if (state.isLoggedIn && listing.UUID == state.currentUUID)
+        if (state.IsLoggedIn && listing.UUID == state.CurrentUUID)
         {
             choices.Add("Edit this listing");
         }
-        else if (state.isLoggedIn && listing.ListingStatus == ListingStatus.Active)
+        else if (state.IsLoggedIn && listing.ListingStatus == ListingStatus.Active)
         {
-            if (bookingService.HasBooked(state.currentUUID, listing.ListingId))
+            if (bookingService.HasBooked(state.CurrentUUID, listing.ListingId))
                 AnsiConsole.MarkupLine("[grey]You have already booked this listing.[/]");
             else if (isFull)
                 AnsiConsole.MarkupLine(listing.CapacityUnit == ListingCapacityUnit.MaxWeight
-                    ? $"[red]Not enough weight capacity (your weight: {state.currentUserWeight} kg).[/]"
+                    ? $"[red]Not enough weight capacity (your weight: {state.CurrentUserWeight} kg).[/]"
                     : "[red]This listing is fully booked.[/]");
             else
                 choices.Add("Book this listing");
@@ -104,7 +104,7 @@ public class ListingView(AppState state)
                 return "Listing";
 
             var bookingService2 = new BookingService();
-            bookingService2.CreateBooking(state.currentUUID, listing.ListingId);
+            bookingService2.CreateBooking(state.CurrentUUID, listing.ListingId);
             AnsiConsole.WriteLine();
             AnsiConsole.Write(new Rule("[bold green]✓ Booking Confirmed![/]").RuleStyle("green"));
             AnsiConsole.WriteLine();
@@ -115,7 +115,7 @@ public class ListingView(AppState state)
 
         if (choice == "Edit this listing")
         {
-            state.currentListingID = listing.ListingId;
+            state.CurrentListingID = listing.ListingId;
             return "EditListing";
         }
 

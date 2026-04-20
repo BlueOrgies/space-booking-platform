@@ -11,7 +11,7 @@ public class MyBookingsView(AppState state)
     {
         int currentPage = 0;
         BookingService bookingService = new BookingService();
-        List<Booking?> allBookings = bookingService.GetBookings(state.currentUUID);
+        List<Booking?> allBookings = bookingService.GetBookings(state.CurrentUUID);
 
         while (true)
         {
@@ -81,13 +81,13 @@ public class MyBookingsView(AppState state)
 
                 if (subChoice == "Leave Review")
                 {
-                    state.currentBookingID = selectedBooking.BookingId;
+                    state.CurrentBookingID = selectedBooking.BookingId;
                     return "LeaveReview";
                 }
                 
                 if (subChoice == "View Listing")
                 {
-                    state.currentListingID = int.Parse(listingId);
+                    state.CurrentListingID = int.Parse(listingId);
                     return "Listing";
                 }
                 
