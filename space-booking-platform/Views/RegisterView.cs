@@ -58,10 +58,10 @@ public class RegisterView(AppState state)
             var userService = new UserService();
             var user = userService.Register(username.Trim(), password, weight, height, isOrganizer);
 
-            state.isLoggedIn = true;
-            state.currentUser = user.Username;
-            state.isOrganizer = user.IsOrganizer;
-            state.currentUUID = user.UserId;
+            state.IsLoggedIn = true;
+            state.CurrentUser = user.Username;
+            state.IsOrganizer = user.IsOrganizer;
+            state.CurrentUUID = user.UserId;
 
             AnsiConsole.WriteLine();
             AnsiConsole.MarkupLine($"[bold green]Account created! Welcome, {user.Username}![/]");

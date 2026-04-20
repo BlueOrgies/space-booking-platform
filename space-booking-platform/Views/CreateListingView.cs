@@ -13,7 +13,7 @@ public class CreateListingView(AppState state)
 
         ListingService listingService = new ListingService();
 
-        int uuid = state.currentUUID;
+        int uuid = state.CurrentUUID;
         
         var prompt = new SelectionPrompt<string>() //Todo: Fix space between title and choices?
             .Title("[bold]Category:[/]")

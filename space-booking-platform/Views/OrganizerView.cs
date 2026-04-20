@@ -15,7 +15,7 @@ public class OrganizerView(AppState state)
         ReviewService rs = new ReviewService();
         var choices = new List<string> {"Create listing", "Go back to main menu", "Quit" };
         
-        AnsiConsole.MarkupLine($"[bold green]=== {state.currentUser}s profile: Organizer ===[/]");
+        AnsiConsole.MarkupLine($"[bold green]=== {state.CurrentUser}s profile: Organizer ===[/]");
 
         AnsiConsole.MarkupLine("\n[green]My listings[/]");
         var table = new Table()
@@ -29,7 +29,7 @@ public class OrganizerView(AppState state)
         table.AddColumn("[bold]Date[/]", col => col.LeftAligned());
         table.AddColumn("[bold]Status[/]", col => col.LeftAligned());
         
-        List<Listings> listings = ls.GetListings(state.currentUUID);
+        List<Listings> listings = ls.GetListings(state.CurrentUUID);
         switch (listings.Count)
         { 
             case > 5:
@@ -41,7 +41,7 @@ public class OrganizerView(AppState state)
                 }
                 AnsiConsole.Write(table);
                 choices.Insert(0, "View my listings");
-                state.currentPage = 0;
+                state.CurrentPage = 0;
                 break;
             }
             case > 0:
@@ -53,7 +53,7 @@ public class OrganizerView(AppState state)
                 }
                 AnsiConsole.Write(table);
                 choices.Insert(0, "View my listings");
-                state.currentPage = 0;
+                state.CurrentPage = 0;
                 break;
             }
             case 0:
@@ -72,7 +72,7 @@ public class OrganizerView(AppState state)
         table2.AddColumn("[bold]Comment[/]", col => col.LeftAligned());
         table2.AddColumn("[bold]Date[/]", col => col.LeftAligned());
 
-        List<Review?> reviews = rs.GetReviews(state.currentUUID);
+        List<Review?> reviews = rs.GetReviews(state.CurrentUUID);
         switch (reviews.Count)
         {
             case > 5:

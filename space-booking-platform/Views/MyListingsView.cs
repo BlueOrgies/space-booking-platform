@@ -15,9 +15,9 @@ public class MyListingsView(AppState state)
         ListingService ls = new ListingService();
 
         Dictionary<string, string> rows = new Dictionary<string, string>();
-        List<Listings> listings = ls.GetListings(state.currentUUID);
+        List<Listings> listings = ls.GetListings(state.CurrentUUID);
 
-        int startIndex = state.currentPage * PageSize;
+        int startIndex = state.CurrentPage * PageSize;
         int endIndex = Math.Min(startIndex + PageSize, listings.Count);
         int totalPages = (int)Math.Ceiling((double)listings.Count / PageSize);
 
@@ -41,24 +41,24 @@ public class MyListingsView(AppState state)
 
         var choice = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
-                .Title($"\nShowing page {state.currentPage + 1} of {totalPages}. Where would you like to go?")
+                .Title($"\nShowing page {state.CurrentPage + 1} of {totalPages}. Where would you like to go?")
                 .HighlightStyle(new Style(Color.Yellow))
                 .AddChoiceGroup("", rows.Keys.ToArray())
                 .AddChoiceGroup("", choices));
 
         if (rows.TryGetValue(choice, out string? value))
         {
-            state.currentListingID = int.Parse(value);
+            state.CurrentListingID = int.Parse(value);
             return "Listing";
         }
 
         switch (choice)
         {
             case "Next page":
-                state.currentPage++;
+                state.CurrentPage++;
                 return "MyListings";
             case "Previous page":
-                state.currentPage--;
+                state.CurrentPage--;
                 return "MyListings";
             case "Go back to main menu":
                 return "Home";

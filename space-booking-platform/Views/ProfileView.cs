@@ -12,7 +12,7 @@ public class ProfileView(AppState state)
 
         BookingService bs = new BookingService();
         var choices = new List<string> { "Go back to main menu", "Quit" };
-        AnsiConsole.MarkupLine($"[bold green]=== {state.currentUser}s profile. [/]===");
+        AnsiConsole.MarkupLine($"[bold green]=== {state.CurrentUser}s profile. [/]===");
 
         AnsiConsole.MarkupLine("\n[green]My Bookings[/]");
         var table = new Table()
@@ -26,7 +26,7 @@ public class ProfileView(AppState state)
         table.AddColumn("[bold]Date[/]", col => col.LeftAligned());
         table.AddColumn("[bold]Status[/]", col => col.LeftAligned());
 
-        List<Booking?> bookings = bs.GetBookings(state.currentUUID);
+        List<Booking?> bookings = bs.GetBookings(state.CurrentUUID);
         switch (bookings.Count)
         {
             case > 5:

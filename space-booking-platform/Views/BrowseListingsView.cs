@@ -50,7 +50,7 @@ class BrowseListingsView(AppState state)
 
             if (listingMap.TryGetValue(choice, out int listingId))
             {
-                state.currentListingID = listingId;
+                state.CurrentListingID = listingId;
                 return "Listing";
             }
 
