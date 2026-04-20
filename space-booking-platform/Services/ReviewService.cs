@@ -81,7 +81,11 @@ public class ReviewService
                                                     "WHERE listings.UUID = @uuid", conn);
         cmd.Parameters.AddWithValue("@uuid", currentUserId);
         var rating = cmd.ExecuteScalar();
-        return rating != null ? Convert.ToDouble(rating) : 0.0;
+        if (rating != DBNull.Value)
+        {
+            return Convert.ToDouble(rating);
+        }
+        return 0.0;
     }
     
     private static Review MapReview(SQLiteDataReader reader) => new Review
