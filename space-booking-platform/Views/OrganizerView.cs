@@ -1,4 +1,3 @@
-using System.Data.SQLite;
 using space_booking_platform.Models;
 using space_booking_platform.Services;
 using Spectre.Console;
@@ -39,7 +38,7 @@ public class OrganizerView(AppState state)
         List<Listings> listings = ls.GetListingsById(state.CurrentUUID, Limit, 0);
         if (listings.Count > 0)
         {
-            foreach (Listings listing in listings.GetRange(0, 5))
+            foreach (Listings listing in listings)
             {
                 table.AddRow(listing.Category.ToString(), listing.Title, listing.Origin, listing.Destination,
                     listing.Date.ToString("o"), listing.ListingStatus.ToString());
@@ -65,10 +64,10 @@ public class OrganizerView(AppState state)
         table2.AddColumn("[bold]Comment[/]", col => col.LeftAligned());
         table2.AddColumn("[bold]Date[/]", col => col.LeftAligned());
 
-        List<Review?> reviews = rs.GetReviews(state.CurrentUUID, Limit);
+        List<Review?> reviews = rs.GetLimitedReviews(state.CurrentUUID, Limit);
         if (reviews.Count > 0)
         {
-            foreach (Review? review in reviews.GetRange(0, 5))
+            foreach (Review? review in reviews)
             {
                 table2.AddRow(review.Title, review.Type, review.Rating.ToString(),
                     review.Comment, review.CreatedAt.ToString("o"));
@@ -82,6 +81,8 @@ public class OrganizerView(AppState state)
         {
             AnsiConsole.MarkupLine("[grey]No reviews available[/]");
         }
+
+        Console.WriteLine("");
 
         var choice = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
