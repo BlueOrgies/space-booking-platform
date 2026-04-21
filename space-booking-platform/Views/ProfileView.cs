@@ -17,7 +17,7 @@ public class ProfileView(AppState state)
 
         AnsiConsole.MarkupLine("\n[green]My bookings[/]");
         var table = new Table()
-            .SimpleBorder()
+            .RoundedBorder()
             .BorderColor(Color.Green);
 
         table.AddColumn("[bold]Category[/]", col => col.LeftAligned());
