@@ -11,6 +11,7 @@ public class AppState
     public int currentReviewID { get; set; }
     public int currentUserWeight { get; set; }
     public int currentPage {get; set;}
+    public int offset { get; set; }
     
     public void ClearState()
     {
