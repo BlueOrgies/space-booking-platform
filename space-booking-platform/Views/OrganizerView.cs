@@ -72,7 +72,7 @@ public class OrganizerView(AppState state)
                     review.Comment, review.CreatedAt.ToString("o"));
             }
             AnsiConsole.Write(table2);
-            choices.Insert(0, "View my reviews");
+            choices.Insert(1, "View my reviews");
         }
         else
         {

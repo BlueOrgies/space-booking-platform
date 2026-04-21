@@ -40,7 +40,7 @@ public class ProfileView(AppState state)
                         booking.Destination, booking.Date.ToString("o"), booking.BookingStatus.ToString());
             }
             AnsiConsole.Write(table);
-            choices.Add("View my bookings");
+            choices.Insert(0, "View my bookings");
         }
         
         
