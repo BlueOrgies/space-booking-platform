@@ -109,6 +109,27 @@ public class BookingService
         return bookings;
     }
     
+    public List<Booking?> GetLimitedBookings(int id, int limit)
+    {
+        List<Booking?> bookings = new List<Booking?>();
+        using SQLiteConnection myConn = Database.ConnectToDb();
+
+        using SQLiteCommand command = new SQLiteCommand(
+            "SELECT * FROM bookings JOIN listings ON listings.listingID = bookings.listingID " +
+            "WHERE bookings.UUID = @id ORDER BY listings.date LIMIT @limit", myConn);
+        command.Parameters.AddWithValue("@id", id);
+        command.Parameters.AddWithValue("@limit", limit);
+
+        using SQLiteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            Booking booking = MapBooking(reader);
+            bookings.Add(booking);
+        }
+
+        return bookings;
+    }
+    
     private static Booking MapBooking(SQLiteDataReader reader)
     {
         ListingStatus.TryParse(reader["bookingStatus"].ToString(), out ListingStatus bookingStatus);
