@@ -10,7 +10,7 @@ public class MyListingsView(AppState state)
     public string? Display()
     {
         AnsiConsole.Clear();
-        AnsiConsole.MarkupLine("[bold green]My listings[/]");
+        AnsiConsole.Write(new Rule("[bold green]My listings[/]").RuleStyle("green"));
 
         ListingService ls = new ListingService();
 
@@ -30,9 +30,8 @@ public class MyListingsView(AppState state)
             AnsiConsole.MarkupLine("[grey]No listings available[/]");
         }
 
-        var choices = new List<string> { "Go back to profile", "Go back to main menu", "Quit" };
+        var choices = new List<string> { "Go back", "Main menu" };
         
-        //TODO: what to do if there is only 10 listings?
         if (listings.Count == 10) 
         {
             choices.Insert(0, "Next page");
@@ -62,10 +61,10 @@ public class MyListingsView(AppState state)
             case "Previous page":
                 state.Offset -= 10;
                 return "MyListings";
-            case "Go back to main menu":
+            case "Main menu":
                 return "Home";
-            case "Go back to profile":
-                return "ProfileView";
+            case "Go back":
+                return "OrganizerView";
             default:
                 return null;
         }
