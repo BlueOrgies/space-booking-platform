@@ -61,50 +61,62 @@ public class EditListingView(AppState state)
             .WrapAround()
             .AddChoices(choices);
         string edit = AnsiConsole.Prompt(prompt);
+        
+        AnsiConsole.Clear();
+
+        ListingService listingService = new ListingService();
+        Listings? listing = listingService.GetListingById(state.CurrentListingID);
 
         Dictionary<string, string> newValues = new Dictionary<string, string>();
     
-        //TODO: Add old value and show for comparison
         switch (edit)
         {
             case "Title":
+                AnsiConsole.MarkupLine($"[bold]Title: {listing.Title}[/]");
                 newValues.Add("title",
                     AnsiConsole.Ask<string>("New title: "));
                 break;
 
             case "Description":
+                AnsiConsole.MarkupLine($"[bold]Description: {listing.Description}[/]");
                 newValues.Add("description",
                     AnsiConsole.Ask<string>("New description: "));
                 break;
 
             case "Transportation method":
+                AnsiConsole.MarkupLine($"[bold]Transportation metod: {listing.TransportMethod}[/]");
                 newValues.Add("transportMethod",
                     AnsiConsole.Ask<string>("Transportation method: "));
                 break;
 
             case "Origin":
+                AnsiConsole.MarkupLine($"[bold]Origin: {listing.Origin}[/]");
                 newValues.Add("origin",
                     AnsiConsole.Ask<string>("Edit origin: "));
                 break;
 
             case "Destination":
+                AnsiConsole.MarkupLine($"[bold]Destination: {listing.Destination}[/]");
                 newValues.Add("destination",
                     AnsiConsole.Ask<string>("Edit destination: "));
                 break;
 
             case "Date":
+                AnsiConsole.MarkupLine($"[bold]Date and time: {listing.Date:yyyy-MM-dd HH:mm}[/]");
                 newValues.Add("date",
                     AnsiConsole.Ask<DateTime>("New date and time (yyyy-MM-dd HH:mm): ")
                         .ToString("o"));
                 break;
             
             case "Duration":
+                AnsiConsole.MarkupLine($"[bold]Duration: {listing.Duration} {listing.DurationType}[/]");
                 string durationType = AnsiConsole.Ask<string>("Edit duration type: ");
                 newValues.Add("durationType", durationType);
                 newValues.Add("duration", AnsiConsole.Ask<string>($"Edit duration ({durationType}): "));
                 break;
             
             case "Capacity":
+                AnsiConsole.MarkupLine($"[bold]Capacity: {listing.Capacity} {listing.CapacityUnit}[/]");
                 prompt = new SelectionPrompt<string>()
                     .Title("[bold]Capacity unit:[/]")
                     .AddChoices(Enum.GetNames<ListingCapacityUnit>());
@@ -114,6 +126,7 @@ public class EditListingView(AppState state)
                 break;
             
             case "Price":
+                AnsiConsole.MarkupLine($"[bold]Price: {listing.Price} {listing.PriceUnit}[/]");
                 prompt = new SelectionPrompt<string>()
                     .Title("[bold]Price unit:[/]")
                     .AddChoices(Enum.GetNames<ListingPriceUnit>());
