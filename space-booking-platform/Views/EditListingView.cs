@@ -135,12 +135,12 @@ public class EditListingView(AppState state)
                 newValues.Add("price", AnsiConsole.Ask<string>($"Edit price ({priceUnit}): "));
                 break;
 
-            case "Cancel this listing":
+            case "Cancel listing":
                 newValues.Add("listingStatus",
                     nameof(ListingStatus.Cancelled));
                 break;
 
-            case "Reactivate this listing":
+            case "Reactivate listing":
                 newValues.Add("listingStatus",
                     nameof(ListingStatus.Active));
                 break;
