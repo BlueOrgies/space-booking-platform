@@ -57,7 +57,7 @@ public class OrganizerView(AppState state)
             .RoundedBorder()
             .BorderColor(Color.Grey);
 
-        table2.AddColumn("[bold]Type[/]", col => col.LeftAligned());
+        table2.AddColumn("[bold]Category[/]", col => col.LeftAligned());
         table2.AddColumn("[bold]Title[/]", col => col.LeftAligned());
         table2.AddColumn("[bold]Rating[/]", col => col.LeftAligned());
         table2.AddColumn("[bold]Comment[/]", col => col.LeftAligned());
@@ -68,7 +68,7 @@ public class OrganizerView(AppState state)
         {
             foreach (Review? review in reviews)
             {
-                table2.AddRow(review.Title, review.Type, review.Rating.ToString(),
+                table2.AddRow(review.Type, review.Title, review.Rating.ToString(),
                     review.Comment, review.CreatedAt.ToString("o"));
             }
             AnsiConsole.Write(table2);
@@ -90,7 +90,7 @@ public class OrganizerView(AppState state)
         {
             "View my listings" => "MyListings",
             "Create listing" => "CreateListing",
-            "View my reviews" => "MyReviews",
+            "View my reviews" => "Review",
             "Go back to main menu" => "Home",
             _ => null // Quit
         };
