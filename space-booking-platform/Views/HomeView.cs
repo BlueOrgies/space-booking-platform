@@ -10,10 +10,10 @@ public class HomeView(AppState state)
         AnsiConsole.Write(new Rule("[bold green]Home[/]").RuleStyle("green"));
         
         var choices = new List<string> { "Login", "Register", "Quit" };
-        if (state.isLoggedIn)
+        if (state.IsLoggedIn)
         {
             choices = new List<string> { "BrowseListings", "SearchListings", "ProfileView" };
-            if (state.isOrganizer)
+            if (state.IsOrganizer)
             {
                 choices.Add("OrganizerView");
             }

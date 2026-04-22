@@ -51,24 +51,26 @@ public class ListingService
         using SQLiteConnection myConn = Database.ConnectToDb();
 
         using SQLiteCommand command = new SQLiteCommand(
-            $"UPDATE listings SET @edit = @newData WHERE listingID = @id", myConn);
+            $"UPDATE listings SET {edit} = @newData WHERE listingID = @id", myConn);
         command.Parameters.AddWithValue("@id", id);
         command.Parameters.AddWithValue("@newData", newData);
-        command.Parameters.AddWithValue("@edit", edit);
+        //command.Parameters.AddWithValue("@edit", edit);
         command.ExecuteNonQuery();
         AnsiConsole.MarkupLine("[bold]\nListing updated.[/]");
     }
 
     
 
-    public List<Listings> GetListings(int id)
+    public List<Listings> GetListingsById(int id, int limit, int offset)
     {
         List<Listings> listings = new List<Listings>();
         using SQLiteConnection myConn = Database.ConnectToDb();
 
         using SQLiteCommand command = new SQLiteCommand(
-            "SELECT * FROM listings WHERE UUID = @id ORDER BY date", myConn);
+            "SELECT * FROM listings WHERE UUID = @id ORDER BY date LIMIT @limit OFFSET @offset", myConn);
         command.Parameters.AddWithValue("@id", id);
+        command.Parameters.AddWithValue("@offset", offset);
+        command.Parameters.AddWithValue("@limit", limit);
 
         using SQLiteDataReader reader = command.ExecuteReader();
         while (reader.Read())

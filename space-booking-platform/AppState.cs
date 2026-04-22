@@ -2,16 +2,16 @@
 
 public class AppState
 {
-    public bool isLoggedIn { get; set; }
-    public bool isOrganizer { get; set; }
-    public string? currentUser { get; set; }
-    public int currentUUID { get; set; }
-    public int currentListingID { get; set; }
-    public int currentBookingID { get; set; }
-    public int currentReviewID { get; set; }
-    public int currentUserWeight { get; set; }
-    public int currentPage {get; set;}
-    public int offset { get; set; }
+    public bool IsLoggedIn { get; set; }
+    public bool IsOrganizer { get; set; }
+    public string? CurrentUser { get; set; }
+    public int CurrentUUID { get; set; }
+    public int CurrentListingID { get; set; }
+    public int CurrentBookingID { get; set; }
+    public int CurrentReviewID { get; set; }
+    public int CurrentUserWeight { get; set; }
+    public int CurrentPage {get; set;}
+    public int Offset { get; set; }
     
     public void ClearState()
     {

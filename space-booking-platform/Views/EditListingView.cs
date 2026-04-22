@@ -8,91 +8,143 @@ public class EditListingView(AppState state)
 {
     public string? Display()
     {
-        int listingId = state.currentListingID;
         ListingService listingService = new ListingService();
-        
-        AnsiConsole.Clear();
-        
-        var prompt = new SelectionPrompt<string>()
-            .Title("[bold]What would you like to edit?:[/]")
-            .WrapAround()
-            .AddChoices("Title", "Description", "Transportation Method", "Origin", "Destination",
-                "Date", "Duration", "Capacity", "Price", "Status");
-        string edit = AnsiConsole.Prompt(prompt);
+        int listingId = state.CurrentListingID;
 
-        switch (edit)
+        Listings? listing = listingService.GetListingById(listingId);
+
+        List<string> choices =
+        [
+            "Title", "Description", "Transportation method", "Origin", "Destination",
+            "Date", "Duration", "Capacity", "Price"
+        ];
+        
+        switch (listing.ListingStatus)
         {
-            case "Title":
-                string title = AnsiConsole.Ask<string>("New title: ");
-                listingService.EditListing(listingId, "title", title);
+            case ListingStatus.Active:
+                choices.Add("Cancel listing");
                 break;
-            case "Description":
-                string description = AnsiConsole.Ask<string>("New description: ");
-                listingService.EditListing(listingId, "description", description);
+            case ListingStatus.Cancelled:
+                choices.Add("Reactivate listing");
                 break;
-            case "Transportation method":
-                string transportation = AnsiConsole.Ask<string>("Transportation method: ");
-                listingService.EditListing(listingId, "transportationMethod", transportation);
-                break;
-            case "Origin":
-                string origin = AnsiConsole.Ask<string>("Edit origin: ");
-                listingService.EditListing(listingId, "origin", origin);
-                break;
-            case "Destination":
-                string destination = AnsiConsole.Ask<string>("Edit destination: ");
-                listingService.EditListing(listingId, "destination", destination);
-                break;
-            case "Date":
-                DateTime date = AnsiConsole.Ask<DateTime>("New date and time (yyyy-MM-dd HH:mm): ");
-                listingService.EditListing(listingId, "date", date.ToString("o"));
-                break;
-            case "Duration":
-                int duration = AnsiConsole.Ask<int>("Edit duration: ");
-                string durationType = AnsiConsole.Ask<string>("Edit duration type: ");
-                listingService.EditListing(listingId, "duration", duration.ToString());
-                listingService.EditListing(listingId, "durationType", durationType);
-                break;
-            case "Capacity":
-                prompt = new SelectionPrompt<string>()
-                    .Title("[bold]Capacity unit:[/]")
-                    .AddChoices(Enum.GetNames<ListingCapacityUnit>());
-                var capacityUnit = AnsiConsole.Prompt(prompt);
-                int capacity = AnsiConsole.Ask<int>($"Edit duration ({capacityUnit}): ");
-                listingService.EditListing(listingId, "capacity", capacity.ToString());
-                listingService.EditListing(listingId, "capacityUnit", capacityUnit);
-                break;
-            case "Price":
-                prompt = new SelectionPrompt<string>()
-                    .Title("[bold]Price unit:[/]")
-                    .AddChoices(Enum.GetNames<ListingPriceUnit>());
-                var priceUnit = AnsiConsole.Prompt(prompt);
-                int price = AnsiConsole.Ask<int>($"Edit duration ({priceUnit}): ");
-                listingService.EditListing(listingId, "capacity", price.ToString());
-                listingService.EditListing(listingId, "capacityUnit", priceUnit);
-                break;
-            case "Status":
-                prompt = new SelectionPrompt<string>()
-                    .Title("[bold]Price unit:[/]")
-                    .AddChoices(Enum.GetNames<ListingStatus>());
-                var status = AnsiConsole.Prompt(prompt);
-                listingService.EditListing(listingId, "Status", status);
-                break;
+            case ListingStatus.Inactive:
+                Console.WriteLine("You cannot edit a past listing \nPress any key to continue...." );
+                Console.ReadKey();
+                return "MyListings";
+        }
+        var edit = Edit(choices);
+
+        foreach (KeyValuePair<string, string> kvp in edit)
+        {
+            listingService.EditListing(listingId, kvp.Key, kvp.Value);
         }
         
         var choice = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
-                .Title("Where would you like to go?")
                 .HighlightStyle(new Style(Color.Yellow))
-                .AddChoices("Edit more from this listing", "Go back to my listings", "Go back to profile",
-                    "Go back to main menu", "Quit"));
+                .AddChoices("Edit more from this listing", "My listings",
+                    "Main menu"));
 
         return choice switch
         {
             "Edit more from this listing" => "EditListing",
-            "Go back to my listings" => "MyListings",
-            "Go back to profile" => "Profile",
-            "Go back to main menu" => "Home",
+            "My listings" => "MyListings",
+            "Main menu" => "Home",
             _ => null // Quit
         };
+    }
+
+    private Dictionary<string, string> Edit(List<string> choices)
+    {
+        var prompt = new SelectionPrompt<string>()
+            .Title("[bold]What would you like to edit?:[/]")
+            .WrapAround()
+            .AddChoices(choices);
+        string edit = AnsiConsole.Prompt(prompt);
+        
+        AnsiConsole.Clear();
+
+        ListingService listingService = new ListingService();
+        Listings? listing = listingService.GetListingById(state.CurrentListingID);
+
+        Dictionary<string, string> newValues = new Dictionary<string, string>();
+    
+        switch (edit)
+        {
+            case "Title":
+                AnsiConsole.MarkupLine($"[bold]Title: {listing.Title}[/]");
+                newValues.Add("title",
+                    AnsiConsole.Ask<string>("New title: "));
+                break;
+
+            case "Description":
+                AnsiConsole.MarkupLine($"[bold]Description: {listing.Description}[/]");
+                newValues.Add("description",
+                    AnsiConsole.Ask<string>("New description: "));
+                break;
+
+            case "Transportation method":
+                AnsiConsole.MarkupLine($"[bold]Transportation metod: {listing.TransportMethod}[/]");
+                newValues.Add("transportMethod",
+                    AnsiConsole.Ask<string>("Transportation method: "));
+                break;
+
+            case "Origin":
+                AnsiConsole.MarkupLine($"[bold]Origin: {listing.Origin}[/]");
+                newValues.Add("origin",
+                    AnsiConsole.Ask<string>("Edit origin: "));
+                break;
+
+            case "Destination":
+                AnsiConsole.MarkupLine($"[bold]Destination: {listing.Destination}[/]");
+                newValues.Add("destination",
+                    AnsiConsole.Ask<string>("Edit destination: "));
+                break;
+
+            case "Date":
+                AnsiConsole.MarkupLine($"[bold]Date and time: {listing.Date:yyyy-MM-dd HH:mm}[/]");
+                newValues.Add("date",
+                    AnsiConsole.Ask<DateTime>("New date and time (yyyy-MM-dd HH:mm): ")
+                        .ToString("o"));
+                break;
+            
+            case "Duration":
+                AnsiConsole.MarkupLine($"[bold]Duration: {listing.Duration} {listing.DurationType}[/]");
+                string durationType = AnsiConsole.Ask<string>("Edit duration type: ");
+                newValues.Add("durationType", durationType);
+                newValues.Add("duration", AnsiConsole.Ask<string>($"Edit duration ({durationType}): "));
+                break;
+            
+            case "Capacity":
+                AnsiConsole.MarkupLine($"[bold]Capacity: {listing.Capacity} {listing.CapacityUnit}[/]");
+                prompt = new SelectionPrompt<string>()
+                    .Title("[bold]Capacity unit:[/]")
+                    .AddChoices(Enum.GetNames<ListingCapacityUnit>());
+                var capacityUnit = AnsiConsole.Prompt(prompt);
+                newValues.Add("capacityUnit", capacityUnit);
+                newValues.Add("capacity", AnsiConsole.Ask<string>($"Edit capacity ({capacityUnit}): "));
+                break;
+            
+            case "Price":
+                AnsiConsole.MarkupLine($"[bold]Price: {listing.Price} {listing.PriceUnit}[/]");
+                prompt = new SelectionPrompt<string>()
+                    .Title("[bold]Price unit:[/]")
+                    .AddChoices(Enum.GetNames<ListingPriceUnit>());
+                var priceUnit = AnsiConsole.Prompt(prompt);
+                newValues.Add("priceUnit", priceUnit);
+                newValues.Add("price", AnsiConsole.Ask<string>($"Edit price ({priceUnit}): "));
+                break;
+
+            case "Cancel listing":
+                newValues.Add("listingStatus",
+                    nameof(ListingStatus.Cancelled));
+                break;
+
+            case "Reactivate listing":
+                newValues.Add("listingStatus",
+                    nameof(ListingStatus.Active));
+                break;
+        }
+        return newValues;
     }
 }
