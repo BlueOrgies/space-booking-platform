@@ -44,30 +44,39 @@ class BrowseListingsView(AppState state)
 
         if (listingMap.Count > 0)
         {
+            prompt.AddChoiceGroup("Listings", listingMap.Keys.ToArray());
+        }
+        else
+        {
+            AnsiConsole.MarkupLine("[grey]No listings available.[/]");
+        }
 
-            prompt.AddChoiceGroup("Navigation", navChoices.ToArray());
+        prompt.AddChoiceGroup("Navigation", navChoices.ToArray());
+        return AnsiConsole.Prompt(prompt);
+    }
 
-            string choice = AnsiConsole.Prompt(prompt);
+    private string? HandleChoice(string choice, Dictionary<string, int> listingMap, ref int offset)
+    {
+        if (listingMap.TryGetValue(choice, out int listingId))
+        {
+            state.CurrentListingID = listingId;
+            return "Listing";
+        }
 
-            if (listingMap.TryGetValue(choice, out int listingId))
-            {
-                state.CurrentListingID = listingId;
-                return "Listing";
-            }
-
-            switch (choice)
-            {
-                case "← Previous 10":
-                    offset -= 10;
-                    break;
-                case "→ Next 10":
-                    offset += 10;
-                    break;
-                case "Search Listings":
-                    return "SearchListings";
-                case "Back to main menu":
-                    return "Home";
-            }
+        switch (choice)
+        {
+            case PreviousPageChoice:
+                offset -= PageSize;
+                return null;
+            case NextPageChoice:
+                offset += PageSize;
+                return null;
+            case SearchChoice:
+                return "SearchListings";
+            case BackChoice:
+                return "Home";
+            default:
+                return null;
         }
     }
 }
