@@ -62,7 +62,7 @@ public class ListingView(AppState state)
 
         string statusColor = listing.ListingStatus switch
         {
-            ListingStatus.Active => "green",
+            ListingStatus.Upcoming => "green",
             ListingStatus.Cancelled => "red",
             _ => "yellow"
         };
