@@ -144,7 +144,7 @@ public class ListingService
         using (SQLiteCommand selectCommand = new SQLiteCommand(
                    "SELECT listingID, date FROM listings WHERE listingStatus = @status", connection))
         {
-            selectCommand.Parameters.AddWithValue("@status", nameof(ListingStatus.Active));
+            selectCommand.Parameters.AddWithValue("@status", nameof(ListingStatus.Upcoming));
 
             using SQLiteDataReader reader = selectCommand.ExecuteReader();
             while (reader.Read())
@@ -213,7 +213,7 @@ public class ListingService
     public static ListingStatus ParseListingStatus(SQLiteDataReader reader)
     {
         string? rawStatus = reader["listingStatus"].ToString();
-        if (string.Equals(rawStatus, nameof(ListingStatus.Inactive), StringComparison.OrdinalIgnoreCase))
+        if (string.Equals(rawStatus, nameof(ListingStatus.Past), StringComparison.OrdinalIgnoreCase))
             return ListingStatus.Past;
 
         ListingStatus.TryParse(rawStatus, out ListingStatus status);

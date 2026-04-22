@@ -99,7 +99,7 @@ public static class Seeder
                 price: price,
                 priceUnit: priceUnit,
                 createdAt: DateTime.UtcNow,
-                listingStatus: ListingStatus.Active
+                listingStatus: ListingStatus.Upcoming
             );
             i++;
         }

@@ -21,14 +21,13 @@ public class EditListingView(AppState state)
         
         switch (listing.ListingStatus)
         {
-            case ListingStatus.Active:
+            case ListingStatus.Upcoming:
                 choices.Add("Cancel listing");
                 break;
             case ListingStatus.Cancelled:
                 choices.Add("Reactivate listing");
                 break;
             case ListingStatus.Past:
-            case ListingStatus.Inactive:
                 Console.WriteLine("You cannot edit a past listing \nPress any key to continue...." );
                 Console.ReadKey();
                 return "MyListings";
@@ -143,7 +142,7 @@ public class EditListingView(AppState state)
 
             case "Reactivate listing":
                 newValues.Add("listingStatus",
-                    nameof(ListingStatus.Active));
+                    nameof(ListingStatus.Upcoming));
                 break;
         }
         return newValues;
