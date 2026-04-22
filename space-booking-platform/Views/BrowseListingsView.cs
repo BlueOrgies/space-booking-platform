@@ -22,7 +22,7 @@ class BrowseListingsView(AppState state)
             AnsiConsole.Clear();
             AnsiConsole.Write(new Rule("[bold green]Browse Listings[/]").RuleStyle("green"));
 
-            List<Listings> listings = listingService.GetAllListings(offset);
+            List<Listings> listings = listingService.GetActiveListings(offset);
             Dictionary<string, int> listingMap = BuildListingMap(listings);
             List<string> navChoices = BuildNavigationChoices(offset, listings.Count);
 
