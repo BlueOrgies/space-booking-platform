@@ -61,7 +61,7 @@ public class ListingService
 
     
 
-    public List<Listings> GetListingsById(int id, int limit, int offset)
+    public List<Listings> GetListingsByUserId(int id, int limit, int offset)
     {
         List<Listings> listings = new List<Listings>();
         using SQLiteConnection myConn = Database.ConnectToDb();
@@ -80,14 +80,14 @@ public class ListingService
         return listings;
     }
 
-    public List<Listings> GetAllListings(int offset)
+    public List<Listings> GetActiveListings(int offset)
     {
         using SQLiteConnection myConn = Database.ConnectToDb();
         var listings = new List<Listings>();
         SyncPastListingStatuses(myConn);
 
         using SQLiteCommand cmd = new SQLiteCommand(
-            "SELECT * FROM listings WHERE listingStatus = 'Active' ORDER BY date LIMIT 10 OFFSET @offset",
+            "SELECT * FROM listings WHERE listingStatus = 'Upcoming' ORDER BY date LIMIT 10 OFFSET @offset",
             myConn);
         cmd.Parameters.AddWithValue("@offset", offset);
 
@@ -119,7 +119,7 @@ public class ListingService
         var listings = new List<Listings>();
         SyncPastListingStatuses(myConn);
 
-        string sql = "SELECT * FROM listings WHERE listingStatus = 'Active' " +
+        string sql = "SELECT * FROM listings WHERE listingStatus = 'Upcoming' " +
                      "AND (title LIKE @kw OR origin LIKE @kw OR destination LIKE @kw)";
         if (category.HasValue)
             sql += " AND type = @category";
@@ -144,7 +144,7 @@ public class ListingService
         using (SQLiteCommand selectCommand = new SQLiteCommand(
                    "SELECT listingID, date FROM listings WHERE listingStatus = @status", connection))
         {
-            selectCommand.Parameters.AddWithValue("@status", nameof(ListingStatus.Active));
+            selectCommand.Parameters.AddWithValue("@status", nameof(ListingStatus.Upcoming));
 
             using SQLiteDataReader reader = selectCommand.ExecuteReader();
             while (reader.Read())
@@ -174,26 +174,39 @@ public class ListingService
     }
 
 
-    private static Listings MapListings(SQLiteDataReader reader) => new Listings
+    private static Listings MapListings(SQLiteDataReader reader)
     {
-        ListingId = Convert.ToInt32(reader["listingID"]),
-        UUID = Convert.ToInt32(reader["UUID"]),
-        Category = ParseListingCategory(reader),
-        Title = reader["title"].ToString()!,
-        Description = reader["description"].ToString()!,
-        TransportMethod = reader["transportMethod"].ToString()!,
-        Origin = reader["origin"].ToString()!,
-        Destination = reader["destination"].ToString()!,
-        Date = DateTime.Parse(reader["date"].ToString()!),
-        Duration = Convert.ToInt32(reader["duration"]),
-        DurationType = reader["durationType"].ToString()!,
-        Capacity = Convert.ToInt32(reader["capacity"]),
-        CapacityUnit = ParseListingCapacityUnit(reader),
-        Price = Convert.ToDecimal(reader["price"]),
-        PriceUnit = ParseListingPriceUnit(reader),
-        ListingStatus = ParseListingStatus(reader),
-        CreatedAt = DateTime.Parse(reader["createdAt"].ToString()!)
-    };
+        var category = ParseListingCategory(reader);
+
+        Listings listing = category switch
+        {
+            ListingCategory.Accommodation => new Accommodation(),
+            ListingCategory.PassengerTransportation => new PassengerTransportation(),
+            ListingCategory.FreightHaul => new FreightHaul(),
+            ListingCategory.Activity => new Activity(),
+            _ => new Other()
+        };
+
+        listing.ListingId = Convert.ToInt32(reader["listingID"]);
+        listing.UUID = Convert.ToInt32(reader["UUID"]);
+        listing.Category = ParseListingCategory(reader);
+        listing.Title = reader["title"].ToString()!;
+        listing.Description = reader["description"].ToString()!;
+        listing.TransportMethod = reader["transportMethod"].ToString()!;
+        listing.Origin = reader["origin"].ToString()!;
+        listing.Destination = reader["destination"].ToString()!;
+        listing.Date = DateTime.Parse(reader["date"].ToString()!);
+        listing.Duration = Convert.ToInt32(reader["duration"]);
+        listing.DurationType = reader["durationType"].ToString()!;
+        listing.Capacity = Convert.ToInt32(reader["capacity"]);
+        listing.CapacityUnit = ParseListingCapacityUnit(reader);
+        listing.Price = Convert.ToDecimal(reader["price"]);
+        listing.PriceUnit = ParseListingPriceUnit(reader);
+        listing.ListingStatus = ParseListingStatus(reader);
+        listing.CreatedAt = DateTime.Parse(reader["createdAt"].ToString()!);
+
+        return listing;
+    }
 
     public static ListingCategory ParseListingCategory(SQLiteDataReader reader)
     {
@@ -213,7 +226,7 @@ public class ListingService
     public static ListingStatus ParseListingStatus(SQLiteDataReader reader)
     {
         string? rawStatus = reader["listingStatus"].ToString();
-        if (string.Equals(rawStatus, nameof(ListingStatus.Inactive), StringComparison.OrdinalIgnoreCase))
+        if (string.Equals(rawStatus, nameof(ListingStatus.Past), StringComparison.OrdinalIgnoreCase))
             return ListingStatus.Past;
 
         ListingStatus.TryParse(rawStatus, out ListingStatus status);

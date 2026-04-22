@@ -23,86 +23,56 @@ class BrowseListingsView(AppState state)
             AnsiConsole.Write(new Rule("[bold green]Browse Listings[/]").RuleStyle("green"));
 
             List<Listings> listings = listingService.GetActiveListings(offset);
-            Dictionary<string, int> listingMap = BuildListingMap(listings);
-            List<string> navChoices = BuildNavigationChoices(offset, listings.Count);
 
-            string choice = PromptForChoice(listingMap, navChoices);
-            string? route = HandleChoice(choice, listingMap, ref offset);
-            if (route != null)
-                return route;
-        }
-    }
+            var prompt = new SelectionPrompt<string>()
+                .Title("Select a listing to view details:")
+                .HighlightStyle(new Style(Color.Yellow));
 
-    private static Dictionary<string, int> BuildListingMap(IEnumerable<Listings> listings)
-    {
-        var listingMap = new Dictionary<string, int>();
-        foreach (Listings listing in listings)
-        {
-            listingMap[BuildListingLabel(listing)] = listing.ListingId;
-        }
+            var listingMap = new Dictionary<string, int>();
 
-        return listingMap;
-    }
+            if (listings.Count > 0)
+            {
+                foreach (var listing in listings)
+                {
+                    string label = $"[[{listing.Category}]] {Markup.Escape(listing.Title)} | {Markup.Escape(listing.Origin)} → {Markup.Escape(listing.Destination)} | {listing.Date:yyyy-MM-dd} | {listing.Price} {listing.PriceUnit}";
+                    listingMap[label] = listing.ListingId;
+                }
+                prompt.AddChoiceGroup("Listings", listingMap.Keys.ToArray());
+            }
+            else
+            {
+                AnsiConsole.MarkupLine("[grey]No listings available.[/]");
+            }
 
-    private static string BuildListingLabel(Listings listing)
-    {
-        return $"[[{listing.Category}]] {Markup.Escape(listing.Title)} | {Markup.Escape(listing.Origin)} → {Markup.Escape(listing.Destination)} | {listing.Date:yyyy-MM-dd} | {listing.Price} {listing.PriceUnit}";
-    }
+            var navChoices = new List<string>();
+            if (offset > 0) navChoices.Add("← Previous 10");
+            if (listings.Count == 10) navChoices.Add("→ Next 10");
+            navChoices.Add("Search Listings");
+            navChoices.Add("Back to main menu");
 
-    private static List<string> BuildNavigationChoices(int offset, int listingCount)
-    {
-        var navChoices = new List<string>();
-        if (offset > 0)
-            navChoices.Add(PreviousPageChoice);
-        if (listingCount == PageSize)
-            navChoices.Add(NextPageChoice);
+            prompt.AddChoiceGroup("Navigation", navChoices.ToArray());
 
-        navChoices.Add(SearchChoice);
-        navChoices.Add(BackChoice);
-        return navChoices;
-    }
+            string choice = AnsiConsole.Prompt(prompt);
 
-    private static string PromptForChoice(Dictionary<string, int> listingMap, List<string> navChoices)
-    {
-        var prompt = new SelectionPrompt<string>()
-            .Title("Select a listing to view details:")
-            .HighlightStyle(new Style(Color.Yellow));
+            if (listingMap.TryGetValue(choice, out int listingId))
+            {
+                state.CurrentListingID = listingId;
+                return "Listing";
+            }
 
-        if (listingMap.Count > 0)
-        {
-            prompt.AddChoiceGroup("Listings", listingMap.Keys.ToArray());
-        }
-        else
-        {
-            AnsiConsole.MarkupLine("[grey]No listings available.[/]");
-        }
-
-        prompt.AddChoiceGroup("Navigation", navChoices.ToArray());
-        return AnsiConsole.Prompt(prompt);
-    }
-
-    private string? HandleChoice(string choice, Dictionary<string, int> listingMap, ref int offset)
-    {
-        if (listingMap.TryGetValue(choice, out int listingId))
-        {
-            state.CurrentListingID = listingId;
-            return "Listing";
-        }
-
-        switch (choice)
-        {
-            case PreviousPageChoice:
-                offset -= PageSize;
-                return null;
-            case NextPageChoice:
-                offset += PageSize;
-                return null;
-            case SearchChoice:
-                return "SearchListings";
-            case BackChoice:
-                return "Home";
-            default:
-                return null;
+            switch (choice)
+            {
+                case "← Previous 10":
+                    offset -= 10;
+                    break;
+                case "→ Next 10":
+                    offset += 10;
+                    break;
+                case "Search Listings":
+                    return "SearchListings";
+                case "Back to main menu":
+                    return "Home";
+            }
         }
     }
 }
