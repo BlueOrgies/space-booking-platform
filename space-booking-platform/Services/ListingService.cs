@@ -80,7 +80,7 @@ public class ListingService
         return listings;
     }
 
-    public List<Listings> GetAllListings(int offset)
+    public List<Listings> GetActiveListings(int offset)
     {
         using SQLiteConnection myConn = Database.ConnectToDb();
         var listings = new List<Listings>();
