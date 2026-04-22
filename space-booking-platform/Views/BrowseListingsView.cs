@@ -23,10 +23,18 @@ class BrowseListingsView(AppState state)
             AnsiConsole.Write(new Rule("[bold green]Browse Listings[/]").RuleStyle("green"));
 
             List<Listings> listings = listingService.GetAllListings(offset);
+    private static List<string> BuildNavigationChoices(int offset, int listingCount)
+    {
+        var navChoices = new List<string>();
+        if (offset > 0)
+            navChoices.Add(PreviousPageChoice);
+        if (listingCount == PageSize)
+            navChoices.Add(NextPageChoice);
 
-            var prompt = new SelectionPrompt<string>()
-                .Title("Select a listing to view details:")
-                .HighlightStyle(new Style(Color.Yellow));
+        navChoices.Add(SearchChoice);
+        navChoices.Add(BackChoice);
+        return navChoices;
+    }
 
             var listingMap = new Dictionary<string, int>();
 
