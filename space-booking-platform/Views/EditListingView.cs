@@ -143,7 +143,7 @@ public class EditListingView(AppState state)
 
             case "Reactivate listing":
                 newValues.Add("listingStatus",
-                    nameof(ListingStatus.Active));
+                    nameof(ListingStatus.Upcoming));
                 break;
         }
         return newValues;
