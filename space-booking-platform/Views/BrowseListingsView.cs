@@ -36,27 +36,14 @@ class BrowseListingsView(AppState state)
         return navChoices;
     }
 
-            var listingMap = new Dictionary<string, int>();
+    private static string PromptForChoice(Dictionary<string, int> listingMap, List<string> navChoices)
+    {
+        var prompt = new SelectionPrompt<string>()
+            .Title("Select a listing to view details:")
+            .HighlightStyle(new Style(Color.Yellow));
 
-            if (listings.Count > 0)
-            {
-                foreach (var listing in listings)
-                {
-                    string label = $"[[{listing.Category}]] {Markup.Escape(listing.Title)} | {Markup.Escape(listing.Origin)} → {Markup.Escape(listing.Destination)} | {listing.Date:yyyy-MM-dd} | {listing.Price} {listing.PriceUnit}";
-                    listingMap[label] = listing.ListingId;
-                }
-                prompt.AddChoiceGroup("Listings", listingMap.Keys.ToArray());
-            }
-            else
-            {
-                AnsiConsole.MarkupLine("[grey]No listings available.[/]");
-            }
-
-            var navChoices = new List<string>();
-            if (offset > 0) navChoices.Add("← Previous 10");
-            if (listings.Count == 10) navChoices.Add("→ Next 10");
-            navChoices.Add("Search Listings");
-            navChoices.Add("Back to main menu");
+        if (listingMap.Count > 0)
+        {
 
             prompt.AddChoiceGroup("Navigation", navChoices.ToArray());
 
