@@ -4,6 +4,6 @@ public class PassengerTransportation : Listings
 {
     public PassengerTransportation()
     {
-        Category = ListingCategory.Transportation;
+        Category = ListingCategory.PassengerTransportation;
     }
 }
