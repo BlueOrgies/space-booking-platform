@@ -4,6 +4,6 @@ public class FreightHaul : Listings
 {
     public FreightHaul()
     {
-        Category = ListingCategory.Transportation;
+        Category = ListingCategory.FreightHaul;
     }
 }
