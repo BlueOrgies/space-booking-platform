@@ -176,24 +176,37 @@ public class ListingService
 
     private static Listings MapListings(SQLiteDataReader reader) => new Listings
     {
-        ListingId = Convert.ToInt32(reader["listingID"]),
-        UUID = Convert.ToInt32(reader["UUID"]),
-        Category = ParseListingCategory(reader),
-        Title = reader["title"].ToString()!,
-        Description = reader["description"].ToString()!,
-        TransportMethod = reader["transportMethod"].ToString()!,
-        Origin = reader["origin"].ToString()!,
-        Destination = reader["destination"].ToString()!,
-        Date = DateTime.Parse(reader["date"].ToString()!),
-        Duration = Convert.ToInt32(reader["duration"]),
-        DurationType = reader["durationType"].ToString()!,
-        Capacity = Convert.ToInt32(reader["capacity"]),
-        CapacityUnit = ParseListingCapacityUnit(reader),
-        Price = Convert.ToDecimal(reader["price"]),
-        PriceUnit = ParseListingPriceUnit(reader),
-        ListingStatus = ParseListingStatus(reader),
-        CreatedAt = DateTime.Parse(reader["createdAt"].ToString()!)
-    };
+        var category = ParseListingCategory(reader);
+
+        Listings listing = category switch
+        {
+            ListingCategory.Accommodation => new Accommodation(),
+            ListingCategory.PassengerTransportation => new PassengerTransportation(),
+            ListingCategory.FreightHaul => new FreightHaul(),
+            ListingCategory.Activity => new Activity(),
+            _ => new Other()
+        };
+
+        listing.ListingId = Convert.ToInt32(reader["listingID"]);
+        listing.UUID = Convert.ToInt32(reader["UUID"]);
+        listing.Category = ParseListingCategory(reader);
+        listing.Title = reader["title"].ToString()!;
+        listing.Description = reader["description"].ToString()!;
+        listing.TransportMethod = reader["transportMethod"].ToString()!;
+        listing.Origin = reader["origin"].ToString()!;
+        listing.Destination = reader["destination"].ToString()!;
+        listing.Date = DateTime.Parse(reader["date"].ToString()!);
+        listing.Duration = Convert.ToInt32(reader["duration"]);
+        listing.DurationType = reader["durationType"].ToString()!;
+        listing.Capacity = Convert.ToInt32(reader["capacity"]);
+        listing.CapacityUnit = ParseListingCapacityUnit(reader);
+        listing.Price = Convert.ToDecimal(reader["price"]);
+        listing.PriceUnit = ParseListingPriceUnit(reader);
+        listing.ListingStatus = ParseListingStatus(reader);
+        listing.CreatedAt = DateTime.Parse(reader["createdAt"].ToString()!);
+
+        return listing;
+    }
 
     public static ListingCategory ParseListingCategory(SQLiteDataReader reader)
     {
