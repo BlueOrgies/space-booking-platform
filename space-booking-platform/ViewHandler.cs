@@ -46,8 +46,7 @@ public class ViewHandler
 
     private string? Logout()
     {
-        _state.IsLoggedIn = false;
-        _state.CurrentUser = null;
+        _state.ClearState();
         return "Home";
     }
 }

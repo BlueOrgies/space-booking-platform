@@ -12,4 +12,17 @@ public class AppState
     public int CurrentUserWeight { get; set; }
     public int CurrentPage {get; set;}
     public int Offset { get; set; }
+    
+    public void ClearState()
+    {
+        isLoggedIn = false;
+        isOrganizer = false;
+        currentUser = null;
+        currentUUID = 0;
+        currentListingID = 0;
+        currentBookingID = 0;
+        currentReviewID = 0;
+        currentUserWeight = 0;
+        currentPage = 0;
+    }
 }
