@@ -144,7 +144,7 @@ public class ListingService
         using (SQLiteCommand selectCommand = new SQLiteCommand(
                    "SELECT listingID, date FROM listings WHERE listingStatus = @status", connection))
         {
-            selectCommand.Parameters.AddWithValue("@status", nameof(ListingStatus.Active));
+            selectCommand.Parameters.AddWithValue("@status", nameof(ListingStatus.Upcoming));
 
             using SQLiteDataReader reader = selectCommand.ExecuteReader();
             while (reader.Read())
