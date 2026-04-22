@@ -5,4 +5,5 @@ public enum ListingStatus
     Upcoming,
     Past,
     Cancelled,
+    SoldOut
 }
