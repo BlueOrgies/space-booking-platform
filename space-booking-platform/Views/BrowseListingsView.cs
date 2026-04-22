@@ -6,6 +6,12 @@ namespace space_booking_platform.Views;
 
 class BrowseListingsView(AppState state)
 {
+    private const int PageSize = 10;
+    private const string PreviousPageChoice = "← Previous 10";
+    private const string NextPageChoice = "→ Next 10";
+    private const string SearchChoice = "Search Listings";
+    private const string BackChoice = "Back to main menu";
+
     public string? Display()
     {
         var listingService = new ListingService();
