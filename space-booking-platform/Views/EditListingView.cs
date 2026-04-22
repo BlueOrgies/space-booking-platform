@@ -27,6 +27,7 @@ public class EditListingView(AppState state)
             case ListingStatus.Cancelled:
                 choices.Add("Reactivate listing");
                 break;
+            case ListingStatus.Past:
             case ListingStatus.Inactive:
                 Console.WriteLine("You cannot edit a past listing \nPress any key to continue...." );
                 Console.ReadKey();

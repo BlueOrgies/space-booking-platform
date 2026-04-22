@@ -65,6 +65,7 @@ public class ListingService
     {
         List<Listings> listings = new List<Listings>();
         using SQLiteConnection myConn = Database.ConnectToDb();
+        SyncPastListingStatuses(myConn);
 
         using SQLiteCommand command = new SQLiteCommand(
             "SELECT * FROM listings WHERE UUID = @id ORDER BY date LIMIT @limit OFFSET @offset", myConn);
@@ -83,6 +84,7 @@ public class ListingService
     {
         using SQLiteConnection myConn = Database.ConnectToDb();
         var listings = new List<Listings>();
+        SyncPastListingStatuses(myConn);
 
         using SQLiteCommand cmd = new SQLiteCommand(
             "SELECT * FROM listings WHERE listingStatus = 'Active' ORDER BY date LIMIT 10 OFFSET @offset",
@@ -99,6 +101,7 @@ public class ListingService
     public Listings? GetListingById(int listingId)
     {
         using SQLiteConnection myConn = Database.ConnectToDb();
+        SyncPastListingStatuses(myConn);
 
         using SQLiteCommand cmd = new SQLiteCommand(
             "SELECT * FROM listings WHERE listingID = @id", myConn);
@@ -114,6 +117,7 @@ public class ListingService
     {
         using SQLiteConnection myConn = Database.ConnectToDb();
         var listings = new List<Listings>();
+        SyncPastListingStatuses(myConn);
 
         string sql = "SELECT * FROM listings WHERE listingStatus = 'Active' " +
                      "AND (title LIKE @kw OR origin LIKE @kw OR destination LIKE @kw)";
@@ -131,6 +135,42 @@ public class ListingService
             listings.Add(MapListings(reader));
 
         return listings;
+    }
+
+    private static void SyncPastListingStatuses(SQLiteConnection connection)
+    {
+        var expiredListingIds = new List<int>();
+
+        using (SQLiteCommand selectCommand = new SQLiteCommand(
+                   "SELECT listingID, date FROM listings WHERE listingStatus = @status", connection))
+        {
+            selectCommand.Parameters.AddWithValue("@status", nameof(ListingStatus.Active));
+
+            using SQLiteDataReader reader = selectCommand.ExecuteReader();
+            while (reader.Read())
+            {
+                DateTime listingDate = DateTime.Parse(reader["date"].ToString()!);
+                if (listingDate < DateTime.Now)
+                    expiredListingIds.Add(Convert.ToInt32(reader["listingID"]));
+            }
+        }
+
+        if (expiredListingIds.Count == 0)
+            return;
+
+        using SQLiteTransaction transaction = connection.BeginTransaction();
+        using SQLiteCommand updateCommand = new SQLiteCommand(
+            "UPDATE listings SET listingStatus = @status WHERE listingID = @listingId", connection, transaction);
+        updateCommand.Parameters.Add("@status", System.Data.DbType.String).Value = nameof(ListingStatus.Past);
+        SQLiteParameter listingIdParameter = updateCommand.Parameters.Add("@listingId", System.Data.DbType.Int32);
+
+        foreach (int listingId in expiredListingIds)
+        {
+            listingIdParameter.Value = listingId;
+            updateCommand.ExecuteNonQuery();
+        }
+
+        transaction.Commit();
     }
 
 
@@ -172,7 +212,11 @@ public class ListingService
     }
     public static ListingStatus ParseListingStatus(SQLiteDataReader reader)
     {
-        ListingStatus.TryParse(reader["listingStatus"].ToString(), out ListingStatus status);
+        string? rawStatus = reader["listingStatus"].ToString();
+        if (string.Equals(rawStatus, nameof(ListingStatus.Inactive), StringComparison.OrdinalIgnoreCase))
+            return ListingStatus.Past;
+
+        ListingStatus.TryParse(rawStatus, out ListingStatus status);
         return status;
     }
     
