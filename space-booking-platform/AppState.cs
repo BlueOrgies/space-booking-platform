@@ -15,14 +15,15 @@ public class AppState
     
     public void ClearState()
     {
-        isLoggedIn = false;
-        isOrganizer = false;
-        currentUser = null;
-        currentUUID = 0;
-        currentListingID = 0;
-        currentBookingID = 0;
-        currentReviewID = 0;
-        currentUserWeight = 0;
-        currentPage = 0;
+        IsLoggedIn = false;
+        IsOrganizer = false;
+        CurrentUser = null;
+        CurrentUUID = 0;
+        CurrentListingID = 0;
+        CurrentBookingID = 0;
+        CurrentReviewID = 0;
+        CurrentUserWeight = 0;
+        CurrentPage = 0;
+        Offset = 0;
     }
 }
