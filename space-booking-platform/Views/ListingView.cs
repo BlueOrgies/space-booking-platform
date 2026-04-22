@@ -77,7 +77,7 @@ public class ListingView(AppState state)
         {
             choices.Add("Edit this listing");
         }
-        else if (state.IsLoggedIn && listing.ListingStatus == ListingStatus.Active)
+        else if (state.IsLoggedIn && listing.ListingStatus == ListingStatus.Upcoming)
         {
             if (bookingService.HasBooked(state.CurrentUUID, listing.ListingId))
                 AnsiConsole.MarkupLine("[grey]You have already booked this listing.[/]");
