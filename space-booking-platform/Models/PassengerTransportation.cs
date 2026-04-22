@@ -2,6 +2,7 @@
 
 public class PassengerTransportation : Listings
 {
+    public bool LuggageIncluded { get; set; }
     public PassengerTransportation()
     {
         Category = ListingCategory.PassengerTransportation;
