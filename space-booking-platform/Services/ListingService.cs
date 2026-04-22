@@ -213,7 +213,7 @@ public class ListingService
     public static ListingStatus ParseListingStatus(SQLiteDataReader reader)
     {
         string? rawStatus = reader["listingStatus"].ToString();
-        if (string.Equals(rawStatus, nameof(ListingStatus.Inactive), StringComparison.OrdinalIgnoreCase))
+        if (string.Equals(rawStatus, nameof(ListingStatus.Past), StringComparison.OrdinalIgnoreCase))
             return ListingStatus.Past;
 
         ListingStatus.TryParse(rawStatus, out ListingStatus status);
