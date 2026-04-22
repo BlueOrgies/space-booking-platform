@@ -23,6 +23,32 @@ class BrowseListingsView(AppState state)
             AnsiConsole.Write(new Rule("[bold green]Browse Listings[/]").RuleStyle("green"));
 
             List<Listings> listings = listingService.GetAllListings(offset);
+            Dictionary<string, int> listingMap = BuildListingMap(listings);
+            List<string> navChoices = BuildNavigationChoices(offset, listings.Count);
+
+            string choice = PromptForChoice(listingMap, navChoices);
+            string? route = HandleChoice(choice, listingMap, ref offset);
+            if (route != null)
+                return route;
+        }
+    }
+
+    private static Dictionary<string, int> BuildListingMap(IEnumerable<Listings> listings)
+    {
+        var listingMap = new Dictionary<string, int>();
+        foreach (Listings listing in listings)
+        {
+            listingMap[BuildListingLabel(listing)] = listing.ListingId;
+        }
+
+        return listingMap;
+    }
+
+    private static string BuildListingLabel(Listings listing)
+    {
+        return $"[[{listing.Category}]] {Markup.Escape(listing.Title)} | {Markup.Escape(listing.Origin)} → {Markup.Escape(listing.Destination)} | {listing.Date:yyyy-MM-dd} | {listing.Price} {listing.PriceUnit}";
+    }
+
     private static List<string> BuildNavigationChoices(int offset, int listingCount)
     {
         var navChoices = new List<string>();
