@@ -16,7 +16,7 @@ class BrowseListingsView(AppState state)
             AnsiConsole.Clear();
             AnsiConsole.Write(new Rule("[bold green]Browse Listings[/]").RuleStyle("green"));
 
-            List<Listings> listings = listingService.GetAllListings(offset);
+            List<Listings> listings = listingService.GetActiveListings(offset);
 
             var prompt = new SelectionPrompt<string>()
                 .Title("Select a listing to view details:")

@@ -61,7 +61,7 @@ public class ListingService
 
     
 
-    public List<Listings> GetListingsById(int id, int limit, int offset)
+    public List<Listings> GetListingsByUserId(int id, int limit, int offset)
     {
         List<Listings> listings = new List<Listings>();
         using SQLiteConnection myConn = Database.ConnectToDb();
@@ -80,7 +80,7 @@ public class ListingService
         return listings;
     }
 
-    public List<Listings> GetAllListings(int offset)
+    public List<Listings> GetActiveListings(int offset)
     {
         using SQLiteConnection myConn = Database.ConnectToDb();
         var listings = new List<Listings>();
