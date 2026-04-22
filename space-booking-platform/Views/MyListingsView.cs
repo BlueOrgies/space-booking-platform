@@ -15,7 +15,7 @@ public class MyListingsView(AppState state)
         ListingService ls = new ListingService();
 
         Dictionary<string, string> rows = new Dictionary<string, string>();
-        List<Listings> listings = ls.GetListingsById(state.CurrentUUID, Limit, state.Offset);
+        List<Listings> listings = ls.GetListingsByUserId(state.CurrentUUID, Limit, state.Offset);
 
         if (listings.Count > 0)
         {

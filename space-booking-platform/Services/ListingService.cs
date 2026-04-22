@@ -61,7 +61,7 @@ public class ListingService
 
     
 
-    public List<Listings> GetListingsById(int id, int limit, int offset)
+    public List<Listings> GetListingsByUserId(int id, int limit, int offset)
     {
         List<Listings> listings = new List<Listings>();
         using SQLiteConnection myConn = Database.ConnectToDb();
