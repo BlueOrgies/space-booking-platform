@@ -87,7 +87,7 @@ public class ListingService
         SyncPastListingStatuses(myConn);
 
         using SQLiteCommand cmd = new SQLiteCommand(
-            "SELECT * FROM listings WHERE listingStatus = 'Active' ORDER BY date LIMIT 10 OFFSET @offset",
+            "SELECT * FROM listings WHERE listingStatus = 'Upcoming' ORDER BY date LIMIT 10 OFFSET @offset",
             myConn);
         cmd.Parameters.AddWithValue("@offset", offset);
 
@@ -119,7 +119,7 @@ public class ListingService
         var listings = new List<Listings>();
         SyncPastListingStatuses(myConn);
 
-        string sql = "SELECT * FROM listings WHERE listingStatus = 'Active' " +
+        string sql = "SELECT * FROM listings WHERE listingStatus = 'Upcoming' " +
                      "AND (title LIKE @kw OR origin LIKE @kw OR destination LIKE @kw)";
         if (category.HasValue)
             sql += " AND type = @category";
