@@ -133,6 +133,42 @@ public class ListingService
         return listings;
     }
 
+    private static void SyncPastListingStatuses(SQLiteConnection connection)
+    {
+        var expiredListingIds = new List<int>();
+
+        using (SQLiteCommand selectCommand = new SQLiteCommand(
+                   "SELECT listingID, date FROM listings WHERE listingStatus = @status", connection))
+        {
+            selectCommand.Parameters.AddWithValue("@status", nameof(ListingStatus.Active));
+
+            using SQLiteDataReader reader = selectCommand.ExecuteReader();
+            while (reader.Read())
+            {
+                DateTime listingDate = DateTime.Parse(reader["date"].ToString()!);
+                if (listingDate < DateTime.Now)
+                    expiredListingIds.Add(Convert.ToInt32(reader["listingID"]));
+            }
+        }
+
+        if (expiredListingIds.Count == 0)
+            return;
+
+        using SQLiteTransaction transaction = connection.BeginTransaction();
+        using SQLiteCommand updateCommand = new SQLiteCommand(
+            "UPDATE listings SET listingStatus = @status WHERE listingID = @listingId", connection, transaction);
+        updateCommand.Parameters.Add("@status", System.Data.DbType.String).Value = nameof(ListingStatus.Past);
+        SQLiteParameter listingIdParameter = updateCommand.Parameters.Add("@listingId", System.Data.DbType.Int32);
+
+        foreach (int listingId in expiredListingIds)
+        {
+            listingIdParameter.Value = listingId;
+            updateCommand.ExecuteNonQuery();
+        }
+
+        transaction.Commit();
+    }
+
 
     private static Listings MapListings(SQLiteDataReader reader) => new Listings
     {
