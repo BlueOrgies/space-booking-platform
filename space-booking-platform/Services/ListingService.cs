@@ -174,7 +174,7 @@ public class ListingService
     }
 
 
-    private static Listings MapListings(SQLiteDataReader reader) => new Listings
+    private static Listings MapListings(SQLiteDataReader reader)
     {
         var category = ParseListingCategory(reader);
 
