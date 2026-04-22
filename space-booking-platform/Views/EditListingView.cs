@@ -21,7 +21,7 @@ public class EditListingView(AppState state)
         
         switch (listing.ListingStatus)
         {
-            case ListingStatus.Active:
+            case ListingStatus.Upcoming:
                 choices.Add("Cancel listing");
                 break;
             case ListingStatus.Cancelled:
@@ -142,7 +142,7 @@ public class EditListingView(AppState state)
 
             case "Reactivate listing":
                 newValues.Add("listingStatus",
-                    nameof(ListingStatus.Active));
+                    nameof(ListingStatus.Upcoming));
                 break;
         }
         return newValues;

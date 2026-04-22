@@ -55,7 +55,7 @@ public class CreateListingView(AppState state)
         decimal price = AnsiConsole.Ask<decimal>($"[bold]Price[/] ({priceUnitEnum}): ");
 
         listingService.CreateListing(uuid, categoryEnum, title, description, transportMethod, origin, destination,
-            date, duration, durationType, capacity, capacityUnitEnum, price, priceUnitEnum, DateTime.Now, ListingStatus.Active);
+            date, duration, durationType, capacity, capacityUnitEnum, price, priceUnitEnum, DateTime.Now, ListingStatus.Upcoming);
         
         var choice = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
