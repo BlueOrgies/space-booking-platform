@@ -25,13 +25,40 @@ public class CreateListingView(AppState state)
         string title = AnsiConsole.Ask<string>("[bold]Title: [/]");
         
         string description = AnsiConsole.Ask<string>("[bold]Description: [/]");
-        
-        string transportMethod = AnsiConsole.Ask<string>("[bold]Transport method: [/]");
-        
-        string origin = AnsiConsole.Ask<string>("[bold]Origin: [/]");
-        
-        string destination = AnsiConsole.Ask<string>("[bold]Destination: [/]");
-        
+
+        string transportMethod = string.Empty;
+        string origin = string.Empty;
+        string destination = string.Empty;
+        string location = string.Empty;
+        bool petsAllowed = false;
+        bool luggageIncluded = false;
+        bool hazardousMaterialsAllowed = false;
+        int minAge = 0;
+
+        switch (categoryEnum)
+        {
+            case ListingCategory.PassengerTransportation:
+                transportMethod = AnsiConsole.Ask<string>("[bold]Transport method: [/]");
+                origin = AnsiConsole.Ask<string>("[bold]Origin: [/]");
+                destination = AnsiConsole.Ask<string>("[bold]Destination: [/]");
+                luggageIncluded = AnsiConsole.Confirm("[bold]Luggage included?[/]");
+                break;
+            case ListingCategory.FreightHaul:
+                transportMethod = AnsiConsole.Ask<string>("[bold]Transport method: [/]");
+                origin = AnsiConsole.Ask<string>("[bold]Origin: [/]");
+                destination = AnsiConsole.Ask<string>("[bold]Destination: [/]");
+                hazardousMaterialsAllowed = AnsiConsole.Confirm("[bold]Hazardous materials allowed?[/]");
+                break;
+            case ListingCategory.Accommodation:
+                location = AnsiConsole.Ask<string>("[bold]Location: [/]");
+                petsAllowed = AnsiConsole.Confirm("[bold]Pets allowed?[/]");
+                break;
+            case ListingCategory.Activity:
+                location = AnsiConsole.Ask<string>("[bold]Location: [/]");
+                minAge = AnsiConsole.Ask<int>("[bold]Minimum age: [/]");
+                break;
+        }
+
         DateTime date = AnsiConsole.Ask<DateTime>("[bold]Date and time[/] (yyyy-mm-dd hh:mm) : ");
         
         int duration = AnsiConsole.Ask<int>("[bold]Duration: [/]");
@@ -55,7 +82,8 @@ public class CreateListingView(AppState state)
         decimal price = AnsiConsole.Ask<decimal>($"[bold]Price[/] ({priceUnitEnum}): ");
 
         listingService.CreateListing(uuid, categoryEnum, title, description, transportMethod, origin, destination,
-            date, duration, durationType, capacity, capacityUnitEnum, price, priceUnitEnum, DateTime.Now, ListingStatus.Upcoming);
+            date, duration, durationType, capacity, capacityUnitEnum, price, priceUnitEnum, DateTime.Now, ListingStatus.Upcoming,
+            location, petsAllowed, luggageIncluded, hazardousMaterialsAllowed, minAge);
         
         var choice = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
