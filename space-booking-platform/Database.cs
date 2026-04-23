@@ -40,9 +40,9 @@ public abstract class Database
                      "type TEXT NOT NULL," +
                      "title TEXT NOT NULL," +
                      "description TEXT NOT NULL," +
-                     "transportMethod TEXT NOT NULL," +
-                     "origin TEXT NOT NULL," +
-                     "destination TEXT NOT NULL," +
+                     "transportMethod TEXT," +
+                     "origin TEXT," +
+                     "destination TEXT," +
                      "date DATETIME NOT NULL," +
                      "duration INTEGER NOT NULL," +
                      "durationType TEXT NOT NULL," +
@@ -52,6 +52,11 @@ public abstract class Database
                      "priceUnit TEXT NOT NULL," +
                      "createdAt DATETIME NOT NULL," +
                      "listingStatus TEXT NOT NULL," +
+                     "location TEXT," +
+                     "petsAllowed BOOL NOT NULL DEFAULT 0," +
+                     "luggageIncluded BOOL NOT NULL DEFAULT 0," +
+                     "hazardousMaterialsAllowed BOOL NOT NULL DEFAULT 0," +
+                     "minAge INTEGER NOT NULL DEFAULT 0," +
                      "FOREIGN KEY (UUID) REFERENCES users(UUID))";
         
         

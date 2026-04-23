@@ -54,7 +54,9 @@ class SearchListingsView(AppState state)
         var listingMap = new Dictionary<string, int>();
         foreach (var listing in results)
         {
-            string label = $"[[{listing.Category}]] {Markup.Escape(listing.Title)} | {Markup.Escape(listing.Origin)} → {Markup.Escape(listing.Destination)} | {listing.Date:yyyy-MM-dd} | {listing.Price} {listing.PriceUnit}";
+            string originDest = listing is PassengerTransportation ptS ? $"{Markup.Escape(ptS.Origin)} → {Markup.Escape(ptS.Destination)}"
+                : listing is FreightHaul fhS ? $"{Markup.Escape(fhS.Origin)} → {Markup.Escape(fhS.Destination)}" : string.Empty;
+            string label = $"[[{listing.Category}]] {Markup.Escape(listing.Title)}{(originDest.Length > 0 ? " | " + originDest : "")} | {listing.Date:yyyy-MM-dd} | {listing.Price} {listing.PriceUnit}";
             listingMap[label] = listing.ListingId;
         }
 

@@ -6,17 +6,22 @@ namespace space_booking_platform.Services;
 
 public class ListingService
 {
-    public Listings CreateListing(int uuid, ListingCategory category, string title, string description, string transportMethod, 
-        string origin, string destination, DateTime date, int duration, string durationType, int capacity, 
-        ListingCapacityUnit capacityUnit, decimal price, ListingPriceUnit priceUnit, DateTime createdAt, ListingStatus listingStatus)
+    public Listings CreateListing(int uuid, ListingCategory category, string title, string description,
+        string transportMethod, string origin, string destination, DateTime date, int duration, string durationType,
+        int capacity, ListingCapacityUnit capacityUnit, decimal price, ListingPriceUnit priceUnit,
+        DateTime createdAt, ListingStatus listingStatus,
+        string location = "", bool petsAllowed = false, bool luggageIncluded = false,
+        bool hazardousMaterialsAllowed = false, int minAge = 0)
     {
         SQLiteConnection myConn = Database.ConnectToDb();
 
         using (SQLiteCommand command = new SQLiteCommand(
                    "INSERT INTO listings(uuid, type, title, description, transportMethod, origin, destination, date, " +
-                   "duration, durationType, capacity, capacityUnit, price, priceUnit, createdAt, listingStatus) VALUES (" +
+                   "duration, durationType, capacity, capacityUnit, price, priceUnit, createdAt, listingStatus, " +
+                   "location, petsAllowed, luggageIncluded, hazardousMaterialsAllowed, minAge) VALUES (" +
                    "@uuid, @type, @title, @description, @transportMethod, @origin, @destination, @date, @duration, @durationType, " +
-                   "@capacity, @capacityUnit, @price, @priceUnit, @createdAt, @listingStatus)", myConn))
+                   "@capacity, @capacityUnit, @price, @priceUnit, @createdAt, @listingStatus, " +
+                   "@location, @petsAllowed, @luggageIncluded, @hazardousMaterialsAllowed, @minAge)", myConn))
         {
             command.Parameters.AddWithValue("@uuid", uuid);
             command.Parameters.AddWithValue("@type", category.ToString());
@@ -34,6 +39,11 @@ public class ListingService
             command.Parameters.AddWithValue("@priceUnit", priceUnit.ToString());
             command.Parameters.AddWithValue("@createdAt", createdAt.ToString("o"));
             command.Parameters.AddWithValue("@listingStatus", listingStatus.ToString());
+            command.Parameters.AddWithValue("@location", location);
+            command.Parameters.AddWithValue("@petsAllowed", petsAllowed);
+            command.Parameters.AddWithValue("@luggageIncluded", luggageIncluded);
+            command.Parameters.AddWithValue("@hazardousMaterialsAllowed", hazardousMaterialsAllowed);
+            command.Parameters.AddWithValue("@minAge", minAge);
             command.ExecuteNonQuery();
         }
 
@@ -192,9 +202,6 @@ public class ListingService
         listing.Category = ParseListingCategory(reader);
         listing.Title = reader["title"].ToString()!;
         listing.Description = reader["description"].ToString()!;
-        listing.TransportMethod = reader["transportMethod"].ToString()!;
-        listing.Origin = reader["origin"].ToString()!;
-        listing.Destination = reader["destination"].ToString()!;
         listing.Date = DateTime.Parse(reader["date"].ToString()!);
         listing.Duration = Convert.ToInt32(reader["duration"]);
         listing.DurationType = reader["durationType"].ToString()!;
@@ -204,6 +211,30 @@ public class ListingService
         listing.PriceUnit = ParseListingPriceUnit(reader);
         listing.ListingStatus = ParseListingStatus(reader);
         listing.CreatedAt = DateTime.Parse(reader["createdAt"].ToString()!);
+
+        switch (listing)
+        {
+            case Accommodation a:
+                a.Location = reader["location"].ToString()!;
+                a.PetsAllowed = Convert.ToBoolean(reader["petsAllowed"]);
+                break;
+            case PassengerTransportation pt:
+                pt.LuggageIncluded = Convert.ToBoolean(reader["luggageIncluded"]);
+                pt.TransportMethod = reader["transportMethod"].ToString()!;
+                pt.Origin = reader["origin"].ToString()!;
+                pt.Destination = reader["destination"].ToString()!;
+                break;
+            case FreightHaul fh:
+                fh.HazardousMaterialsAllowed = Convert.ToBoolean(reader["hazardousMaterialsAllowed"]);
+                fh.TransportMethod = reader["transportMethod"].ToString()!;
+                fh.Origin = reader["origin"].ToString()!;
+                fh.Destination = reader["destination"].ToString()!;
+                break;
+            case Activity act:
+                act.Location = reader["location"].ToString()!;
+                act.MinAge = Convert.ToInt32(reader["minAge"]);
+                break;
+        }
 
         return listing;
     }
@@ -311,8 +342,13 @@ public class ListingService
         {
             Listings listing = MapListings(dataReader);
 
-            table.AddRow(listing.Category.ToString(), listing.Title, listing.Origin,
-                listing.Destination, listing.Date.ToString("o"), listing.ListingStatus.ToString());
+            string originCol = listing is PassengerTransportation pt ? pt.Origin
+                : listing is FreightHaul fh ? fh.Origin : string.Empty;
+            string destinationCol = listing is PassengerTransportation pt2 ? pt2.Destination
+                : listing is FreightHaul fh2 ? fh2.Destination : string.Empty;
+
+            table.AddRow(listing.Category.ToString(), listing.Title, originCol,
+                destinationCol, listing.Date.ToString("o"), listing.ListingStatus.ToString());
 
             exists = true;
         }

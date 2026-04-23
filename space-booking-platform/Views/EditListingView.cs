@@ -13,11 +13,19 @@ public class EditListingView(AppState state)
 
         Listings? listing = listingService.GetListingById(listingId);
 
-        List<string> choices =
-        [
-            "Title", "Description", "Transportation method", "Origin", "Destination",
-            "Date", "Duration", "Capacity", "Price"
-        ];
+        List<string> choices = ["Title", "Description", "Date", "Duration", "Capacity", "Price"];
+
+        if (listing is PassengerTransportation or FreightHaul)
+            choices.InsertRange(2, ["Transportation method", "Origin", "Destination"]);
+
+        if (listing is Accommodation)
+            choices.Add("Location");
+
+        if (listing is Activity)
+        {
+            choices.Add("Location");
+            choices.Add("Minimum age");
+        }
         
         switch (listing.ListingStatus)
         {
@@ -84,21 +92,37 @@ public class EditListingView(AppState state)
                 break;
 
             case "Transportation method":
-                AnsiConsole.MarkupLine($"[bold]Transportation metod: {listing.TransportMethod}[/]");
-                newValues.Add("transportMethod",
-                    AnsiConsole.Ask<string>("Transportation method: "));
+                string currentTransport = listing is PassengerTransportation pt1 ? pt1.TransportMethod
+                    : listing is FreightHaul fh1 ? fh1.TransportMethod : string.Empty;
+                AnsiConsole.MarkupLine($"[bold]Transportation method: {currentTransport}[/]");
+                newValues.Add("transportMethod", AnsiConsole.Ask<string>("New transportation method: "));
                 break;
 
             case "Origin":
-                AnsiConsole.MarkupLine($"[bold]Origin: {listing.Origin}[/]");
-                newValues.Add("origin",
-                    AnsiConsole.Ask<string>("Edit origin: "));
+                string currentOrigin = listing is PassengerTransportation pt2 ? pt2.Origin
+                    : listing is FreightHaul fh2 ? fh2.Origin : string.Empty;
+                AnsiConsole.MarkupLine($"[bold]Origin: {currentOrigin}[/]");
+                newValues.Add("origin", AnsiConsole.Ask<string>("New origin: "));
                 break;
 
             case "Destination":
-                AnsiConsole.MarkupLine($"[bold]Destination: {listing.Destination}[/]");
-                newValues.Add("destination",
-                    AnsiConsole.Ask<string>("Edit destination: "));
+                string currentDestination = listing is PassengerTransportation pt3 ? pt3.Destination
+                    : listing is FreightHaul fh3 ? fh3.Destination : string.Empty;
+                AnsiConsole.MarkupLine($"[bold]Destination: {currentDestination}[/]");
+                newValues.Add("destination", AnsiConsole.Ask<string>("New destination: "));
+                break;
+
+            case "Location":
+                string currentLocation = listing is Accommodation acc1 ? acc1.Location
+                    : listing is Activity act1 ? act1.Location : string.Empty;
+                AnsiConsole.MarkupLine($"[bold]Location: {currentLocation}[/]");
+                newValues.Add("location", AnsiConsole.Ask<string>("New location: "));
+                break;
+
+            case "Minimum age":
+                if (listing is Activity act2)
+                    AnsiConsole.MarkupLine($"[bold]Minimum age: {act2.MinAge}[/]");
+                newValues.Add("minAge", AnsiConsole.Ask<string>("New minimum age: "));
                 break;
 
             case "Date":
