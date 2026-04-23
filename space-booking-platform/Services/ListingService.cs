@@ -6,17 +6,22 @@ namespace space_booking_platform.Services;
 
 public class ListingService
 {
-    public Listings CreateListing(int uuid, ListingCategory category, string title, string description, string transportMethod, 
-        string origin, string destination, DateTime date, int duration, string durationType, int capacity, 
-        ListingCapacityUnit capacityUnit, decimal price, ListingPriceUnit priceUnit, DateTime createdAt, ListingStatus listingStatus)
+    public Listings CreateListing(int uuid, ListingCategory category, string title, string description,
+        string transportMethod, string origin, string destination, DateTime date, int duration, string durationType,
+        int capacity, ListingCapacityUnit capacityUnit, decimal price, ListingPriceUnit priceUnit,
+        DateTime createdAt, ListingStatus listingStatus,
+        string location = "", bool petsAllowed = false, bool luggageIncluded = false,
+        bool hazardousMaterialsAllowed = false, int minAge = 0)
     {
         SQLiteConnection myConn = Database.ConnectToDb();
 
         using (SQLiteCommand command = new SQLiteCommand(
                    "INSERT INTO listings(uuid, type, title, description, transportMethod, origin, destination, date, " +
-                   "duration, durationType, capacity, capacityUnit, price, priceUnit, createdAt, listingStatus) VALUES (" +
+                   "duration, durationType, capacity, capacityUnit, price, priceUnit, createdAt, listingStatus, " +
+                   "location, petsAllowed, luggageIncluded, hazardousMaterialsAllowed, minAge) VALUES (" +
                    "@uuid, @type, @title, @description, @transportMethod, @origin, @destination, @date, @duration, @durationType, " +
-                   "@capacity, @capacityUnit, @price, @priceUnit, @createdAt, @listingStatus)", myConn))
+                   "@capacity, @capacityUnit, @price, @priceUnit, @createdAt, @listingStatus, " +
+                   "@location, @petsAllowed, @luggageIncluded, @hazardousMaterialsAllowed, @minAge)", myConn))
         {
             command.Parameters.AddWithValue("@uuid", uuid);
             command.Parameters.AddWithValue("@type", category.ToString());
