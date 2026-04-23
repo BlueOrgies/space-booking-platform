@@ -17,7 +17,7 @@ public class HomeView(AppState state)
             {
                 choices.Add("Organizer Dashboard");
             }
-            choices.Add("Logout");
+            choices.Add("Log out");
         }
         
 
@@ -35,7 +35,7 @@ public class HomeView(AppState state)
             "Search Listings"      => "SearchListings",
             "View Profile"         => "ProfileView",
             "Organizer Dashboard"  => "OrganizerView",
-            "Logout"               => "Logout",
+            "Log out"               => "Logout",
             _                   => null // quit
         };
     }
