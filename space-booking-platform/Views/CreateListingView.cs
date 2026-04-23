@@ -18,6 +18,10 @@ public class CreateListingView(AppState state)
         var prompt = new SelectionPrompt<string>() //Todo: Fix space between title and choices?
             .Title("[bold]Category:[/]")
             .AddChoices(Enum.GetNames<ListingCategory>());
+        prompt = prompt.UseConverter(categoryName =>
+            categoryName == nameof(ListingCategory.PassengerTransportation) ? "Passenger transportation" :
+            categoryName == nameof(ListingCategory.FreightHaul) ? "Freight haul" :
+            categoryName);
         string category = AnsiConsole.Prompt(prompt);
         ListingCategory categoryEnum = (ListingCategory)Enum.Parse(typeof(ListingCategory), category);
         AnsiConsole.MarkupLine($"[bold]Category: [/]{categoryEnum}");
