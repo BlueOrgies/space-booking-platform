@@ -10,12 +10,6 @@ public class Listings
 
     public string Description { get; set; } = string.Empty;
 
-    public string TransportMethod { get; set; } = string.Empty;
-
-    public string Origin { get; set; } = string.Empty;
-
-    public string Destination { get; set; } = string.Empty;
-
     public DateTime Date { get; set; }
 
     public int Duration { get; set; }
