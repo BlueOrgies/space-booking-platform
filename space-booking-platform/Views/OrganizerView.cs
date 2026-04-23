@@ -12,7 +12,7 @@ public class OrganizerView(AppState state)
         AnsiConsole.Clear();
         
         ReviewService rs = new ReviewService();
-        var choices = new List<string> {"Create listing", "Go back to main menu", "Quit" };
+        var choices = new List<string> {"Create listing", "Go back to main menu"};
         
         AnsiConsole.Write(new Rule($"[bold green]{state.CurrentUser}s profile: Organizer[/]").RuleStyle("green"));
 
@@ -22,13 +22,7 @@ public class OrganizerView(AppState state)
             AnsiConsole.MarkupLine($"Average rating: [yellow]{rating}[/]");
         }
 
-        if (ShowUpcomingListings())
-        {
-            state.Offset = 0;
-            choices.Insert(0, "View my listings");
-        }
-
-        if (ShowPastListings())
+        if (ShowUpcomingListings() | ShowPastListings())
         {
             state.Offset = 0;
             choices.Insert(0, "View my listings");
