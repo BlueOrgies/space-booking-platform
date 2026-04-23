@@ -73,7 +73,9 @@ public class OrganizerView(AppState state)
         {
             foreach (Listings listing in upcomingListings)
             {
-                table.AddRow(listing.Category.ToString(), listing.Title, listing.Origin, listing.Destination,
+                string origin = listing is PassengerTransportation ptU ? ptU.Origin : listing is FreightHaul fhU ? fhU.Origin : string.Empty;
+                string destination = listing is PassengerTransportation ptU2 ? ptU2.Destination : listing is FreightHaul fhU2 ? fhU2.Destination : string.Empty;
+                table.AddRow(listing.Category.ToString(), listing.Title, origin, destination,
                     listing.Date.ToString("o"), listing.ListingStatus.ToString());
             }
             AnsiConsole.Write(table);
@@ -105,7 +107,9 @@ public class OrganizerView(AppState state)
         {
             foreach (Listings listing in pastListings)
             {
-                table.AddRow(listing.Category.ToString(), listing.Title, listing.Origin, listing.Destination,
+                string origin = listing is PassengerTransportation ptP ? ptP.Origin : listing is FreightHaul fhP ? fhP.Origin : string.Empty;
+                string destination = listing is PassengerTransportation ptP2 ? ptP2.Destination : listing is FreightHaul fhP2 ? fhP2.Destination : string.Empty;
+                table.AddRow(listing.Category.ToString(), listing.Title, origin, destination,
                     listing.Date.ToString("o"));
             }
             AnsiConsole.Write(table);

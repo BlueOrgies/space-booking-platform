@@ -21,7 +21,10 @@ public class MyListingsView(AppState state)
         {
             foreach (var listing in listings)
             {
-                rows.Add($"{listing.Category} | {listing.Title} | {listing.Origin} | {listing.Destination}" +
+                string originDest = listing is PassengerTransportation ptM ? $"{listing.Category} | {listing.Title} | {ptM.Origin} | {ptM.Destination}"
+                    : listing is FreightHaul fhM ? $"{listing.Category} | {listing.Title} | {fhM.Origin} | {fhM.Destination}"
+                    : $"{listing.Category} | {listing.Title}";
+                rows.Add($"{originDest}" +
                          $" | {listing.Date} | {listing.ListingStatus}", listing.ListingId.ToString());
             }
         }

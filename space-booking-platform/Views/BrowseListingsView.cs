@@ -34,7 +34,9 @@ class BrowseListingsView(AppState state)
             {
                 foreach (var listing in listings)
                 {
-                    string label = $"[[{listing.Category}]] {Markup.Escape(listing.Title)} | {Markup.Escape(listing.Origin)} → {Markup.Escape(listing.Destination)} | {listing.Date:yyyy-MM-dd} | {listing.Price} {listing.PriceUnit}";
+                    string originDest = listing is PassengerTransportation ptB ? $"{Markup.Escape(ptB.Origin)} → {Markup.Escape(ptB.Destination)}"
+                        : listing is FreightHaul fhB ? $"{Markup.Escape(fhB.Origin)} → {Markup.Escape(fhB.Destination)}" : string.Empty;
+                    string label = $"[[{listing.Category}]] {Markup.Escape(listing.Title)}{(originDest.Length > 0 ? " | " + originDest : "")} | {listing.Date:yyyy-MM-dd} | {listing.Price} {listing.PriceUnit}";
                     listingMap[label] = listing.ListingId;
                 }
                 prompt.AddChoiceGroup("Listings", listingMap.Keys.ToArray());

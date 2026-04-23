@@ -28,9 +28,30 @@ public class ListingView(AppState state)
 
         table.AddRow("[bold]Category[/]",    listing.Category.ToString());
         table.AddRow("[bold]Description[/]", Markup.Escape(listing.Description));
-        table.AddRow("[bold]Transport[/]",   Markup.Escape(listing.TransportMethod));
-        table.AddRow("[bold]Origin[/]",      Markup.Escape(listing.Origin));
-        table.AddRow("[bold]Destination[/]", Markup.Escape(listing.Destination));
+
+        switch (listing)
+        {
+            case PassengerTransportation pt:
+                table.AddRow("[bold]Transport[/]",   Markup.Escape(pt.TransportMethod));
+                table.AddRow("[bold]Origin[/]",      Markup.Escape(pt.Origin));
+                table.AddRow("[bold]Destination[/]", Markup.Escape(pt.Destination));
+                table.AddRow("[bold]Luggage[/]",     pt.LuggageIncluded ? "Included" : "Not included");
+                break;
+            case FreightHaul fh:
+                table.AddRow("[bold]Transport[/]",   Markup.Escape(fh.TransportMethod));
+                table.AddRow("[bold]Origin[/]",      Markup.Escape(fh.Origin));
+                table.AddRow("[bold]Destination[/]", Markup.Escape(fh.Destination));
+                table.AddRow("[bold]Hazardous[/]",   fh.HazardousMaterialsAllowed ? "Allowed" : "Not allowed");
+                break;
+            case Accommodation acc:
+                table.AddRow("[bold]Location[/]",  Markup.Escape(acc.Location));
+                table.AddRow("[bold]Pets[/]",      acc.PetsAllowed ? "Allowed" : "Not allowed");
+                break;
+            case Activity act:
+                table.AddRow("[bold]Location[/]",  Markup.Escape(act.Location));
+                table.AddRow("[bold]Min Age[/]",   act.MinAge > 0 ? act.MinAge.ToString() : "None");
+                break;
+        }
         table.AddRow("[bold]Date[/]",        listing.Date.ToString("yyyy-MM-dd HH:mm"));
         table.AddRow("[bold]Duration[/]",    $"{listing.Duration} {listing.DurationType}");
         table.AddRow("[bold]Capacity[/]",    $"{listing.Capacity} {listing.CapacityUnit}");
