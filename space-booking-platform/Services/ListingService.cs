@@ -39,6 +39,11 @@ public class ListingService
             command.Parameters.AddWithValue("@priceUnit", priceUnit.ToString());
             command.Parameters.AddWithValue("@createdAt", createdAt.ToString("o"));
             command.Parameters.AddWithValue("@listingStatus", listingStatus.ToString());
+            command.Parameters.AddWithValue("@location", location);
+            command.Parameters.AddWithValue("@petsAllowed", petsAllowed);
+            command.Parameters.AddWithValue("@luggageIncluded", luggageIncluded);
+            command.Parameters.AddWithValue("@hazardousMaterialsAllowed", hazardousMaterialsAllowed);
+            command.Parameters.AddWithValue("@minAge", minAge);
             command.ExecuteNonQuery();
         }
 
