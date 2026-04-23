@@ -332,8 +332,13 @@ public class ListingService
         {
             Listings listing = MapListings(dataReader);
 
-            table.AddRow(listing.Category.ToString(), listing.Title, listing.Origin,
-                listing.Destination, listing.Date.ToString("o"), listing.ListingStatus.ToString());
+            string originCol = listing is PassengerTransportation pt ? pt.Origin
+                : listing is FreightHaul fh ? fh.Origin : string.Empty;
+            string destinationCol = listing is PassengerTransportation pt2 ? pt2.Destination
+                : listing is FreightHaul fh2 ? fh2.Destination : string.Empty;
+
+            table.AddRow(listing.Category.ToString(), listing.Title, originCol,
+                destinationCol, listing.Date.ToString("o"), listing.ListingStatus.ToString());
 
             exists = true;
         }
