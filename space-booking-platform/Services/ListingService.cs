@@ -192,9 +192,6 @@ public class ListingService
         listing.Category = ParseListingCategory(reader);
         listing.Title = reader["title"].ToString()!;
         listing.Description = reader["description"].ToString()!;
-        listing.TransportMethod = reader["transportMethod"].ToString()!;
-        listing.Origin = reader["origin"].ToString()!;
-        listing.Destination = reader["destination"].ToString()!;
         listing.Date = DateTime.Parse(reader["date"].ToString()!);
         listing.Duration = Convert.ToInt32(reader["duration"]);
         listing.DurationType = reader["durationType"].ToString()!;
@@ -204,6 +201,30 @@ public class ListingService
         listing.PriceUnit = ParseListingPriceUnit(reader);
         listing.ListingStatus = ParseListingStatus(reader);
         listing.CreatedAt = DateTime.Parse(reader["createdAt"].ToString()!);
+
+        switch (listing)
+        {
+            case Accommodation a:
+                a.Location = reader["location"].ToString()!;
+                a.PetsAllowed = Convert.ToBoolean(reader["petsAllowed"]);
+                break;
+            case PassengerTransportation pt:
+                pt.LuggageIncluded = Convert.ToBoolean(reader["luggageIncluded"]);
+                pt.TransportMethod = reader["transportMethod"].ToString()!;
+                pt.Origin = reader["origin"].ToString()!;
+                pt.Destination = reader["destination"].ToString()!;
+                break;
+            case FreightHaul fh:
+                fh.HazardousMaterialsAllowed = Convert.ToBoolean(reader["hazardousMaterialsAllowed"]);
+                fh.TransportMethod = reader["transportMethod"].ToString()!;
+                fh.Origin = reader["origin"].ToString()!;
+                fh.Destination = reader["destination"].ToString()!;
+                break;
+            case Activity act:
+                act.Location = reader["location"].ToString()!;
+                act.MinAge = Convert.ToInt32(reader["minAge"]);
+                break;
+        }
 
         return listing;
     }
