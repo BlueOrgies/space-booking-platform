@@ -16,23 +16,31 @@ public class ViewHandler
     
     private string? Dispatch(string viewName) => viewName switch
     {
-        "Home"              => new HomeView(_state).Display(),
+        // Authentication
         "Register"          => new RegisterView(_state).Display(),
         "Login"             => new LoginView(_state).Display(),
+        "Logout"            => Logout(),
+
+        // Main Navigation
+        "Home"              => new HomeView(_state).Display(),
+        
+        // Listings and Discovery
         "BrowseListings"     => new BrowseListingsView(_state).Display(),
         "SearchListings"     => new SearchListingsView(_state).Display(),
-        "Booking"           => NotImplemented("BookingView"),
+        "Listing"           => new ListingView(_state).Display(),
+
+        // User profile and Activity
         "ProfileView"       => new ProfileView(_state).Display(),
         "MyBookings"        => new MyBookingsView(_state).Display(),
         "MyListings"        => new MyListingsView(_state).Display(),
-        "Listing"           => new ListingView(_state).Display(),
+        "LeaveReview"       => new LeaveReviewView(_state).Display(),
+        
+        // Organizer and Management
         "OrganizerView"     => new OrganizerView(_state).Display(),
+        "OrganizerReviews"  => new OrganizerReviewsView(_state).Display(),
         "CreateListing"     => new CreateListingView(_state).Display(),
         "EditListing"       => new EditListingView(_state).Display(),
-        "Review"            => NotImplemented("ReviewView"),
-        "OrganizerReviews"  => new OrganizerReviewsView(_state).Display(),
-        "LeaveReview"       => new LeaveReviewView(_state).Display(),
-        "Logout"            => Logout(),
+        
         _ => throw new ArgumentException($"Unknown view: {viewName}")
     };
 
