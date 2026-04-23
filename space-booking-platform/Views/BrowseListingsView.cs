@@ -45,12 +45,12 @@ class BrowseListingsView(AppState state)
             }
 
             var navChoices = new List<string>();
-            if (offset > 0) navChoices.Add("← Previous 10");
-            if (listings.Count == 10) navChoices.Add("→ Next 10");
-            navChoices.Add("Search Listings");
-            navChoices.Add("Back to main menu");
+            if (offset > 0) navChoices.Add(PreviousPageChoice);
+            if (listings.Count == 10) navChoices.Add(NextPageChoice);
+            navChoices.Add(SearchChoice);
 
-            prompt.AddChoiceGroup("Navigation", navChoices.ToArray());
+            prompt.AddChoiceGroup("\nNavigation", navChoices.ToArray());
+            prompt.AddChoiceGroup("\n", BackChoice);
 
             string choice = AnsiConsole.Prompt(prompt);
 
@@ -62,15 +62,15 @@ class BrowseListingsView(AppState state)
 
             switch (choice)
             {
-                case "← Previous 10":
+                case PreviousPageChoice:
                     offset -= 10;
                     break;
-                case "→ Next 10":
+                case NextPageChoice:
                     offset += 10;
                     break;
-                case "Search Listings":
+                case SearchChoice:
                     return "SearchListings";
-                case "Back to main menu":
+                case BackChoice:
                     return "Home";
             }
         }
