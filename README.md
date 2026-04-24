@@ -69,3 +69,7 @@ along the way and dealt with issues as they arise. For next time, the sprint rev
 could be more structured, but we still got through everything as planned.
 
 #### Kristiane:
+Planning and executing this project has been smooth, as it is similar in structure to our previous 
+arbeidskrav. It has been valuable to create something based on multiple peoples knowledge and opinions, 
+and I am very happy with the results. Working together in this team has been fun and stress-free. It is a 
+new experience working as a group of three, showing the importance of proper planning and prioritization.
