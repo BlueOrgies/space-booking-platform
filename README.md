@@ -73,3 +73,17 @@ Planning and executing this project has been smooth, as it is similar in structu
 arbeidskrav. It has been valuable to create something based on multiple peoples knowledge and opinions, 
 and I am very happy with the results. Working together in this team has been fun and stress-free. It is a 
 new experience working as a group of three, showing the importance of proper planning and prioritization.
+
+### Aleksander:
+This is my first project where I’ve worked with clear architecture. 
+It was helpful to work with an inspired MVC structure as it made the project navigable and it was more comprehensible than mixing models and logic as I’ve done in previous projects. 
+In addition, this is my first time working with the Spectre framework and SQlite as a database. 
+I’ve learnt a lot from my team members as they introduced me to both Spectre and SQlite, which I applied when building Views or when working with the database. 
+
+Instead of having fixed roles we divided tasks based on the goals for that week. 
+I’ve worked with Services to handle database communication, Views for the terminal UI using Spectre, 
+ViewHandler to manage control flow between views, and AppState to maintain application state.
+
+Working in a team of three has been a great experience and I believe we structured and planned this project well as it made progress consistent, and the outcome was predictable. 
+It has taught me the importance of planning out a project, and that splitting problems into smaller pieces is the key to make a project manageable. 
+As problems occurred along the way, we’ve been helpful to one another. Everybody has also had a say in the project's structure. 
