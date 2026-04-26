@@ -74,7 +74,7 @@ arbeidskrav. It has been valuable to create something based on multiple peoples 
 and I am very happy with the results. Working together in this team has been fun and stress-free. It is a 
 new experience working as a group of three, showing the importance of proper planning and prioritization.
 
-### Aleksander:
+#### Aleksander:
 This is my first project where I’ve worked with clear architecture. 
 It was helpful to work with an inspired MVC structure as it made the project navigable and it was more comprehensible than mixing models and logic as I’ve done in previous projects. 
 In addition, this is my first time working with the Spectre framework and SQlite as a database. 
