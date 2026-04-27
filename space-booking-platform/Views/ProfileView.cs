@@ -12,8 +12,23 @@ public class ProfileView(AppState state)
         AnsiConsole.Clear();
 
         BookingService bs = new BookingService();
+        UserService us =  new UserService();
+        User? user = us.GetById(state.CurrentUUID);
+        
         var choices = new List<string> { "Main menu" };
-        AnsiConsole.Write(new Rule($"[bold green]{state.CurrentUser}s profile[/]").RuleStyle("green"));
+        AnsiConsole.Write(new Rule($"[bold green]{user.Username}s profile[/]").RuleStyle("green"));
+        
+        AnsiConsole.MarkupLine("\n[green]My info[/]");
+        var grid = new Grid();
+  
+        grid.AddColumn(new GridColumn { Alignment = Justify.Left });
+        grid.AddColumn(new GridColumn { Alignment = Justify.Left });
+  
+        grid.AddRow("User created at:", $"[green]{user.CreatedAt}[/]");
+        grid.AddRow("Weight:", $"[green]{user.Height} cm[/]");
+        grid.AddRow("Height:", $"[green]{user.Weight} kg[/]");
+  
+        AnsiConsole.Write(grid);
 
         AnsiConsole.MarkupLine("\n[green]My bookings[/]");
         var table = new Table()
