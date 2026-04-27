@@ -15,18 +15,20 @@ public class EditListingView(AppState state)
 
         List<string> choices = ["Title", "Description", "Date", "Duration", "Capacity", "Price"];
 
-        if (listing is PassengerTransportation or FreightHaul)
-            choices.InsertRange(2, ["Transportation method", "Origin", "Destination"]);
-
-        if (listing is Accommodation)
-            choices.Add("Location");
-
-        if (listing is Activity)
+        switch (listing)
         {
-            choices.Add("Location");
-            choices.Add("Minimum age");
+            case PassengerTransportation or FreightHaul:
+                choices.InsertRange(2, ["Transportation method", "Origin", "Destination"]);
+                break;
+            case Accommodation:
+                choices.Add("Location");
+                break;
+            case Activity:
+                choices.Add("Location");
+                choices.Add("Minimum age");
+                break;
         }
-        
+
         switch (listing.ListingStatus)
         {
             case ListingStatus.Upcoming:
@@ -120,8 +122,8 @@ public class EditListingView(AppState state)
                 break;
 
             case "Minimum age":
-                if (listing is Activity act2)
-                    AnsiConsole.MarkupLine($"[bold]Minimum age: {act2.MinAge}[/]");
+                if (listing is Activity act)
+                    AnsiConsole.MarkupLine($"[bold]Minimum age: {act.MinAge}[/]");
                 newValues.Add("minAge", AnsiConsole.Ask<string>("New minimum age: "));
                 break;
 
@@ -140,23 +142,30 @@ public class EditListingView(AppState state)
                 break;
             
             case "Capacity":
-                AnsiConsole.MarkupLine($"[bold]Capacity: {listing.Capacity} {listing.CapacityUnit}[/]");
+                AnsiConsole.MarkupLine($"[bold]Capacity: {listing.Capacity} {listing.CapacityUnit.ToDescriptionString()}[/]");
                 prompt = new SelectionPrompt<string>()
                     .Title("[bold]Capacity unit:[/]")
                     .AddChoices(Enum.GetNames<ListingCapacityUnit>());
+                prompt = prompt.UseConverter(categoryName =>
+                    categoryName == nameof(ListingCapacityUnit.MaxWeight) ? "Max weight" : categoryName);
                 var capacityUnit = AnsiConsole.Prompt(prompt);
                 newValues.Add("capacityUnit", capacityUnit);
-                newValues.Add("capacity", AnsiConsole.Ask<string>($"Edit capacity ({capacityUnit}): "));
+                ListingCapacityUnit capacityEnum = (ListingCapacityUnit)Enum.Parse(typeof(ListingCapacityUnit
+                    ), capacityUnit);
+                newValues.Add("capacity", AnsiConsole.Ask<string>($"Edit capacity ({capacityEnum.ToDescriptionString()}): "));
                 break;
             
             case "Price":
-                AnsiConsole.MarkupLine($"[bold]Price: {listing.Price} {listing.PriceUnit}[/]");
+                AnsiConsole.MarkupLine($"[bold]Price: {listing.Price} {listing.PriceUnit.ToDescriptionString()}[/]");
                 prompt = new SelectionPrompt<string>()
                     .Title("[bold]Price unit:[/]")
                     .AddChoices(Enum.GetNames<ListingPriceUnit>());
+                prompt = prompt.UseConverter(categoryName =>
+                    categoryName == nameof(ListingPriceUnit.EurosPerKg) ? "Euros/kg" : categoryName);
                 var priceUnit = AnsiConsole.Prompt(prompt);
                 newValues.Add("priceUnit", priceUnit);
-                newValues.Add("price", AnsiConsole.Ask<string>($"Edit price ({priceUnit}): "));
+                ListingPriceUnit unitEnum = (ListingPriceUnit)Enum.Parse(typeof(ListingPriceUnit), priceUnit);
+                newValues.Add("price", AnsiConsole.Ask<string>($"Edit price ({unitEnum.ToDescriptionString()}): "));
                 break;
 
             case "Cancel listing":

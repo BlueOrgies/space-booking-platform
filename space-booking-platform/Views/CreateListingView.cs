@@ -9,18 +9,22 @@ public class CreateListingView(AppState state)
     public string? Display()
     {
         AnsiConsole.Clear();
-        AnsiConsole.MarkupLine("[bold green]=== Create a listing ===[/]\n");
+        AnsiConsole.Write(new Rule("[bold green]Create a listing[/]").RuleStyle("green"));
 
         ListingService listingService = new ListingService();
 
         int uuid = state.CurrentUUID;
         
-        var prompt = new SelectionPrompt<string>() //Todo: Fix space between title and choices?
+        var prompt = new SelectionPrompt<string>()
             .Title("[bold]Category:[/]")
             .AddChoices(Enum.GetNames<ListingCategory>());
+        prompt = prompt.UseConverter(categoryName =>
+            categoryName == nameof(ListingCategory.PassengerTransportation) ? "Passenger transportation" :
+            categoryName == nameof(ListingCategory.FreightHaul) ? "Freight haul" :
+            categoryName);
         string category = AnsiConsole.Prompt(prompt);
         ListingCategory categoryEnum = (ListingCategory)Enum.Parse(typeof(ListingCategory), category);
-        AnsiConsole.MarkupLine($"[bold]Category: [/]{categoryEnum}");
+        AnsiConsole.MarkupLine($"[bold]Category: [/]{categoryEnum.ToDescriptionString()}");
 
         string title = AnsiConsole.Ask<string>("[bold]Title: [/]");
         
@@ -51,6 +55,7 @@ public class CreateListingView(AppState state)
                 break;
             case ListingCategory.Accommodation:
                 location = AnsiConsole.Ask<string>("[bold]Location: [/]");
+                //TODO: Check this
                 petsAllowed = AnsiConsole.Confirm("[bold]Pets allowed?[/]");
                 break;
             case ListingCategory.Activity:
@@ -68,18 +73,22 @@ public class CreateListingView(AppState state)
         prompt = new SelectionPrompt<string>()
             .Title("[bold]Capacity unit:[/]")
             .AddChoices(Enum.GetNames<ListingCapacityUnit>());
+        prompt = prompt.UseConverter(categoryName =>
+            categoryName == nameof(ListingCapacityUnit.MaxWeight) ? "Max weight" : categoryName);
         var capacityUnit = AnsiConsole.Prompt(prompt);
         ListingCapacityUnit capacityUnitEnum = (ListingCapacityUnit)Enum.Parse(typeof(ListingCapacityUnit), capacityUnit);
         
-        int capacity = AnsiConsole.Ask<int>($"[bold]Capacity[/] ({capacityUnitEnum}): ");
+        int capacity = AnsiConsole.Ask<int>($"[bold]Capacity[/] ({capacityUnitEnum.ToDescriptionString()}): ");
         
         prompt = new SelectionPrompt<string>()
             .Title("[bold]Price unit:[/]")
             .AddChoices(Enum.GetNames<ListingPriceUnit>());
+        prompt = prompt.UseConverter(categoryName =>
+            categoryName == nameof(ListingPriceUnit.EurosPerKg) ? "Euros/kg" : categoryName);
         var priceUnit = AnsiConsole.Prompt(prompt);
         ListingPriceUnit priceUnitEnum =  (ListingPriceUnit)Enum.Parse(typeof(ListingPriceUnit), priceUnit);
         
-        decimal price = AnsiConsole.Ask<decimal>($"[bold]Price[/] ({priceUnitEnum}): ");
+        decimal price = AnsiConsole.Ask<decimal>($"[bold]Price[/] ({priceUnitEnum.ToDescriptionString()}): ");
 
         listingService.CreateListing(uuid, categoryEnum, title, description, transportMethod, origin, destination,
             date, duration, durationType, capacity, capacityUnitEnum, price, priceUnitEnum, DateTime.Now, ListingStatus.Upcoming,
