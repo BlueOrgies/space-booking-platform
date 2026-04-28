@@ -119,6 +119,7 @@ public class BookingService
             "WHERE bookings.UUID = @id ORDER BY listings.date LIMIT @limit OFFSET @offset", myConn);
         command.Parameters.AddWithValue("@id", id);
         command.Parameters.AddWithValue("@limit", limit);
+        command.Parameters.AddWithValue("@offset", offset);
 
         using SQLiteDataReader reader = command.ExecuteReader();
         while (reader.Read())
