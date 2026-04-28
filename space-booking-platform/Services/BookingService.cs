@@ -116,7 +116,7 @@ public class BookingService
 
         using SQLiteCommand command = new SQLiteCommand(
             "SELECT * FROM bookings JOIN listings ON listings.listingID = bookings.listingID " +
-            "WHERE bookings.UUID = @id ORDER BY listings.date LIMIT @limit", myConn);
+            "WHERE bookings.UUID = @id ORDER BY listings.date LIMIT @limit OFFSET @offset", myConn);
         command.Parameters.AddWithValue("@id", id);
         command.Parameters.AddWithValue("@limit", limit);
 
