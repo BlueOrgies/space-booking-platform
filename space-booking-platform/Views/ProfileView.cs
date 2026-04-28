@@ -42,7 +42,7 @@ public class ProfileView(AppState state)
         table.AddColumn("[bold]Date[/]", col => col.LeftAligned());
         table.AddColumn("[bold]Status[/]", col => col.LeftAligned());
         
-        List<Booking?> bookings = bs.GetLimitedBookings(state.CurrentUUID, Limit);
+        List<Booking?> bookings = bs.GetLimitedBookings(state.CurrentUUID, Limit, state.Offset);
         if (bookings.Count == 0)
         {
             AnsiConsole.MarkupLine("No bookings found");
