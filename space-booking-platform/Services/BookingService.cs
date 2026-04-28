@@ -109,7 +109,7 @@ public class BookingService
         return bookings;
     }
     
-    public List<Booking?> GetLimitedBookings(int id, int limit)
+    public List<Booking?> GetLimitedBookings(int id, int limit, int offset)
     {
         List<Booking?> bookings = new List<Booking?>();
         using SQLiteConnection myConn = Database.ConnectToDb();
