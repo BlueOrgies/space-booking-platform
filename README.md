@@ -181,6 +181,14 @@ Working in a team of three has been a great experience and I believe we structur
 It has taught me the importance of planning out a project, and that splitting problems into smaller pieces is the key to make a project manageable.
 As problems occurred along the way, we have been helpful to one another. Everybody has also had a say in the project's structure.
 
+#### Thomas
+
+Working on this project has been a fun. Coming from a frontend background, I am used to building multi-page applications quickly, and that likely influenced how I approached the structure of this project. In particular, I think that background shaped the decision to use AppState and ViewHandler, since I am already familiar with React and state-management tools such as Zustand.
+
+I also think we worked very well together as a team. Communication throughout the sprints was easy, and meeting in person each week for sprint reviews and planning made it straightforward to discuss progress, solve issues, and coordinate the next steps.
+
+The project did deviate somewhat from the original plan, as shown in the UML compared with the final result, but I think we handled those changes well. We continuously added new issues, discussed them during sprint reviews, and adjusted or planned features as needed. That made the development process flexible while still keeping the project moving forward.
+
 ### AI Usage
 Prompts:
 ```
