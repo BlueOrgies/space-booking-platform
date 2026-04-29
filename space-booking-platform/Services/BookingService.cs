@@ -102,6 +102,18 @@ public class BookingService
         return DateTime.Parse(result.ToString()!);
     }
 
+    public int? GetBookingId(int uuid, int listingId)
+    {
+        using SQLiteConnection conn = Database.ConnectToDb();
+        using SQLiteCommand cmd = new SQLiteCommand(
+            "SELECT bookingID FROM bookings WHERE UUID = @uuid AND listingID = @listingId", conn);
+        cmd.Parameters.AddWithValue("@uuid", uuid);
+        cmd.Parameters.AddWithValue("@listingId", listingId);
+        var result = cmd.ExecuteScalar();
+        if (result == null || result == DBNull.Value) return null;
+        return Convert.ToInt32(result);
+    }
+
     public void CancelBooking(int uuid, int listingId)
     {
         using SQLiteConnection conn = Database.ConnectToDb();
