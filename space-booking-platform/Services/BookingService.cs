@@ -178,6 +178,7 @@ public class BookingService
             UUID = Convert.ToInt32(reader["UUID"]),
             ListingId = Convert.ToInt32(reader["listingID"]),
             BookingStatus = bookingStatus,
+            CreatedAt = DateTime.Parse(reader["createdAt"].ToString()!),
             Category = ListingService.ParseListingCategory(reader),
             Title = reader["title"].ToString()!,
             Description = reader["description"].ToString()!,
