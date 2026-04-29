@@ -114,7 +114,16 @@ public class ListingView(AppState state)
         }
         else if (hasBooked)
         {
-            choices.Add("Cancel my booking");
+            if (listing.ListingStatus == ListingStatus.Upcoming)
+                choices.Add("Cancel my booking");
+
+            if (listing.ListingStatus == ListingStatus.Past)
+            {
+                int? bookingId = bookingService.GetBookingId(state.CurrentUUID, listing.ListingId);
+                var reviewService = new ReviewService();
+                if (bookingId.HasValue && !reviewService.HasReview(bookingId.Value))
+                    choices.Add("Leave a review");
+            }
         }
         else if (state.IsLoggedIn && listing.ListingStatus == ListingStatus.Upcoming)
         {
@@ -152,6 +161,14 @@ public class ListingView(AppState state)
             AnsiConsole.MarkupLine("Press any key to continue...");
             Console.ReadKey(intercept: true);
             return "Listing";
+        }
+
+        if (choice == "Leave a review")
+        {
+            int? bookingId = bookingService.GetBookingId(state.CurrentUUID, listing.ListingId);
+            if (bookingId.HasValue)
+                state.CurrentBookingID = bookingId.Value;
+            return "LeaveReview";
         }
 
         if (choice == "Cancel my booking")
