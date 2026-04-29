@@ -89,6 +89,19 @@ public class BookingService
         cmd.ExecuteNonQuery();
     }
 
+    public void CancelBooking(int uuid, int listingId)
+    {
+        using SQLiteConnection conn = Database.ConnectToDb();
+        using SQLiteCommand cmd = new SQLiteCommand(
+            "DELETE FROM bookings WHERE UUID = @uuid AND listingID = @listingId", conn);
+        cmd.Parameters.AddWithValue("@uuid", uuid);
+        cmd.Parameters.AddWithValue("@listingId", listingId);
+
+        int affectedRows = cmd.ExecuteNonQuery();
+        if (affectedRows == 0)
+            throw new InvalidOperationException("No booking found to cancel.");
+    }
+
     public List<Booking?> GetBookings(int id)
     {
         List<Booking?> bookings = new List<Booking?>();
