@@ -93,16 +93,19 @@ public class ListingView(AppState state)
         AnsiConsole.WriteLine();
 
         var choices = new List<string>();
+        bool hasBooked = state.IsLoggedIn && bookingService.HasBooked(state.CurrentUUID, listing.ListingId);
 
         if (state.IsLoggedIn && listing.UUID == state.CurrentUUID)
         {
             choices.Add("Edit this listing");
         }
+        else if (hasBooked)
+        {
+            choices.Add("Cancel my booking");
+        }
         else if (state.IsLoggedIn && listing.ListingStatus == ListingStatus.Upcoming)
         {
-            if (bookingService.HasBooked(state.CurrentUUID, listing.ListingId))
-                AnsiConsole.MarkupLine("[grey]You have already booked this listing.[/]");
-            else if (isFull)
+            if (isFull)
                 AnsiConsole.MarkupLine(listing.CapacityUnit == ListingCapacityUnit.MaxWeight
                     ? $"[red]Not enough weight capacity (your weight: {state.CurrentUserWeight} kg).[/]"
                     : "[red]This listing is fully booked.[/]");
@@ -124,10 +127,23 @@ public class ListingView(AppState state)
             if (!AnsiConsole.Confirm("Are you sure you want to book this listing?"))
                 return "Listing";
 
-            var bookingService2 = new BookingService();
-            bookingService2.CreateBooking(state.CurrentUUID, listing.ListingId);
+            bookingService.CreateBooking(state.CurrentUUID, listing.ListingId);
             AnsiConsole.WriteLine();
             AnsiConsole.Write(new Rule("[bold green]✓ Booking Confirmed![/]").RuleStyle("green"));
+            AnsiConsole.WriteLine();
+            AnsiConsole.MarkupLine("Press any key to continue...");
+            Console.ReadKey(intercept: true);
+            return "BrowseListings";
+        }
+
+        if (choice == "Cancel my booking")
+        {
+            if (!AnsiConsole.Confirm("Are you sure you want to cancel your booking?"))
+                return "Listing";
+
+            bookingService.CancelBooking(state.CurrentUUID, listing.ListingId);
+            AnsiConsole.WriteLine();
+            AnsiConsole.Write(new Rule("[bold yellow]Booking cancelled.[/]").RuleStyle("yellow"));
             AnsiConsole.WriteLine();
             AnsiConsole.MarkupLine("Press any key to continue...");
             Console.ReadKey(intercept: true);
