@@ -52,7 +52,7 @@ class BrowseListingsView(AppState state)
             navChoices.Add(SearchChoice);
 
             prompt.AddChoiceGroup("\nNavigation", navChoices.ToArray());
-            prompt.AddChoiceGroup("\n", BackChoice);
+            prompt.AddChoiceGroup(BackChoice);
 
             string choice = AnsiConsole.Prompt(prompt);
 

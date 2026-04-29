@@ -69,6 +69,21 @@ public class ListingService
         AnsiConsole.MarkupLine("[bold]\nListing updated.[/]");
     }
 
+    public void CancelListing(int listingId, int organizerUuid)
+    {
+        using SQLiteConnection myConn = Database.ConnectToDb();
+
+        using SQLiteCommand command = new SQLiteCommand(
+            "UPDATE listings SET listingStatus = @status WHERE listingID = @listingId AND UUID = @uuid", myConn);
+        command.Parameters.AddWithValue("@status", ListingStatus.Cancelled.ToString());
+        command.Parameters.AddWithValue("@listingId", listingId);
+        command.Parameters.AddWithValue("@uuid", organizerUuid);
+
+        int affectedRows = command.ExecuteNonQuery();
+        if (affectedRows == 0)
+            throw new InvalidOperationException("Only the listing organizer can cancel this listing.");
+    }
+
     
 
     public List<Listings> GetListingsByUserId(int id, int limit, int offset)
