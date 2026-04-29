@@ -59,6 +59,7 @@ public class ListingView(AppState state)
         var bookingService = new BookingService();
         int booked = bookingService.GetBookingCount(listing.ListingId);
         bool isFull;
+        int CurrentUserWeight = state.CurrentUserWeight;
 
         if (listing.CapacityUnit == ListingCapacityUnit.MaxWeight)
         {
@@ -66,7 +67,7 @@ public class ListingView(AppState state)
             int remainingWeight = listing.Capacity - bookedWeight;
             string wAvailColor = remainingWeight > 0 ? "green" : "red";
             table.AddRow("[bold]Availability[/]", $"[{wAvailColor}]{bookedWeight}/{listing.Capacity} kg used ({remainingWeight} kg remaining)[/]");
-            isFull = state.IsLoggedIn && remainingWeight < state.CurrentUserWeight;
+            isFull = remainingWeight < CurrentUserWeight;
         }
         else
         {
@@ -76,8 +77,8 @@ public class ListingView(AppState state)
             isFull = remaining <= 0;
         }
 
-        string priceDisplay = listing.PriceUnit == ListingPriceUnit.EurosPerKg && state.IsLoggedIn && state.CurrentUserWeight > 0
-            ? $"{listing.Price} €/kg (Your total: [bold]{listing.Price * state.CurrentUserWeight} €[/] for {state.CurrentUserWeight} kg)"
+        string priceDisplay = listing.PriceUnit == ListingPriceUnit.EurosPerKg && CurrentUserWeight > 0
+            ? $"{listing.Price} €/kg (Your total: [bold]{listing.Price * CurrentUserWeight} €[/] for {CurrentUserWeight} kg)"
             : $"{listing.Price} {listing.PriceUnit}";
         table.AddRow("[bold]Price[/]",       priceDisplay);
 

@@ -45,6 +45,7 @@ public class LoginView(AppState state)
         state.CurrentUser = user.Username;
         state.IsOrganizer = user.IsOrganizer;
         state.CurrentUUID = user.UserId;
+        state.CurrentUserWeight = user.Weight;
 
         AnsiConsole.WriteLine();
         AnsiConsole.MarkupLine($"[bold green]Welcome back, {user.Username}![/]");
