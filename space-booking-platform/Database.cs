@@ -36,12 +36,13 @@ public abstract class Database
         
         sql = "CREATE TABLE IF NOT EXISTS listings(" +
                      "listingID INTEGER PRIMARY KEY," +
+                     "UUID INTEGER NOT NULL," +
                      "type TEXT NOT NULL," +
                      "title TEXT NOT NULL," +
                      "description TEXT NOT NULL," +
-                     "transportMethod TEXT NOT NULL," +
-                     "origin TEXT NOT NULL," +
-                     "destination TEXT NOT NULL," +
+                     "transportMethod TEXT," +
+                     "origin TEXT," +
+                     "destination TEXT," +
                      "date DATETIME NOT NULL," +
                      "duration INTEGER NOT NULL," +
                      "durationType TEXT NOT NULL," +
@@ -50,17 +51,23 @@ public abstract class Database
                      "price INTEGER NOT NULL," +
                      "priceUnit TEXT NOT NULL," +
                      "createdAt DATETIME NOT NULL," +
-                     "listingStatus TEXT NOT NULL)";
+                     "listingStatus TEXT NOT NULL," +
+                     "location TEXT," +
+                     "petsAllowed BOOL NOT NULL DEFAULT 0," +
+                     "luggageIncluded BOOL NOT NULL DEFAULT 0," +
+                     "hazardousMaterialsAllowed BOOL NOT NULL DEFAULT 0," +
+                     "minAge INTEGER NOT NULL DEFAULT 0," +
+                     "FOREIGN KEY (UUID) REFERENCES users(UUID))";
         
         
         command = new SQLiteCommand(sql, myConn);
         command.ExecuteNonQuery();
-                
         sql = "CREATE TABLE IF NOT EXISTS bookings(" +
               "bookingID INTEGER PRIMARY KEY," +
               "UUID INTEGER NOT NULL," +
               "listingID INTEGER NOT NULL," +
               "bookingStatus TEXT NOT NULL," +
+              "createdAt DATETIME NOT NULL DEFAULT (datetime('now'))," +
               "FOREIGN KEY (UUID) REFERENCES users(UUID)," +
               "FOREIGN KEY (listingID) REFERENCES listings(listingID))";
         

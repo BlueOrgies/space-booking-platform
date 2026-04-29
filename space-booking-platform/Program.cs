@@ -1,3 +1,12 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿namespace space_booking_platform;
 
-Console.WriteLine("Hello, World!");
+class Program
+{
+    static void Main(string[] args)
+    {
+        Database.Tables();
+        Seeder.SeedIfEmpty();
+        ViewHandler vh = new ViewHandler();
+        vh.Run("Home");
+    }
+}
