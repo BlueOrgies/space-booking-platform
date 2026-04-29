@@ -42,6 +42,27 @@ public class ReviewService
         }
         return reviews;
     }
+    
+    public List<Review?> GetLimitedReviews(int UUID, int limit)
+    {
+        List<Review?> reviews = new List<Review?>();
+        SQLiteConnection myConn = Database.ConnectToDb();
+        
+        using SQLiteCommand command = new SQLiteCommand("SELECT * FROM reviews JOIN bookings ON bookings.bookingID = reviews.bookingID " +
+                                                        "JOIN listings ON listings.listingID = bookings.listingID " +
+                                                        "WHERE listings.UUID = @id LIMIT @limit", myConn);
+        command.Parameters.AddWithValue("@id", UUID);
+        command.Parameters.AddWithValue("@limit", limit);
+        
+        using SQLiteDataReader reader = command.ExecuteReader();
+        
+        while (reader.Read())
+        {
+            Review review = MapReview(reader);
+            reviews.Add(review);
+        }
+        return reviews;
+    }
 
     public void CreateReview(int uuid, int bookingId, int rating, string comment)
     {
@@ -67,6 +88,18 @@ public class ReviewService
 
         cmd.Parameters.AddWithValue("@bookingId", bookingId);
         return (long)cmd.ExecuteScalar()! > 0;
+    }
+    
+    public double GetAverageRating(int currentUserId)
+    {
+        using SQLiteConnection conn = Database.ConnectToDb();
+        using SQLiteCommand cmd = new SQLiteCommand("SELECT AVG(rating) FROM reviews " +
+                                                    "JOIN bookings ON bookings.bookingID = reviews.bookingID " +
+                                                    "JOIN listings ON listings.listingID = bookings.listingID " +
+                                                    "WHERE listings.UUID = @uuid", conn);
+        cmd.Parameters.AddWithValue("@uuid", currentUserId);
+        var rating = cmd.ExecuteScalar();
+        return rating == DBNull.Value ? 0.0 : Convert.ToDouble(rating);
     }
     
     private static Review MapReview(SQLiteDataReader reader) => new Review

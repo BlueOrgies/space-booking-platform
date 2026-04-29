@@ -83,10 +83,48 @@ public class BookingService
         }
 
         using SQLiteCommand cmd = new SQLiteCommand(
-            "INSERT INTO bookings (UUID, listingID, bookingStatus) VALUES (@uuid, @listingId, 'Confirmed')", conn);
+            "INSERT INTO bookings (UUID, listingID, bookingStatus, createdAt) VALUES (@uuid, @listingId, 'Confirmed', @createdAt)", conn);
         cmd.Parameters.AddWithValue("@uuid", uuid);
         cmd.Parameters.AddWithValue("@listingId", listingId);
+        cmd.Parameters.AddWithValue("@createdAt", DateTime.Now.ToString("o"));
         cmd.ExecuteNonQuery();
+    }
+
+    public DateTime? GetBookingDate(int uuid, int listingId)
+    {
+        using SQLiteConnection conn = Database.ConnectToDb();
+        using SQLiteCommand cmd = new SQLiteCommand(
+            "SELECT createdAt FROM bookings WHERE UUID = @uuid AND listingID = @listingId", conn);
+        cmd.Parameters.AddWithValue("@uuid", uuid);
+        cmd.Parameters.AddWithValue("@listingId", listingId);
+        var result = cmd.ExecuteScalar();
+        if (result == null || result == DBNull.Value) return null;
+        return DateTime.Parse(result.ToString()!);
+    }
+
+    public int? GetBookingId(int uuid, int listingId)
+    {
+        using SQLiteConnection conn = Database.ConnectToDb();
+        using SQLiteCommand cmd = new SQLiteCommand(
+            "SELECT bookingID FROM bookings WHERE UUID = @uuid AND listingID = @listingId", conn);
+        cmd.Parameters.AddWithValue("@uuid", uuid);
+        cmd.Parameters.AddWithValue("@listingId", listingId);
+        var result = cmd.ExecuteScalar();
+        if (result == null || result == DBNull.Value) return null;
+        return Convert.ToInt32(result);
+    }
+
+    public void CancelBooking(int uuid, int listingId)
+    {
+        using SQLiteConnection conn = Database.ConnectToDb();
+        using SQLiteCommand cmd = new SQLiteCommand(
+            "DELETE FROM bookings WHERE UUID = @uuid AND listingID = @listingId", conn);
+        cmd.Parameters.AddWithValue("@uuid", uuid);
+        cmd.Parameters.AddWithValue("@listingId", listingId);
+
+        int affectedRows = cmd.ExecuteNonQuery();
+        if (affectedRows == 0)
+            throw new InvalidOperationException("No booking found to cancel.");
     }
 
     public List<Booking?> GetBookings(int id)
@@ -109,6 +147,28 @@ public class BookingService
         return bookings;
     }
     
+    public List<Booking?> GetLimitedBookings(int id, int limit, int offset)
+    {
+        List<Booking?> bookings = new List<Booking?>();
+        using SQLiteConnection myConn = Database.ConnectToDb();
+
+        using SQLiteCommand command = new SQLiteCommand(
+            "SELECT * FROM bookings JOIN listings ON listings.listingID = bookings.listingID " +
+            "WHERE bookings.UUID = @id ORDER BY listings.date LIMIT @limit OFFSET @offset", myConn);
+        command.Parameters.AddWithValue("@id", id);
+        command.Parameters.AddWithValue("@limit", limit);
+        command.Parameters.AddWithValue("@offset", offset);
+
+        using SQLiteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            Booking booking = MapBooking(reader);
+            bookings.Add(booking);
+        }
+
+        return bookings;
+    }
+    
     private static Booking MapBooking(SQLiteDataReader reader)
     {
         ListingStatus.TryParse(reader["bookingStatus"].ToString(), out ListingStatus bookingStatus);
@@ -118,6 +178,7 @@ public class BookingService
             UUID = Convert.ToInt32(reader["UUID"]),
             ListingId = Convert.ToInt32(reader["listingID"]),
             BookingStatus = bookingStatus,
+            CreatedAt = DateTime.Parse(reader["createdAt"].ToString()!),
             Category = ListingService.ParseListingCategory(reader),
             Title = reader["title"].ToString()!,
             Description = reader["description"].ToString()!,

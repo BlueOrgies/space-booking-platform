@@ -12,7 +12,7 @@ public class OrganizerReviewsView(AppState state)
     {
         int currentPage = 0;
         ReviewService reviewService = new ReviewService();
-        List<Review?> allReviews = reviewService.GetReviews(state.currentUUID);
+        List<Review?> allReviews = reviewService.GetReviews(state.CurrentUUID);
 
         while (true)
         {

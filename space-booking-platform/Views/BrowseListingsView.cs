@@ -6,6 +6,12 @@ namespace space_booking_platform.Views;
 
 class BrowseListingsView(AppState state)
 {
+    private const int PageSize = 10;
+    private const string PreviousPageChoice = "← Previous 10";
+    private const string NextPageChoice = "→ Next 10";
+    private const string SearchChoice = "Search Listings";
+    private const string BackChoice = "Back to main menu";
+
     public string? Display()
     {
         var listingService = new ListingService();
@@ -16,7 +22,7 @@ class BrowseListingsView(AppState state)
             AnsiConsole.Clear();
             AnsiConsole.Write(new Rule("[bold green]Browse Listings[/]").RuleStyle("green"));
 
-            List<Listings> listings = listingService.GetAllListings(offset);
+            List<Listings> listings = listingService.GetActiveListings(offset);
 
             var prompt = new SelectionPrompt<string>()
                 .Title("Select a listing to view details:")
@@ -28,7 +34,9 @@ class BrowseListingsView(AppState state)
             {
                 foreach (var listing in listings)
                 {
-                    string label = $"[[{listing.Category}]] {Markup.Escape(listing.Title)} | {Markup.Escape(listing.Origin)} → {Markup.Escape(listing.Destination)} | {listing.Date:yyyy-MM-dd} | {listing.Price} {listing.PriceUnit}";
+                    string originDest = listing is PassengerTransportation ptB ? $"{Markup.Escape(ptB.Origin)} → {Markup.Escape(ptB.Destination)}"
+                        : listing is FreightHaul fhB ? $"{Markup.Escape(fhB.Origin)} → {Markup.Escape(fhB.Destination)}" : string.Empty;
+                    string label = $"[[{listing.Category}]] {Markup.Escape(listing.Title)}{(originDest.Length > 0 ? " | " + originDest : "")} | {listing.Date:yyyy-MM-dd} | {listing.Price} {listing.PriceUnit}";
                     listingMap[label] = listing.ListingId;
                 }
                 prompt.AddChoiceGroup("Listings", listingMap.Keys.ToArray());
@@ -39,32 +47,32 @@ class BrowseListingsView(AppState state)
             }
 
             var navChoices = new List<string>();
-            if (offset > 0) navChoices.Add("← Previous 10");
-            if (listings.Count == 10) navChoices.Add("→ Next 10");
-            navChoices.Add("Search Listings");
-            navChoices.Add("Back to main menu");
+            if (offset > 0) navChoices.Add(PreviousPageChoice);
+            if (listings.Count == 10) navChoices.Add(NextPageChoice);
+            navChoices.Add(SearchChoice);
 
-            prompt.AddChoiceGroup("Navigation", navChoices.ToArray());
+            prompt.AddChoiceGroup("\nNavigation", navChoices.ToArray());
+            prompt.AddChoiceGroup(BackChoice);
 
             string choice = AnsiConsole.Prompt(prompt);
 
             if (listingMap.TryGetValue(choice, out int listingId))
             {
-                state.currentListingID = listingId;
+                state.CurrentListingID = listingId;
                 return "Listing";
             }
 
             switch (choice)
             {
-                case "← Previous 10":
+                case PreviousPageChoice:
                     offset -= 10;
                     break;
-                case "→ Next 10":
+                case NextPageChoice:
                     offset += 10;
                     break;
-                case "Search Listings":
+                case SearchChoice:
                     return "SearchListings";
-                case "Back to main menu":
+                case BackChoice:
                     return "Home";
             }
         }

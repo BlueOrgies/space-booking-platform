@@ -21,7 +21,7 @@ public class LeaveReviewView(AppState state)
             new TextPrompt<string>("[bold]Comment (optional):[/]")
                 .AllowEmpty());
         
-        reviewService.CreateReview(state.currentUUID, state.currentBookingID, rating, comment);
+        reviewService.CreateReview(state.CurrentUUID, state.CurrentBookingID, rating, comment);
         
         AnsiConsole.MarkupLine("\n[green]Thank you for your review![/]");
         AnsiConsole.WriteLine("Press any key to return to your bookings...");

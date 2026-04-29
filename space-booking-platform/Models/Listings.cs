@@ -1,3 +1,5 @@
+using System.ComponentModel;
+
 namespace space_booking_platform.Models;
 
 public class Listings
@@ -9,12 +11,6 @@ public class Listings
     public string Title { get; set; } = string.Empty;
 
     public string Description { get; set; } = string.Empty;
-
-    public string TransportMethod { get; set; } = string.Empty;
-
-    public string Origin { get; set; } = string.Empty;
-
-    public string Destination { get; set; } = string.Empty;
 
     public DateTime Date { get; set; }
 
@@ -35,3 +31,14 @@ public class Listings
     public ListingStatus ListingStatus { get; set; }
 
 }
+public static class MyEnumExtensions
+{
+    public static string ToDescriptionString(this Enum val)
+    {
+        DescriptionAttribute[] attributes = (DescriptionAttribute[])val
+            .GetType()
+            .GetField(val.ToString())!
+            .GetCustomAttributes(typeof(DescriptionAttribute), false);
+        return attributes.Length > 0 ? attributes[0].Description : string.Empty;
+    }
+} 
