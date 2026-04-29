@@ -25,7 +25,7 @@ public class ListingView(AppState state)
         var table = new Table().RoundedBorder().BorderColor(Color.Grey).HideHeaders();
         table.AddColumn("");
         table.AddColumn("");
-
+        table.AddRow("[bold]Title[/]",       Markup.Escape(listing.Title));
         table.AddRow("[bold]Category[/]",    listing.Category.ToString());
         table.AddRow("[bold]Description[/]", Markup.Escape(listing.Description));
 
