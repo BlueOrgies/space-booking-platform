@@ -93,11 +93,14 @@ public class ListingView(AppState state)
         AnsiConsole.WriteLine();
 
         var choices = new List<string>();
+        bool isOrganizer = state.IsLoggedIn && listing.UUID == state.CurrentUUID;
         bool hasBooked = state.IsLoggedIn && bookingService.HasBooked(state.CurrentUUID, listing.ListingId);
 
-        if (state.IsLoggedIn && listing.UUID == state.CurrentUUID)
+        if (isOrganizer)
         {
             choices.Add("Edit this listing");
+            if (listing.ListingStatus == ListingStatus.Upcoming)
+                choices.Add("Cancel this listing");
         }
         else if (hasBooked)
         {
@@ -133,7 +136,7 @@ public class ListingView(AppState state)
             AnsiConsole.WriteLine();
             AnsiConsole.MarkupLine("Press any key to continue...");
             Console.ReadKey(intercept: true);
-            return "BrowseListings";
+            return "Listing";
         }
 
         if (choice == "Cancel my booking")
@@ -147,7 +150,21 @@ public class ListingView(AppState state)
             AnsiConsole.WriteLine();
             AnsiConsole.MarkupLine("Press any key to continue...");
             Console.ReadKey(intercept: true);
-            return "BrowseListings";
+            return "Listing";
+        }
+
+        if (choice == "Cancel this listing")
+        {
+            if (!AnsiConsole.Confirm("Are you sure you want to cancel this listing?"))
+                return "Listing";
+
+            listingService.CancelListing(listing.ListingId, state.CurrentUUID);
+            AnsiConsole.WriteLine();
+            AnsiConsole.Write(new Rule("[bold red]Listing cancelled.[/]").RuleStyle("red"));
+            AnsiConsole.WriteLine();
+            AnsiConsole.MarkupLine("Press any key to continue...");
+            Console.ReadKey(intercept: true);
+            return "Listing";
         }
 
         if (choice == "Edit this listing")
