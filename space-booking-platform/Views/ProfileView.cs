@@ -39,6 +39,7 @@ public class ProfileView(AppState state)
         table.AddColumn("[bold]Title[/]", col => col.LeftAligned());
         table.AddColumn("[bold]Origin[/]", col => col.LeftAligned());
         table.AddColumn("[bold]Destination[/]", col => col.LeftAligned());
+        table.AddColumn("[bold]Booked date[/]", col => col.LeftAligned());
         table.AddColumn("[bold]Date[/]", col => col.LeftAligned());
         table.AddColumn("[bold]Status[/]", col => col.LeftAligned());
         
@@ -52,7 +53,7 @@ public class ProfileView(AppState state)
             foreach (Booking? booking in bookings)
             {
                     table.AddRow(booking.Category.ToString(), booking.Title, booking.Origin, 
-                        booking.Destination, booking.Date.ToString("o"), booking.BookingStatus.ToString());
+                        booking.Destination, booking.CreatedAt.ToString("yyyy-MM-dd HH:mm"), booking.Date.ToString("yyyy-MM-dd HH:mm"), booking.BookingStatus.ToString());
             }
             AnsiConsole.Write(table);
             choices.Insert(0, "View my bookings");
