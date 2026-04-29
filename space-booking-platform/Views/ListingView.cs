@@ -105,7 +105,6 @@ public class ListingView(AppState state)
 
         var choices = new List<string>();
         bool isOrganizer = state.IsLoggedIn && listing.UUID == state.CurrentUUID;
-        bool hasBooked = state.IsLoggedIn && bookingService.HasBooked(state.CurrentUUID, listing.ListingId);
 
         if (isOrganizer)
         {
@@ -127,14 +126,19 @@ public class ListingView(AppState state)
                 choices.Add("Book this listing");
         }
 
-        choices.Add("Back to Browse Listings");
-        choices.Add("Back to main menu");
+        var navChoices = isOrganizer
+            ? new[] { "Back to My Listings", "Back to Browse Listings", "Back to main menu" }
+            : new[] { "Back to Browse Listings", "Back to main menu" };
 
-        var choice = AnsiConsole.Prompt(
-            new SelectionPrompt<string>()
-                .Title("What would you like to do?")
-                .HighlightStyle(new Style(Color.Yellow))
-                .AddChoices(choices));
+        var prompt = new SelectionPrompt<string>()
+            .HighlightStyle(new Style(Color.Yellow));
+
+        if (choices.Count > 0)
+            prompt.AddChoiceGroup("", choices);
+
+        prompt.AddChoiceGroup("\n"+"Navigation", navChoices);
+
+        var choice = AnsiConsole.Prompt(prompt);
 
         if (choice == "Book this listing")
         {
@@ -186,6 +190,7 @@ public class ListingView(AppState state)
 
         return choice switch
         {
+            "Back to My Listings"     => "MyListings",
             "Back to Browse Listings" => "BrowseListings",
             _                         => "Home"
         };
