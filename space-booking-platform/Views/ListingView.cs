@@ -93,6 +93,16 @@ public class ListingView(AppState state)
         AnsiConsole.Write(table);
         AnsiConsole.WriteLine();
 
+        bool hasBooked = state.IsLoggedIn && bookingService.HasBooked(state.CurrentUUID, listing.ListingId);
+
+        if (hasBooked)
+        {
+            DateTime? bookedOn = bookingService.GetBookingDate(state.CurrentUUID, listing.ListingId);
+            if (bookedOn.HasValue)
+                AnsiConsole.MarkupLine($"[grey]You booked this listing on {bookedOn.Value:yyyy-MM-dd HH:mm}.[/]");
+            AnsiConsole.WriteLine();
+        }
+
         var choices = new List<string>();
         bool isOrganizer = state.IsLoggedIn && listing.UUID == state.CurrentUUID;
         bool hasBooked = state.IsLoggedIn && bookingService.HasBooked(state.CurrentUUID, listing.ListingId);
