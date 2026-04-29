@@ -184,26 +184,25 @@ As problems occurred along the way, we have been helpful to one another. Everybo
 ### AI Usage
 Prompts:
 ```
+Please extend MapListings with the new and extended models.
 
 ```
 
 
 ```
+Can you change CreateListingiew and EditListingView to work with the new models structure?
 
 ```
 
 
 ```
+Please add the missing fields to the table in Database.cs
 
 ```
 
 
 ```
-
-```
-
-
-```
+Please extend the data in seeder, take into account any new fields.
 
 ```
 
