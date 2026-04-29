@@ -83,10 +83,23 @@ public class BookingService
         }
 
         using SQLiteCommand cmd = new SQLiteCommand(
-            "INSERT INTO bookings (UUID, listingID, bookingStatus) VALUES (@uuid, @listingId, 'Confirmed')", conn);
+            "INSERT INTO bookings (UUID, listingID, bookingStatus, createdAt) VALUES (@uuid, @listingId, 'Confirmed', @createdAt)", conn);
         cmd.Parameters.AddWithValue("@uuid", uuid);
         cmd.Parameters.AddWithValue("@listingId", listingId);
+        cmd.Parameters.AddWithValue("@createdAt", DateTime.Now.ToString("o"));
         cmd.ExecuteNonQuery();
+    }
+
+    public DateTime? GetBookingDate(int uuid, int listingId)
+    {
+        using SQLiteConnection conn = Database.ConnectToDb();
+        using SQLiteCommand cmd = new SQLiteCommand(
+            "SELECT createdAt FROM bookings WHERE UUID = @uuid AND listingID = @listingId", conn);
+        cmd.Parameters.AddWithValue("@uuid", uuid);
+        cmd.Parameters.AddWithValue("@listingId", listingId);
+        var result = cmd.ExecuteScalar();
+        if (result == null || result == DBNull.Value) return null;
+        return DateTime.Parse(result.ToString()!);
     }
 
     public void CancelBooking(int uuid, int listingId)
