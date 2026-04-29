@@ -62,12 +62,12 @@ public abstract class Database
         
         command = new SQLiteCommand(sql, myConn);
         command.ExecuteNonQuery();
-                
         sql = "CREATE TABLE IF NOT EXISTS bookings(" +
               "bookingID INTEGER PRIMARY KEY," +
               "UUID INTEGER NOT NULL," +
               "listingID INTEGER NOT NULL," +
               "bookingStatus TEXT NOT NULL," +
+              "createdAt DATETIME NOT NULL DEFAULT (datetime('now'))," +
               "FOREIGN KEY (UUID) REFERENCES users(UUID)," +
               "FOREIGN KEY (listingID) REFERENCES listings(listingID))";
         
