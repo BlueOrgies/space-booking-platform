@@ -77,7 +77,7 @@ public class ListingView(AppState state)
             isFull = remaining <= 0;
         }
 
-        string priceDisplay = listing.PriceUnit == ListingPriceUnit.EurosPerKg && CurrentUserWeight > 0
+        string priceDisplay = listing.PriceUnit == ListingPriceUnit.EurosPerKg
             ? $"{listing.Price} €/kg (Your total: [bold]{listing.Price * CurrentUserWeight} €[/] for {CurrentUserWeight} kg)"
             : $"{listing.Price} {listing.PriceUnit}";
         table.AddRow("[bold]Price[/]",       priceDisplay);
