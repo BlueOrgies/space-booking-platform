@@ -33,6 +33,11 @@ public class Listings
 }
 public static class MyEnumExtensions
 {
+    /// <summary>
+    /// Converts an enum value to its description string.
+    /// </summary>
+    /// <param name="val">The enum value.</param>
+    /// <returns>The description string if available; otherwise, an empty string.</returns>
     public static string ToDescriptionString(this Enum val)
     {
         DescriptionAttribute[] attributes = (DescriptionAttribute[])val

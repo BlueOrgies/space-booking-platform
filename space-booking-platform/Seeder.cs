@@ -6,6 +6,9 @@ namespace space_booking_platform;
 
 public static class Seeder
 {
+    /// <summary>
+    /// Seeds the database with initial data if it is empty.
+    /// </summary>
     public static void SeedIfEmpty()
     {
         using SQLiteConnection conn = Database.ConnectToDb();

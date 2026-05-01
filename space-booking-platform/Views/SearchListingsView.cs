@@ -6,6 +6,10 @@ namespace space_booking_platform.Views;
 
 class SearchListingsView(AppState state)
 {
+        /// <summary>
+    /// Displays the view and handles user interaction.
+    /// </summary>
+    /// <returns>The name of the next view to display.</returns>
     public string? Display()
     {
         AnsiConsole.Clear();

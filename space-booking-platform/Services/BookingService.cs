@@ -5,6 +5,12 @@ namespace space_booking_platform.Services;
 
 public class BookingService
 {
+    /// <summary>
+    /// Checks if a user has already booked a specific listing.
+    /// </summary>
+    /// <param name="uuid">The unique identifier of the user.</param>
+    /// <param name="listingId">The identifier of the listing.</param>
+    /// <returns>True if the user has a booking for the listing; otherwise, false.</returns>
     public bool HasBooked(int uuid, int listingId)
     {
         using SQLiteConnection conn = Database.ConnectToDb();
@@ -15,6 +21,11 @@ public class BookingService
         return (long)cmd.ExecuteScalar()! > 0;
     }
 
+    /// <summary>
+    /// Gets the total number of bookings for a specific listing.
+    /// </summary>
+    /// <param name="listingId">The identifier of the listing.</param>
+    /// <returns>The total count of bookings.</returns>
     public int GetBookingCount(int listingId)
     {
         using SQLiteConnection conn = Database.ConnectToDb();
@@ -24,6 +35,11 @@ public class BookingService
         return Convert.ToInt32((long)cmd.ExecuteScalar()!);
     }
 
+    /// <summary>
+    /// Gets the total weight booked for a specific listing.
+    /// </summary>
+    /// <param name="listingId">The identifier of the listing.</param>
+    /// <returns>The sum of weights of all users who booked the listing.</returns>
     public int GetBookedWeight(int listingId)
     {
         using SQLiteConnection conn = Database.ConnectToDb();
@@ -33,6 +49,15 @@ public class BookingService
         return Convert.ToInt32(cmd.ExecuteScalar()!);
     }
 
+    /// <summary>
+    /// Creates a new booking for a user for a specific listing.
+    /// </summary>
+    /// <param name="uuid">The unique identifier of the user.</param>
+    /// <param name="listingId">The identifier of the listing.</param>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown if the user tries to book their own listing, or if the listing is fully booked,
+    /// or if there is not enough weight capacity.
+    /// </exception>
     public void CreateBooking(int uuid, int listingId)
     {
         using SQLiteConnection conn = Database.ConnectToDb();
@@ -90,6 +115,12 @@ public class BookingService
         cmd.ExecuteNonQuery();
     }
 
+    /// <summary>
+    /// Gets the creation date of a specific booking.
+    /// </summary>
+    /// <param name="uuid">The unique identifier of the user.</param>
+    /// <param name="listingId">The identifier of the listing.</param>
+    /// <returns>The date the booking was created, or null if not found.</returns>
     public DateTime? GetBookingDate(int uuid, int listingId)
     {
         using SQLiteConnection conn = Database.ConnectToDb();
@@ -102,6 +133,12 @@ public class BookingService
         return DateTime.Parse(result.ToString()!);
     }
 
+    /// <summary>
+    /// Gets the ID of a specific booking.
+    /// </summary>
+    /// <param name="uuid">The unique identifier of the user.</param>
+    /// <param name="listingId">The identifier of the listing.</param>
+    /// <returns>The booking ID, or null if not found.</returns>
     public int? GetBookingId(int uuid, int listingId)
     {
         using SQLiteConnection conn = Database.ConnectToDb();
@@ -114,6 +151,12 @@ public class BookingService
         return Convert.ToInt32(result);
     }
 
+    /// <summary>
+    /// Cancels a booking for a user for a specific listing.
+    /// </summary>
+    /// <param name="uuid">The unique identifier of the user.</param>
+    /// <param name="listingId">The identifier of the listing.</param>
+    /// <exception cref="InvalidOperationException">Thrown if no booking was found to cancel.</exception>
     public void CancelBooking(int uuid, int listingId)
     {
         using SQLiteConnection conn = Database.ConnectToDb();
@@ -127,6 +170,11 @@ public class BookingService
             throw new InvalidOperationException("No booking found to cancel.");
     }
 
+    /// <summary>
+    /// Retrieves all bookings for a specific user.
+    /// </summary>
+    /// <param name="id">The unique identifier of the user.</param>
+    /// <returns>A list of bookings.</returns>
     public List<Booking?> GetBookings(int id)
     {
         List<Booking?> bookings = new List<Booking?>();
@@ -147,6 +195,13 @@ public class BookingService
         return bookings;
     }
     
+    /// <summary>
+    /// Retrieves a limited number of bookings for a user, with an offset.
+    /// </summary>
+    /// <param name="id">The unique identifier of the user.</param>
+    /// <param name="limit">The maximum number of bookings to return.</param>
+    /// <param name="offset">The number of bookings to skip.</param>
+    /// <returns>A list of bookings.</returns>
     public List<Booking?> GetLimitedBookings(int id, int limit, int offset)
     {
         List<Booking?> bookings = new List<Booking?>();

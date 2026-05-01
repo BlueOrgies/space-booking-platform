@@ -12,6 +12,10 @@ class BrowseListingsView(AppState state)
     private const string SearchChoice = "Search Listings";
     private const string BackChoice = "Back to main menu";
 
+        /// <summary>
+    /// Displays the view and handles user interaction.
+    /// </summary>
+    /// <returns>The name of the next view to display.</returns>
     public string? Display()
     {
         var listingService = new ListingService();

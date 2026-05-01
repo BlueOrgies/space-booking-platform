@@ -14,6 +14,17 @@ public class UserService
     }
 
 
+    /// <summary>
+    /// Registers a new user in the system.
+    /// </summary>
+    /// <param name="username">The desired username.</param>
+    /// <param name="password">The user's password (will be hashed).</param>
+    /// <param name="weight">The user's weight.</param>
+    /// <param name="height">The user's height.</param>
+    /// <param name="isOrganizer">Whether the user is an organizer.</param>
+    /// <returns>The registered User object.</returns>
+    /// <exception cref="ArgumentException">Thrown if username or password is empty.</exception>
+    /// <exception cref="InvalidOperationException">Thrown if the username is already taken.</exception>
     public User Register(string username, string password, int weight, int height, bool isOrganizer)
     {
         if (string.IsNullOrWhiteSpace(username))
@@ -56,6 +67,12 @@ public class UserService
         return MapUser(reader);
     }
 
+    /// <summary>
+    /// Authenticates a user.
+    /// </summary>
+    /// <param name="username">The username.</param>
+    /// <param name="password">The password.</param>
+    /// <returns>The User object if authentication is successful; otherwise, null.</returns>
     public User? Login(string username, string password)
     {
         string hashedPassword = HashPassword(password);
@@ -74,6 +91,11 @@ public class UserService
         return MapUser(reader);
     }
 
+    /// <summary>
+    /// Retrieves a user by their identifier.
+    /// </summary>
+    /// <param name="id">The unique identifier of the user.</param>
+    /// <returns>The User object if found; otherwise, null.</returns>
     public User? GetById(int id)
     {
         using SQLiteConnection conn = Database.ConnectToDb();

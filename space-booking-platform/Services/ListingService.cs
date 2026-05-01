@@ -6,6 +6,31 @@ namespace space_booking_platform.Services;
 
 public class ListingService
 {
+    /// <summary>
+    /// Creates a new listing in the system.
+    /// </summary>
+    /// <param name="uuid">The identifier of the user creating the listing.</param>
+    /// <param name="category">The category of the listing.</param>
+    /// <param name="title">The title of the listing.</param>
+    /// <param name="description">A detailed description of the listing.</param>
+    /// <param name="transportMethod">The method of transport (if applicable).</param>
+    /// <param name="origin">The starting location of the trip.</param>
+    /// <param name="destination">The destination location of the trip.</param>
+    /// <param name="date">The date of the listing.</param>
+    /// <param name="duration">The duration of the service.</param>
+    /// <param name="durationType">The unit of duration (e.g., Days, Hours).</param>
+    /// <param name="capacity">The maximum capacity of the listing.</param>
+    /// <param name="capacityUnit">The unit of capacity (e.g., Seats, MaxWeight).</param>
+    /// <param name="price">The price of the listing.</param>
+    /// <param name="priceUnit">The unit of price (e.g., Euros, EurosPerKg).</param>
+    /// <param name="createdAt">The date and time the listing was created.</param>
+    /// <param name="listingStatus">The initial status of the listing.</param>
+    /// <param name="location">The physical location (for accommodations or activities).</param>
+    /// <param name="petsAllowed">Whether pets are allowed (for accommodations).</param>
+    /// <param name="luggageIncluded">Whether luggage is included (for transportation).</param>
+    /// <param name="hazardousMaterialsAllowed">Whether hazardous materials are allowed (for freight).</param>
+    /// <param name="minAge">The minimum age required (for activities).</param>
+    /// <returns>The created listing object.</returns>
     public Listings CreateListing(int uuid, ListingCategory category, string title, string description,
         string transportMethod, string origin, string destination, DateTime date, int duration, string durationType,
         int capacity, ListingCapacityUnit capacityUnit, decimal price, ListingPriceUnit priceUnit,
@@ -56,6 +81,12 @@ public class ListingService
         return listing;
     }
 
+    /// <summary>
+    /// Edits an existing listing's information.
+    /// </summary>
+    /// <param name="id">The identifier of the listing to edit.</param>
+    /// <param name="edit">The field to edit.</param>
+    /// <param name="newData">The new value for the field.</param>
     public void EditListing(int id, string edit, string newData)
     {
         using SQLiteConnection myConn = Database.ConnectToDb();
@@ -69,6 +100,12 @@ public class ListingService
         AnsiConsole.MarkupLine("[bold]\nListing updated.[/]");
     }
 
+    /// <summary>
+    /// Cancels a listing.
+    /// </summary>
+    /// <param name="listingId">The identifier of the listing to cancel.</param>
+    /// <param name="organizerUuid">The identifier of the organizer canceling the listing.</param>
+    /// <exception cref="InvalidOperationException">Thrown if the listing is not found or not owned by the user.</exception>
     public void CancelListing(int listingId, int organizerUuid)
     {
         using SQLiteConnection myConn = Database.ConnectToDb();
@@ -86,6 +123,13 @@ public class ListingService
 
     
 
+    /// <summary>
+    /// Retrieves a list of listings created by a specific user.
+    /// </summary>
+    /// <param name="id">The identifier of the user.</param>
+    /// <param name="limit">The maximum number of listings to return.</param>
+    /// <param name="offset">The number of listings to skip.</param>
+    /// <returns>A list of listings.</returns>
     public List<Listings> GetListingsByUserId(int id, int limit, int offset)
     {
         List<Listings> listings = new List<Listings>();
@@ -105,6 +149,11 @@ public class ListingService
         return listings;
     }
 
+    /// <summary>
+    /// Retrieves a list of active (upcoming) listings.
+    /// </summary>
+    /// <param name="offset">The number of listings to skip.</param>
+    /// <returns>A list of active listings.</returns>
     public List<Listings> GetActiveListings(int offset)
     {
         using SQLiteConnection myConn = Database.ConnectToDb();
@@ -123,6 +172,11 @@ public class ListingService
         return listings;
     }
 
+    /// <summary>
+    /// Retrieves a specific listing by its identifier.
+    /// </summary>
+    /// <param name="listingId">The identifier of the listing.</param>
+    /// <returns>The listing if found; otherwise, null.</returns>
     public Listings? GetListingById(int listingId)
     {
         using SQLiteConnection myConn = Database.ConnectToDb();
@@ -138,6 +192,12 @@ public class ListingService
         return MapListings(reader);
     }
 
+    /// <summary>
+    /// Searches for listings based on a keyword and optional category.
+    /// </summary>
+    /// <param name="keyword">The search keyword.</param>
+    /// <param name="category">The optional category to filter by.</param>
+    /// <returns>A list of matching listings.</returns>
     public List<Listings> SearchListings(string keyword, ListingCategory? category)
     {
         using SQLiteConnection myConn = Database.ConnectToDb();
@@ -254,21 +314,41 @@ public class ListingService
         return listing;
     }
 
+    /// <summary>
+    /// Parses the listing category from a database reader.
+    /// </summary>
+    /// <param name="reader">The SQLite data reader.</param>
+    /// <returns>The parsed ListingCategory.</returns>
     public static ListingCategory ParseListingCategory(SQLiteDataReader reader)
     {
         ListingCategory.TryParse(reader["type"].ToString(), out ListingCategory category);
         return category;
     }
+    /// <summary>
+    /// Parses the listing capacity unit from a database reader.
+    /// </summary>
+    /// <param name="reader">The SQLite data reader.</param>
+    /// <returns>The parsed ListingCapacityUnit.</returns>
     public static ListingCapacityUnit ParseListingCapacityUnit(SQLiteDataReader reader)
     {
         ListingCapacityUnit.TryParse(reader["capacityUnit"].ToString(), out ListingCapacityUnit unit);
         return unit;
     }
+    /// <summary>
+    /// Parses the listing price unit from a database reader.
+    /// </summary>
+    /// <param name="reader">The SQLite data reader.</param>
+    /// <returns>The parsed ListingPriceUnit.</returns>
     public static ListingPriceUnit ParseListingPriceUnit(SQLiteDataReader reader)
     {
         ListingPriceUnit.TryParse(reader["priceUnit"].ToString(), out ListingPriceUnit price);
         return price;
     }
+    /// <summary>
+    /// Parses the listing status from a database reader.
+    /// </summary>
+    /// <param name="reader">The SQLite data reader.</param>
+    /// <returns>The parsed ListingStatus.</returns>
     public static ListingStatus ParseListingStatus(SQLiteDataReader reader)
     {
         string? rawStatus = reader["listingStatus"].ToString();
@@ -283,6 +363,10 @@ public class ListingService
     /// Deprecated method 
     /// </summary>
     /// <param name="sql"></param>
+    /// <summary>
+    /// Displays listings or bookings in a table format based on a SQL query.
+    /// </summary>
+    /// <param name="sql">The SQL query to execute.</param>
     public void ShowMyListingsOrBookings(string sql)
     {
         SQLiteConnection myConn = Database.ConnectToDb();
@@ -335,6 +419,10 @@ public class ListingService
     /// Deprecated
     /// </summary>
     /// <param name="sql"></param>
+    /// <summary>
+    /// Displays an overview of listings based on a SQL query.
+    /// </summary>
+    /// <param name="sql">The SQL query to execute.</param>
     public void ShowOverview(string sql)
     {
         bool exists = false;
@@ -383,6 +471,11 @@ public class ListingService
     /// Deprecated
     /// </summary>
     /// <returns></returns>
+    /// <summary>
+    /// Shows the listings for a specific user.
+    /// </summary>
+    /// <param name="id">The identifier of the user.</param>
+    /// <returns>The name of the next view to display.</returns>
     public string ShowUserListings(int id)
     {
         string sql = "SELECT * FROM listings " +
@@ -396,6 +489,11 @@ public class ListingService
     /// Deprecated
     /// </summary>
     /// <returns></returns>
+    /// <summary>
+    /// Shows the bookings for a specific user.
+    /// </summary>
+    /// <param name="id">The identifier of the user.</param>
+    /// <returns>The name of the next view to display.</returns>
     public string ShowUserBookings(int id)
     {
         string sql = "SELECT * FROM bookings " +

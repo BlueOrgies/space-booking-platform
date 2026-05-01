@@ -10,6 +10,10 @@ public abstract class Database
         return Path.Combine(projectRoot, "SpaceBookings.sqlite");
     }
 
+    /// <summary>
+    /// Establishes a connection to the SQLite database.
+    /// </summary>
+    /// <returns>An open SQLiteConnection object.</returns>
     public static SQLiteConnection ConnectToDb()
     {
         string dbPath = GetDbPath();
@@ -18,6 +22,9 @@ public abstract class Database
         return myConn;
     }
 
+    /// <summary>
+    /// Creates the necessary database tables if they do not already exist.
+    /// </summary>
     public static void Tables()
     {
         SQLiteConnection myConn = ConnectToDb();

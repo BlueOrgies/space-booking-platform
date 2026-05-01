@@ -13,6 +13,9 @@ public class AppState
     public int CurrentPage {get; set;}
     public int Offset { get; set; }
     
+    /// <summary>
+    /// Clears the application state (e.g., on logout).
+    /// </summary>
     public void ClearState()
     {
         IsLoggedIn = false;

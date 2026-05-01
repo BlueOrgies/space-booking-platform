@@ -5,6 +5,10 @@ namespace space_booking_platform.Views;
 
 public class LeaveReviewView(AppState state)
 {
+        /// <summary>
+    /// Displays the view and handles user interaction.
+    /// </summary>
+    /// <returns>The name of the next view to display.</returns>
     public string? Display()
     {
         ReviewService reviewService = new ReviewService();

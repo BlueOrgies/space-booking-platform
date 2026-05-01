@@ -8,6 +8,10 @@ public class OrganizerReviewsView(AppState state)
 {
     private const int PageSize = 5;
 
+        /// <summary>
+    /// Displays the view and handles user interaction.
+    /// </summary>
+    /// <returns>The name of the next view to display.</returns>
     public string? Display()
     {
         int currentPage = 0;

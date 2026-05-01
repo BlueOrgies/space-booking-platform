@@ -4,6 +4,10 @@ namespace space_booking_platform.Views;
 
 public class HomeView(AppState state)
 {
+    /// <summary>
+    /// Displays the home view and handles user navigation.
+    /// </summary>
+    /// <returns>The name of the next view to display.</returns>
     public string? Display()
     {
         AnsiConsole.Clear();

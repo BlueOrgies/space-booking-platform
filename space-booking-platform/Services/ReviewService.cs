@@ -5,6 +5,11 @@ namespace space_booking_platform.Services;
 
 public class ReviewService
 {
+    /// <summary>
+    /// Retrieves a specific review by its identifier.
+    /// </summary>
+    /// <param name="reviewId">The identifier of the review.</param>
+    /// <returns>The review if found; otherwise, null.</returns>
     public Review? GetReview(int reviewId)
     {
         SQLiteConnection myConn = Database.ConnectToDb();
@@ -23,6 +28,11 @@ public class ReviewService
         return MapReview(reader);
     }
     
+    /// <summary>
+    /// Retrieves all reviews for a specific user (as an organizer).
+    /// </summary>
+    /// <param name="UUID">The unique identifier of the user.</param>
+    /// <returns>A list of reviews.</returns>
     public List<Review?> GetReviews(int UUID)
     {
         List<Review?> reviews = new List<Review?>();
@@ -43,6 +53,12 @@ public class ReviewService
         return reviews;
     }
     
+    /// <summary>
+    /// Retrieves a limited number of reviews for a specific user (as an organizer).
+    /// </summary>
+    /// <param name="UUID">The unique identifier of the user.</param>
+    /// <param name="limit">The maximum number of reviews to return.</param>
+    /// <returns>A list of reviews.</returns>
     public List<Review?> GetLimitedReviews(int UUID, int limit)
     {
         List<Review?> reviews = new List<Review?>();
@@ -64,6 +80,13 @@ public class ReviewService
         return reviews;
     }
 
+    /// <summary>
+    /// Creates a new review for a booking.
+    /// </summary>
+    /// <param name="uuid">The unique identifier of the user leaving the review.</param>
+    /// <param name="bookingId">The identifier of the booking being reviewed.</param>
+    /// <param name="rating">The rating given (e.g., 1-5).</param>
+    /// <param name="comment">The review comment.</param>
     public void CreateReview(int uuid, int bookingId, int rating, string comment)
     {
         using SQLiteConnection conn = Database.ConnectToDb();
@@ -80,6 +103,11 @@ public class ReviewService
         cmd.ExecuteNonQuery();
     }
 
+    /// <summary>
+    /// Checks if a review already exists for a specific booking.
+    /// </summary>
+    /// <param name="bookingId">The identifier of the booking.</param>
+    /// <returns>True if a review exists; otherwise, false.</returns>
     public bool HasReview(int bookingId)
     {
         using SQLiteConnection conn = Database.ConnectToDb();
@@ -90,6 +118,11 @@ public class ReviewService
         return (long)cmd.ExecuteScalar()! > 0;
     }
     
+    /// <summary>
+    /// Calculates the average rating for a user's listings.
+    /// </summary>
+    /// <param name="currentUserId">The unique identifier of the user.</param>
+    /// <returns>The average rating, or 0.0 if no reviews exist.</returns>
     public double GetAverageRating(int currentUserId)
     {
         using SQLiteConnection conn = Database.ConnectToDb();

@@ -7,6 +7,10 @@ public class ViewHandler
 {
     private readonly AppState _state = new();
 
+    /// <summary>
+    /// Starts the application's view loop.
+    /// </summary>
+    /// <param name="startView">The name of the initial view to display.</param>
     public void Run(string startView)
     {
         string? current = startView;
