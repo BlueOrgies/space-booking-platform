@@ -218,3 +218,15 @@ Please extend the data in seeder, take into account any new fields.
 ```
 Can you create a README for this project? Make sure to not edit the Coursework Documentation section.
 ```
+
+
+```
+Create XML comments for all Public methods
+```
+
+
+```
+Using spectre, create a pagination system for MyBookingsView. 
+
+"This was later refactored and not used because of its high complexity."
+```
